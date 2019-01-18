@@ -1,0 +1,12 @@
+rootProject.name = 'base'
+
+include 'abi'
+include 'core'
+include 'crypto'
+include 'geth'
+include 'infura'
+include 'integration-tests'
+include 'parity'
+include 'rlp'
+include 'tuples'
+include 'utils'
