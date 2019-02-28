@@ -1,5 +1,7 @@
 package org.web3j.platon.contracts;
 
+import org.spongycastle.crypto.Digest;
+import org.spongycastle.crypto.digests.SHA3Digest;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Event;
@@ -16,9 +18,8 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.Numeric;
 import org.web3j.utils.PlatOnUtil;
-import rx.Observable;
-import rx.functions.Func1;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -26,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * <p>Auto generated code.
@@ -99,6 +103,30 @@ public class TicketContract extends PlatOnContract {
                 Collections.<TypeReference<?>>emptyList());
         return PlatOnUtil.invokeEncode(function,customTransactionType(function));
     }
+
+    public List<String> VoteTicketIds(int tickets, String txHash) {
+        List<String> result = new ArrayList<>();
+        byte[] hashBytes;
+        byte[] ticketBytes;
+        byte[] hash;
+        for (int i = 0; i < tickets; i++) {
+            hashBytes = Numeric.hexStringToByteArray(txHash);
+            ticketBytes = String.valueOf(i).getBytes();
+            hash = new byte[hashBytes.length + ticketBytes.length];
+            System.arraycopy(hashBytes, 0, hash, 0, hashBytes.length);
+            System.arraycopy(ticketBytes, 0, hash, hashBytes.length, hash.length - hashBytes.length);
+
+            Digest digest = new SHA3Digest(256);
+            digest.update(hash, 0, hash.length);
+            byte[] rsData = new byte[digest.getDigestSize()];
+            digest.doFinal(rsData, 0);
+
+            result.add(Numeric.toHexString(rsData));
+
+        }
+        return result;
+    }
+
 
     public static BigInteger VoteTicketGasLimit(Web3j web3j, String estimateGasFrom, String estimateGasTo, BigInteger count, BigInteger price, String nodeId) throws IOException {
         String ethEstimateGasData = VoteTicketData(count, price, nodeId);
