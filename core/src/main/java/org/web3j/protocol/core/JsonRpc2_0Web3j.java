@@ -72,7 +72,7 @@ import rx.Observable;
  */
 public class JsonRpc2_0Web3j implements Web3j {
 
-    public static final int DEFAULT_BLOCK_TIME = 15 * 1000;
+    public static final int DEFAULT_BLOCK_TIME = 2 * 1000;
 
     protected final Web3jService web3jService;
     private final JsonRpc2_0Rx web3jRx;

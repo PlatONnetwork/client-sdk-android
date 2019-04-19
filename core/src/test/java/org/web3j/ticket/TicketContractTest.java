@@ -93,7 +93,7 @@ public class TicketContractTest {
         );
 
         String ids = contract
-                .GetBatchCandidateTicketIds("0abaf3219f454f3d07b6cbcf3c10b6b4ccf605202868e2043b6f5db12b745df0604ef01ef4cb523adc6d9e14b83a76dd09f862e3fe77205d8ac83df707969b47")
+                .GetCandidateTicketCount("0abaf3219f454f3d07b6cbcf3c10b6b4ccf605202868e2043b6f5db12b745df0604ef01ef4cb523adc6d9e14b83a76dd09f862e3fe77205d8ac83df707969b47")
                 .send();
         logger.debug("CandidateTicketIds: {}",ids);
     }
@@ -106,7 +106,7 @@ public class TicketContractTest {
                 new DefaultWasmGasProvider()
         );
 
-        String detail = contract.GetBatchCandidateTicketIds("0abaf3219f454f3d07b6cbcf3c10b6b4ccf605202868e2043b6f5db12b745df0604ef01ef4cb523adc6d9e14b83a76dd09f862e3fe77205d8ac83df707969b47").send();
+        String detail = contract.GetCandidateTicketCount("0abaf3219f454f3d07b6cbcf3c10b6b4ccf605202868e2043b6f5db12b745df0604ef01ef4cb523adc6d9e14b83a76dd09f862e3fe77205d8ac83df707969b47").send();
 
         logger.debug("{}",detail);
 
@@ -119,10 +119,10 @@ public class TicketContractTest {
                 new ReadonlyTransactionManager(web3j,TicketContract.CONTRACT_ADDRESS),
                 new DefaultWasmGasProvider()
         );
-
-        String detail = contract.GetTicketDetail("0x34bdecd0fa6b8d85b1fa436eac6066aca2f51cc5e84fec278bff7df781310982").send();
-
-        logger.debug("{}",detail);
+//
+//        String detail = contract.GetTicketDetail("0x34bdecd0fa6b8d85b1fa436eac6066aca2f51cc5e84fec278bff7df781310982").send();
+//
+//        logger.debug("{}",detail);
 
     }
 
@@ -135,9 +135,9 @@ public class TicketContractTest {
                 new DefaultWasmGasProvider()
         );
 
-        String detail = contract.GetBatchTicketDetail(ticketIds).send();
-
-        logger.debug("{}",detail);
+//        String detail = contract.GetBatchTicketDetail(ticketIds).send();
+//
+//        logger.debug("{}",detail);
 
     }
 

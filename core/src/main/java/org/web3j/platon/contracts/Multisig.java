@@ -654,6 +654,7 @@ public class Multisig extends PlatOnContract {
         return TXTypeEnum.WASM.type;
     }
 
+    @Override
     protected long getTransactionType(Function function) {
         return customTransactionType(function);
     }
