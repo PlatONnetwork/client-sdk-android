@@ -12,6 +12,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthGetCode;
@@ -27,8 +28,12 @@ import org.web3j.utils.PlatOnUtil;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.math.BigInteger;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -220,6 +225,24 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return FunctionReturnDecoder.decode(value, function.getOutputParameters());
     }
 
+    /**
+     * Execute constant function call - i.e. a call that does not change state of the contract
+     *
+     * @param function to call
+     * @return {@link List} of values returned by function call
+     */
+    private List<Type> executeCall(Function function, BigInteger number) throws IOException {
+        String encodedFunction = PlatOnUtil.invokeEncode(function, getTransactionType(function));
+        org.web3j.protocol.core.methods.response.EthCall ethCall = web3j.ethCall(
+                Transaction.createEthCallTransaction(
+                        transactionManager.getFromAddress(), contractAddress, encodedFunction),
+                new DefaultBlockParameterNumber(number))
+                .send();
+
+        String value = ethCall.getValue();
+        return FunctionReturnDecoder.decode(value, function.getOutputParameters());
+    }
+
     @SuppressWarnings("unchecked")
     protected <T extends Type> T executeCallSingleValueReturn(
             Function function) throws IOException {
@@ -230,6 +253,19 @@ public abstract class PlatOnContract extends ManagedTransaction {
             return null;
         }
     }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends Type> T executeCallSingleValueReturn(
+            Function function, BigInteger number) throws IOException {
+        List<Type> values = executeCall(function, number);
+        if (!values.isEmpty()) {
+            return (T) values.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
 
     @SuppressWarnings("unchecked")
     protected <T extends Type, R> R executeCallSingleValueReturn(
@@ -250,6 +286,30 @@ public abstract class PlatOnContract extends ManagedTransaction {
                             + " to expected type: " + returnType.getSimpleName());
         }
     }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends Type, R> R executeCallSingleValueReturn(
+            Function function, Class<R> returnType, BigInteger number) throws IOException {
+        T result = executeCallSingleValueReturn(function, number);
+        if (result == null) {
+            throw new ContractCallException("Empty value (0x) returned from contract");
+        }
+
+        Object value = result.getValue();
+        if (returnType.isAssignableFrom(value.getClass())) {
+            return (R) value;
+        } else if (result.getClass().equals(Address.class) && returnType.equals(String.class)) {
+            return (R) result.toString();  // cast isn't necessary
+        } else {
+            throw new ContractCallException(
+                    "Unable to convert response: " + value
+                            + " to expected type: " + returnType.getSimpleName());
+        }
+    }
+
+
+
+
 
     protected List<Type> executeCallMultipleValueReturn(
             Function function) throws IOException {
@@ -304,6 +364,12 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return new RemoteCall<>(() -> executeCallSingleValueReturn(function, returnType));
     }
 
+    protected <T> RemoteCall<T> executeRemoteCallSingleValueReturn(
+            Function function, Class<T> returnType, BigInteger number) {
+        return new RemoteCall<>(() -> executeCallSingleValueReturn(function, returnType, number));
+    }
+
+
     protected RemoteCall<List<Type>> executeRemoteCallMultipleValueReturn(Function function) {
         return new RemoteCall<>(() -> executeCallMultipleValueReturn(function));
     }
@@ -321,7 +387,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
             T contract, String binary, String abi, String encodedConstructor, BigInteger value)
             throws IOException, TransactionException {
 
-    	String data = PlatOnUtil.deployEncode(binary, abi);
+        String data = PlatOnUtil.deployEncode(binary, abi);
 
         TransactionReceipt transactionReceipt =
                 contract.executeTransaction(data, value, FUNC_DEPLOY);
@@ -504,7 +570,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
         List<Type> indexedValues = new ArrayList<>();
         List<Type> nonIndexedValues = PlatOnUtil.eventDecode(log.getData(), event.getNonIndexedParameters());
-        
+
         List<TypeReference<Type>> indexedParameters = event.getIndexedParameters();
         for (int i = 0; i < indexedParameters.size(); i++) {
             Type value = FunctionReturnDecoder.decodeIndexedValue(
@@ -520,10 +586,14 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     protected List<EventValues> extractEventParameters(
             Event event, TransactionReceipt transactionReceipt) {
-        return transactionReceipt.getLogs().stream()
-                .map(log -> extractEventParameters(event, log))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        List<EventValues> list = new ArrayList<>();
+        for (Log log : transactionReceipt.getLogs()) {
+            EventValues eventValues = extractEventParameters(event, log);
+            if (eventValues != null) {
+                list.add(eventValues);
+            }
+        }
+        return list;
     }
 
     protected EventValuesWithLog extractEventParametersWithLog(Event event, Log log) {
@@ -533,10 +603,14 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     protected List<EventValuesWithLog> extractEventParametersWithLog(
             Event event, TransactionReceipt transactionReceipt) {
-        return transactionReceipt.getLogs().stream()
-                .map(log -> extractEventParametersWithLog(event, log))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        List<EventValuesWithLog> list = new ArrayList<>();
+        for (Log log : transactionReceipt.getLogs()) {
+            EventValuesWithLog eventValuesWithLog = extractEventParametersWithLog(event, log);
+            if (eventValuesWithLog != null) {
+                list.add(eventValuesWithLog);
+            }
+        }
+        return list;
     }
 
     /**
@@ -592,7 +666,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     @SuppressWarnings("unchecked")
     protected static <S extends Type, T>
-            List<T> convertToNative(List<S> arr) {
+    List<T> convertToNative(List<S> arr) {
         List<T> out = new ArrayList<T>();
         for (Iterator<S> it = arr.iterator(); it.hasNext(); ) {
             out.add((T)it.next().getValue());
