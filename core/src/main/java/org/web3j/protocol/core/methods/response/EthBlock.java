@@ -22,8 +22,6 @@ import org.web3j.utils.Numeric;
  * <ul>
  * <li>eth_getBlockByHash</li>
  * <li>eth_getBlockByNumber</li>
- * <li>eth_getUncleByBlockHashAndIndex</li>
- * <li>eth_getUncleByBlockNumberAndIndex</li>
  * </ul>
  *
  * <p>See

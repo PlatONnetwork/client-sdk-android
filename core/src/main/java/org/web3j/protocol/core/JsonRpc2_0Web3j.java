@@ -12,10 +12,6 @@ import org.web3j.protocol.core.methods.response.DbPutString;
 import org.web3j.protocol.core.methods.response.EthAccounts;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthBlockNumber;
-import org.web3j.protocol.core.methods.response.EthCoinbase;
-import org.web3j.protocol.core.methods.response.EthCompileLLL;
-import org.web3j.protocol.core.methods.response.EthCompileSerpent;
-import org.web3j.protocol.core.methods.response.EthCompileSolidity;
 import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthFilter;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
@@ -23,22 +19,15 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetBlockTransactionCountByHash;
 import org.web3j.protocol.core.methods.response.EthGetBlockTransactionCountByNumber;
 import org.web3j.protocol.core.methods.response.EthGetCode;
-import org.web3j.protocol.core.methods.response.EthGetCompilers;
 import org.web3j.protocol.core.methods.response.EthGetStorageAt;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
-import org.web3j.protocol.core.methods.response.EthGetUncleCountByBlockHash;
-import org.web3j.protocol.core.methods.response.EthGetUncleCountByBlockNumber;
-import org.web3j.protocol.core.methods.response.EthGetWork;
-import org.web3j.protocol.core.methods.response.EthHashrate;
 import org.web3j.protocol.core.methods.response.EthLog;
-import org.web3j.protocol.core.methods.response.EthMining;
 import org.web3j.protocol.core.methods.response.EthPendingTransactions;
 import org.web3j.protocol.core.methods.response.EthProtocolVersion;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.EthSign;
 import org.web3j.protocol.core.methods.response.EthSubmitHashrate;
-import org.web3j.protocol.core.methods.response.EthSubmitWork;
 import org.web3j.protocol.core.methods.response.EthSyncing;
 import org.web3j.protocol.core.methods.response.EthTransaction;
 import org.web3j.protocol.core.methods.response.EthUninstallFilter;
@@ -145,39 +134,12 @@ public class JsonRpc2_0Web3j implements Web3j {
     }
 
     @Override
-    public Request<?, EthCoinbase> ethCoinbase() {
-        return new Request<String, EthCoinbase>(
-                "eth_coinbase",
-                Collections.<String>emptyList(),
-                web3jService,
-                EthCoinbase.class);
-    }
-
-    @Override
     public Request<?, EthSyncing> ethSyncing() {
         return new Request<String, EthSyncing>(
                 "eth_syncing",
                 Collections.<String>emptyList(),
                 web3jService,
                 EthSyncing.class);
-    }
-
-    @Override
-    public Request<?, EthMining> ethMining() {
-        return new Request<String, EthMining>(
-                "eth_mining",
-                Collections.<String>emptyList(),
-                web3jService,
-                EthMining.class);
-    }
-
-    @Override
-    public Request<?, EthHashrate> ethHashrate() {
-        return new Request<String, EthHashrate>(
-                "eth_hashrate",
-                Collections.<String>emptyList(),
-                web3jService,
-                EthHashrate.class);
     }
 
     @Override
@@ -258,25 +220,6 @@ public class JsonRpc2_0Web3j implements Web3j {
                 Arrays.asList(defaultBlockParameter.getValue()),
                 web3jService,
                 EthGetBlockTransactionCountByNumber.class);
-    }
-
-    @Override
-    public Request<?, EthGetUncleCountByBlockHash> ethGetUncleCountByBlockHash(String blockHash) {
-        return new Request<String, EthGetUncleCountByBlockHash>(
-                "eth_getUncleCountByBlockHash",
-                Arrays.asList(blockHash),
-                web3jService,
-                EthGetUncleCountByBlockHash.class);
-    }
-
-    @Override
-    public Request<?, EthGetUncleCountByBlockNumber> ethGetUncleCountByBlockNumber(
-            DefaultBlockParameter defaultBlockParameter) {
-        return new Request<String, EthGetUncleCountByBlockNumber>(
-                "eth_getUncleCountByBlockNumber",
-                Arrays.asList(defaultBlockParameter.getValue()),
-                web3jService,
-                EthGetUncleCountByBlockNumber.class);
     }
 
     @Override
@@ -407,66 +350,6 @@ public class JsonRpc2_0Web3j implements Web3j {
     }
 
     @Override
-    public Request<?, EthBlock> ethGetUncleByBlockHashAndIndex(
-            String blockHash, BigInteger transactionIndex) {
-        return new Request<String, EthBlock>(
-                "eth_getUncleByBlockHashAndIndex",
-                Arrays.asList(
-                        blockHash,
-                        Numeric.encodeQuantity(transactionIndex)),
-                web3jService,
-                EthBlock.class);
-    }
-
-    @Override
-    public Request<?, EthBlock> ethGetUncleByBlockNumberAndIndex(
-            DefaultBlockParameter defaultBlockParameter, BigInteger uncleIndex) {
-        return new Request<String, EthBlock>(
-                "eth_getUncleByBlockNumberAndIndex",
-                Arrays.asList(
-                        defaultBlockParameter.getValue(),
-                        Numeric.encodeQuantity(uncleIndex)),
-                web3jService,
-                EthBlock.class);
-    }
-
-    @Override
-    public Request<?, EthGetCompilers> ethGetCompilers() {
-        return new Request<String, EthGetCompilers>(
-                "eth_getCompilers",
-                Collections.<String>emptyList(),
-                web3jService,
-                EthGetCompilers.class);
-    }
-
-    @Override
-    public Request<?, EthCompileLLL> ethCompileLLL(String sourceCode) {
-        return new Request<String, EthCompileLLL>(
-                "eth_compileLLL",
-                Arrays.asList(sourceCode),
-                web3jService,
-                EthCompileLLL.class);
-    }
-
-    @Override
-    public Request<?, EthCompileSolidity> ethCompileSolidity(String sourceCode) {
-        return new Request<String, EthCompileSolidity>(
-                "eth_compileSolidity",
-                Arrays.asList(sourceCode),
-                web3jService,
-                EthCompileSolidity.class);
-    }
-
-    @Override
-    public Request<?, EthCompileSerpent> ethCompileSerpent(String sourceCode) {
-        return new Request<String, EthCompileSerpent>(
-                "eth_compileSerpent",
-                Arrays.asList(sourceCode),
-                web3jService,
-                EthCompileSerpent.class);
-    }
-
-    @Override
     public Request<?, EthFilter> ethNewFilter(
             org.web3j.protocol.core.methods.request.EthFilter ethFilter) {
         return new Request<org.web3j.protocol.core.methods.request.EthFilter, EthFilter>(
@@ -532,15 +415,6 @@ public class JsonRpc2_0Web3j implements Web3j {
     }
 
     @Override
-    public Request<?, EthGetWork> ethGetWork() {
-        return new Request<String, EthGetWork>(
-                "eth_getWork",
-                Collections.<String>emptyList(),
-                web3jService,
-                EthGetWork.class);
-    }
-
-    @Override
     public Request<?, EthPendingTransactions> ethPendingTx() {
         return new Request<>(
                 "eth_pendingTransactions",
@@ -548,25 +422,6 @@ public class JsonRpc2_0Web3j implements Web3j {
                 web3jService,
                 EthPendingTransactions.class);
 
-    }
-
-    @Override
-    public Request<?, EthSubmitWork> ethSubmitWork(
-            String nonce, String headerPowHash, String mixDigest) {
-        return new Request<String, EthSubmitWork>(
-                "eth_submitWork",
-                Arrays.asList(nonce, headerPowHash, mixDigest),
-                web3jService,
-                EthSubmitWork.class);
-    }
-
-    @Override
-    public Request<?, EthSubmitHashrate> ethSubmitHashrate(String hashrate, String clientId) {
-        return new Request<String, EthSubmitHashrate>(
-                "eth_submitHashrate",
-                Arrays.asList(hashrate, clientId),
-                web3jService,
-                EthSubmitHashrate.class);
     }
 
     @Override
