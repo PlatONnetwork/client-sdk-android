@@ -56,14 +56,6 @@ public class EqualsVerifierResponseTest {
     }
 
     @Test
-    public void testSolidityInfo() {
-        EqualsVerifier.forClass(EthCompileSolidity.SolidityInfo.class)
-                .suppress(Warning.NONFINAL_FIELDS)
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
-    }
-
-    @Test
     public void testSyncing() {
         EqualsVerifier.forClass(EthSyncing.Syncing.class)
                 .suppress(Warning.NONFINAL_FIELDS)
@@ -95,33 +87,10 @@ public class EqualsVerifierResponseTest {
                 .verify();
     }
 
-    @Test
-    public void testCode() {
-        EqualsVerifier.forClass(EthCompileSolidity.Code.class)
-                .suppress(Warning.NONFINAL_FIELDS)
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
-    }
 
     @Test
     public void testTransactionHash() {
         EqualsVerifier.forClass(EthBlock.TransactionHash.class)
-                .suppress(Warning.NONFINAL_FIELDS)
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
-    }
-
-    @Test
-    public void testCompiledSolidityCode() {
-        EqualsVerifier.forClass(EthCompileSolidity.Code.class)
-                .suppress(Warning.NONFINAL_FIELDS)
-                .suppress(Warning.STRICT_INHERITANCE)
-                .verify();
-    }
-
-    @Test
-    public void testDocumentation() {
-        EqualsVerifier.forClass(EthCompileSolidity.Documentation.class)
                 .suppress(Warning.NONFINAL_FIELDS)
                 .suppress(Warning.STRICT_INHERITANCE)
                 .verify();
