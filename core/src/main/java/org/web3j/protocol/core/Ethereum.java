@@ -8,10 +8,6 @@ import org.web3j.protocol.core.methods.response.DbPutString;
 import org.web3j.protocol.core.methods.response.EthAccounts;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthBlockNumber;
-import org.web3j.protocol.core.methods.response.EthCoinbase;
-import org.web3j.protocol.core.methods.response.EthCompileLLL;
-import org.web3j.protocol.core.methods.response.EthCompileSerpent;
-import org.web3j.protocol.core.methods.response.EthCompileSolidity;
 import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthFilter;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
@@ -19,21 +15,13 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetBlockTransactionCountByHash;
 import org.web3j.protocol.core.methods.response.EthGetBlockTransactionCountByNumber;
 import org.web3j.protocol.core.methods.response.EthGetCode;
-import org.web3j.protocol.core.methods.response.EthGetCompilers;
 import org.web3j.protocol.core.methods.response.EthGetStorageAt;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
-import org.web3j.protocol.core.methods.response.EthGetUncleCountByBlockHash;
-import org.web3j.protocol.core.methods.response.EthGetUncleCountByBlockNumber;
-import org.web3j.protocol.core.methods.response.EthGetWork;
-import org.web3j.protocol.core.methods.response.EthHashrate;
 import org.web3j.protocol.core.methods.response.EthLog;
-import org.web3j.protocol.core.methods.response.EthMining;
 import org.web3j.protocol.core.methods.response.EthPendingTransactions;
 import org.web3j.protocol.core.methods.response.EthProtocolVersion;
 import org.web3j.protocol.core.methods.response.EthSign;
-import org.web3j.protocol.core.methods.response.EthSubmitHashrate;
-import org.web3j.protocol.core.methods.response.EthSubmitWork;
 import org.web3j.protocol.core.methods.response.EthSyncing;
 import org.web3j.protocol.core.methods.response.EthTransaction;
 import org.web3j.protocol.core.methods.response.EthUninstallFilter;
@@ -69,13 +57,7 @@ public interface Ethereum {
 
     Request<?, EthProtocolVersion> ethProtocolVersion();
 
-    Request<?, EthCoinbase> ethCoinbase();
-
     Request<?, EthSyncing> ethSyncing();
-
-    Request<?, EthMining> ethMining();
-
-    Request<?, EthHashrate> ethHashrate();
 
     Request<?, EthGasPrice> ethGasPrice();
 
@@ -97,11 +79,6 @@ public interface Ethereum {
             String blockHash);
 
     Request<?, EthGetBlockTransactionCountByNumber> ethGetBlockTransactionCountByNumber(
-            DefaultBlockParameter defaultBlockParameter);
-
-    Request<?, EthGetUncleCountByBlockHash> ethGetUncleCountByBlockHash(String blockHash);
-
-    Request<?, EthGetUncleCountByBlockNumber> ethGetUncleCountByBlockNumber(
             DefaultBlockParameter defaultBlockParameter);
 
     Request<?, EthGetCode> ethGetCode(String address, DefaultBlockParameter defaultBlockParameter);
@@ -137,20 +114,6 @@ public interface Ethereum {
 
     Request<?, EthGetTransactionReceipt> ethGetTransactionReceipt(String transactionHash);
 
-    Request<?, EthBlock> ethGetUncleByBlockHashAndIndex(
-            String blockHash, BigInteger transactionIndex);
-
-    Request<?, EthBlock> ethGetUncleByBlockNumberAndIndex(
-            DefaultBlockParameter defaultBlockParameter, BigInteger transactionIndex);
-
-    Request<?, EthGetCompilers> ethGetCompilers();
-
-    Request<?, EthCompileLLL> ethCompileLLL(String sourceCode);
-
-    Request<?, EthCompileSolidity> ethCompileSolidity(String sourceCode);
-
-    Request<?, EthCompileSerpent> ethCompileSerpent(String sourceCode);
-
     Request<?, EthFilter> ethNewFilter(org.web3j.protocol.core.methods.request.EthFilter ethFilter);
 
     Request<?, EthFilter> ethNewBlockFilter();
@@ -165,13 +128,7 @@ public interface Ethereum {
 
     Request<?, EthLog> ethGetLogs(org.web3j.protocol.core.methods.request.EthFilter ethFilter);
 
-    Request<?, EthGetWork> ethGetWork();
-
     Request<?, EthPendingTransactions> ethPendingTx();
-
-    Request<?, EthSubmitWork> ethSubmitWork(String nonce, String headerPowHash, String mixDigest);
-
-    Request<?, EthSubmitHashrate> ethSubmitHashrate(String hashrate, String clientId);
 
     Request<?, DbPutString> dbPutString(String databaseName, String keyName, String stringToStore);
 
