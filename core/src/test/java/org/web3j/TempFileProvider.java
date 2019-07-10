@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import org.web3j.rlp.RlpList;
 
 /**
  * Base class for tests wishing to use temporary file locations.

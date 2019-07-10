@@ -20,6 +20,7 @@ import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.utils.Numeric;
 import org.web3j.utils.PlatOnUtil;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -58,8 +59,8 @@ public class TicketContract extends PlatOnContract {
     public static final String FUNC_GETTICKETCOUNTBYTXHASH = "GetTicketCountByTxHash";
 
     public static final Event VOTETICKETEVENT_EVENT = new Event("VoteTicketEvent",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
-    ;
+            Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+            }));
 
     @Deprecated
     protected TicketContract(String contractBinary, String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -86,7 +87,7 @@ public class TicketContract extends PlatOnContract {
                         new org.web3j.abi.datatypes.generated.Uint256(price),
                         new Utf8String(nodeId)),
                 Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function,count.multiply(price));
+        return executeRemoteCallTransaction(function, count.multiply(price));
     }
 
     public static String VoteTicketData(BigInteger count, BigInteger price, String nodeId) {
@@ -96,7 +97,7 @@ public class TicketContract extends PlatOnContract {
                         new org.web3j.abi.datatypes.generated.Uint256(price),
                         new Utf8String(nodeId)),
                 Collections.<TypeReference<?>>emptyList());
-        return PlatOnUtil.invokeEncode(function,customTransactionType(function));
+        return PlatOnUtil.invokeEncode(function, customTransactionType(function));
     }
 
     public List<String> VoteTicketIds(int tickets, String txHash) {
@@ -107,7 +108,7 @@ public class TicketContract extends PlatOnContract {
         for (int i = 0; i < tickets; i++) {
             hashBytes = Numeric.hexStringToByteArray(txHash);
             ticketBytes = String.valueOf(i).getBytes();
-            hash = new byte[hashBytes.length+ticketBytes.length];
+            hash = new byte[hashBytes.length + ticketBytes.length];
             System.arraycopy(hashBytes, 0, hash, 0, hashBytes.length);
             System.arraycopy(ticketBytes, 0, hash, hashBytes.length, hash.length - hashBytes.length);
 
@@ -124,42 +125,47 @@ public class TicketContract extends PlatOnContract {
 
     public static BigInteger VoteTicketGasLimit(Web3j web3j, String estimateGasFrom, String estimateGasTo, BigInteger count, BigInteger price, String nodeId) throws IOException {
         String ethEstimateGasData = VoteTicketData(count, price, nodeId);
-        return PlatOnUtil.estimateGasLimit(web3j,estimateGasFrom,estimateGasTo,ethEstimateGasData);
+        return PlatOnUtil.estimateGasLimit(web3j, estimateGasFrom, estimateGasTo, ethEstimateGasData);
     }
 
 
     public RemoteCall<String> GetCandidateTicketCount(String nodeIds) {
         final Function function = new Function(FUNC_GETCANDIDATETICKETCOUNT,
                 Arrays.<Type>asList(new Utf8String(nodeIds)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> GetCandidateEpoch(String nodeId) {
         final Function function = new Function(FUNC_GETCANDIDATEEPOCH,
                 Arrays.<Type>asList(new Utf8String(nodeId)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> GetPoolRemainder() {
         final Function function = new Function(FUNC_GETPOOLREMAINDER,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> GetTicketPrice() {
         final Function function = new Function(FUNC_GETTICKETPRICE,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<String> GetTicketCountByTxHash(String txHashs) {
         final Function function = new Function(FUNC_GETTICKETCOUNTBYTXHASH,
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(txHashs)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
@@ -221,10 +227,13 @@ public class TicketContract extends PlatOnContract {
     }
 
     private static long customTransactionType(Function function) {
-        switch (function.getName()){
-            case "VoteTicket": return 1000;
+        switch (function.getName()) {
+            case "VoteTicket":
+                return 1000;
+            default:
+                return 1004;
         }
-        return 1004;
+
     }
 
     protected long getTransactionType(Function function) {

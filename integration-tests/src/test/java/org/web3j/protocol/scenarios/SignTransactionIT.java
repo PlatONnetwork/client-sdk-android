@@ -39,7 +39,7 @@ public class SignTransactionIT extends Scenario {
     }
 
     private static RawTransaction createTransaction() {
-        BigInteger value = Convert.toWei("1", Convert.Unit.ETHER).toBigInteger();
+        BigInteger value = Convert.toVon("1", Convert.Unit.LAT).toBigInteger();
 
         return RawTransaction.createEtherTransaction(
                 BigInteger.valueOf(1048587), BigInteger.valueOf(500000), BigInteger.valueOf(500000),

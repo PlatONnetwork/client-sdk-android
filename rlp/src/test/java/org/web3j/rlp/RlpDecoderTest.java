@@ -92,30 +92,30 @@ public class RlpDecoderTest {
                 instanceOf(RlpList.class));
 
         assertThat(((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(0)).getValues().size(),
+                        ((RlpList) rlpList.getValues().get(0)).getValues().get(0)).getValues().size(),
                 equalTo(0));
 
         assertThat(((RlpList)
-                   ((RlpList)rlpList.getValues().get(0)).getValues().get(1)).getValues().size(),
+                        ((RlpList) rlpList.getValues().get(0)).getValues().get(1)).getValues().size(),
                 equalTo(1));
 
         assertThat(((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().size(),
+                        ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().size(),
                 equalTo(2));
 
         assertThat(((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().get(0),
+                        ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().get(0),
                 instanceOf(RlpList.class));
 
         assertThat(((RlpList)
-                   ((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().get(0))
+                        ((RlpList)
+                                ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().get(0))
                         .getValues().size(),
                 equalTo(0));
 
         assertThat(((RlpList)
-                   ((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().get(1))
+                        ((RlpList)
+                                ((RlpList) rlpList.getValues().get(0)).getValues().get(2)).getValues().get(1))
                         .getValues().size(),
                 equalTo(1));
 
@@ -125,14 +125,14 @@ public class RlpDecoderTest {
 
         assertThat(RlpDecoder.decode(
                 new byte[]{
-                    (byte) 0xb8,
-                    (byte) 0x38,
-                    'L', 'o', 'r', 'e', 'm', ' ', 'i', 'p', 's', 'u', 'm', ' ',
-                    'd', 'o', 'l', 'o', 'r', ' ', 's', 'i', 't', ' ',
-                    'a', 'm', 'e', 't', ',', ' ',
-                    'c', 'o', 'n', 's', 'e', 'c', 't', 'e', 't', 'u', 'r', ' ',
-                    'a', 'd', 'i', 'p', 'i', 's', 'i', 'c', 'i', 'n', 'g', ' ',
-                    'e', 'l', 'i', 't'
+                        (byte) 0xb8,
+                        (byte) 0x38,
+                        'L', 'o', 'r', 'e', 'm', ' ', 'i', 'p', 's', 'u', 'm', ' ',
+                        'd', 'o', 'l', 'o', 'r', ' ', 's', 'i', 't', ' ',
+                        'a', 'm', 'e', 't', ',', ' ',
+                        'c', 'o', 'n', 's', 'e', 'c', 't', 'e', 't', 'u', 'r', ' ',
+                        'a', 'd', 'i', 'p', 'i', 's', 'i', 'c', 'i', 'n', 'g', ' ',
+                        'e', 'l', 'i', 't'
                 }).getValues().get(0),
                 CoreMatchers.<RlpType>is(RlpString.create(
                         "Lorem ipsum dolor sit amet, consectetur adipisicing elit")));
@@ -161,7 +161,7 @@ public class RlpDecoderTest {
                 CoreMatchers.<RlpType>is(RlpString.create("zw")));
 
         assertThat(((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(1)).getValues().get(0),
+                        ((RlpList) rlpList.getValues().get(0)).getValues().get(1)).getValues().get(0),
                 CoreMatchers.<RlpType>is(RlpString.create(4)));
 
         assertThat(((RlpList) rlpList.getValues().get(0)).getValues().get(2),
@@ -186,8 +186,15 @@ public class RlpDecoderTest {
                 instanceOf(RlpList.class));
 
         assertThat(((RlpList)
-                   ((RlpList) rlpList.getValues().get(0)).getValues().get(1)).getValues().size(),
+                        ((RlpList) rlpList.getValues().get(0)).getValues().get(1)).getValues().size(),
                 equalTo(9));
 
+    }
+
+    @Test
+    public void testDecoderObject() {
+        String encodedData = "0xf902d101f902ccf8b1b8401f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2842233494000000740ce31b3fac20dac379db243021a51e809410000000000000000000000000000000000000028080020102820100022001820101f68e7878636363636464646464646464864920416d20308d7777772e62616964752e636f6d917468697320697320206261696475207e7ef8b1b8402f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2843546694740ce31b3fac20dac379db243021a51e804445559410000000000000000000000000000000000000020101020103820100022001820101f68e7878636363636464646464646464864920416d20318d7777772e62616964752e636f6d917468697320697320206261696475207e7ef8b1b8403f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2854487894000000740ce31b3fac20dac379db243021a51e809410000000000000000000000000000000000000020204020104820100022001820101f68e7878636363636464646464646464864920416d20328d7777772e62616964752e636f6d917468697320697320206261696475207e7ef8b1b8403f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2856464694000000740ce31b3fac20dac379db243021a51e809410000000000000000000000000000000000000020309020105820100022001820101f68e7878636363636464646464646464864920416d20338d7777772e62616964752e636f6d917468697320697320206261696475207e7e80";
+
+        RlpList rlpList = RlpDecoder.decode(encodedData.getBytes());
     }
 }

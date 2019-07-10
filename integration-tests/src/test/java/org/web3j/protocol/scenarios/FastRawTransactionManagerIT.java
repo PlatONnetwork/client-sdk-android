@@ -124,7 +124,7 @@ public class FastRawTransactionManagerIT extends Scenario {
     private RemoteCall<TransactionReceipt> createTransaction(
             Transfer transfer, BigInteger gasPrice) {
         return transfer.sendFunds(
-                BOB.getAddress(), BigDecimal.valueOf(1.0), Convert.Unit.KWEI,
+                BOB.getAddress(), BigDecimal.valueOf(1.0), Convert.Unit.KVON,
                 gasPrice, Transfer.GAS_LIMIT);
     }
 }

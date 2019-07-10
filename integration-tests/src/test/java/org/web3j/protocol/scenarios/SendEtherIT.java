@@ -25,7 +25,7 @@ public class SendEtherIT extends Scenario {
         unlockAccount();
 
         BigInteger nonce = getNonce(ALICE.getAddress());
-        BigInteger value = Convert.toWei("0.5", Convert.Unit.ETHER).toBigInteger();
+        BigInteger value = Convert.toVon("0.5", Convert.Unit.LAT).toBigInteger();
 
         Transaction transaction = Transaction.createEtherTransaction(
                 ALICE.getAddress(), nonce, GAS_PRICE, GAS_LIMIT, BOB.getAddress(), value);
@@ -66,7 +66,7 @@ public class SendEtherIT extends Scenario {
     @Test
     public void testTransfer() throws Exception {
         TransactionReceipt transactionReceipt = Transfer.sendFunds(
-                web3j, ALICE, BOB.getAddress(), BigDecimal.valueOf(0.2), Convert.Unit.ETHER)
+                web3j, ALICE, BOB.getAddress(), BigDecimal.valueOf(0.2), Convert.Unit.LAT)
                 .send();
         assertFalse(transactionReceipt.getBlockHash().isEmpty());
     }
