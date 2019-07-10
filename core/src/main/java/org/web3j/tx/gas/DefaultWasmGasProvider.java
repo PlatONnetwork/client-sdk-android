@@ -25,6 +25,11 @@ public class DefaultWasmGasProvider implements ContractGasProvider {
     }
 
     @Override
+    public BigInteger getGasPrice(int functionType) {
+        return gasPrice;
+    }
+
+    @Override
     public BigInteger getGasPrice() {
         return gasPrice;
     }
@@ -36,6 +41,11 @@ public class DefaultWasmGasProvider implements ContractGasProvider {
     	}else {
 			return invokeGasLimit;
 		}
+    }
+
+    @Override
+    public BigInteger getGasLimit(int functionType) {
+        return invokeGasLimit;
     }
 
     @Override

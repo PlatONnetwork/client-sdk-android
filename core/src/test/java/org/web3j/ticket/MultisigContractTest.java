@@ -60,7 +60,7 @@ public class MultisigContractTest {
     }
 
     // 本地测试
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.76:6788"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://10.10.8.21:6789"));
     // 飞翔
 //    private Web3j web3j = Web3j.build(new HttpService("http://10.10.8.209:6789"));
     // 线上

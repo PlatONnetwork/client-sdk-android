@@ -1,8 +1,10 @@
-package org.web3j.crypto;
+package org.web3j.protocol.platon;
+
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
-
-import org.web3j.utils.Numeric;
 
 /**
  * Keys generated for unit testing purposes.

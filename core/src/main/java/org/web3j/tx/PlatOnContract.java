@@ -1,5 +1,11 @@
 package org.web3j.tx;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.databind.util.JSONWrappedObject;
+
 import org.web3j.abi.EventValues;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.PlatOnEventEncoder;
@@ -8,7 +14,11 @@ import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.crypto.Credentials;
+import org.web3j.platon.BaseResponse;
+import org.web3j.platon.bean.Node;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -16,12 +26,14 @@ import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthGetCode;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.exceptions.ContractCallException;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
+import org.web3j.utils.JSONUtil;
 import org.web3j.utils.Numeric;
 import org.web3j.utils.PlatOnUtil;
 
@@ -29,11 +41,16 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+
+import jdk.nashorn.internal.parser.JSONParser;
+import jdk.nashorn.internal.runtime.JSONFunctions;
 
 
 /**
@@ -44,12 +61,20 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     //https://www.reddit.com/r/ethereum/comments/5g8ia6/attention_miners_we_recommend_raising_gas_limit/
     /**
-     * @deprecated ...
      * @see org.web3j.tx.gas.DefaultGasProvider
+     * @deprecated ...
      */
+
     public static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
 
     public static final String FUNC_DEPLOY = "deploy";
+
+    public static final String RESTRICTING_PLAN_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000001";
+    public static final String STAKING_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
+    public static final String DELEGATE_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
+    public static final String NODE_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
+    public static final String SLASH_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000004";
+    public static final String PROPOSAL_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000005";
 
     protected final String contractBinary;
     protected String contractAddress;
@@ -75,6 +100,15 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
         this(contractBinary, contractAddress, web3j,
                 new RawTransactionManager(web3j, credentials),
+                gasProvider);
+    }
+
+    protected PlatOnContract(String contractBinary, String contractAddress, String chainId,
+                             Web3j web3j, Credentials credentials,
+                             ContractGasProvider gasProvider) {
+
+        this(contractBinary, contractAddress, web3j,
+                new RawTransactionManager(web3j, credentials, new Byte(chainId)),
                 gasProvider);
     }
 
@@ -131,13 +165,19 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     /**
      * Should be implemented by sub contract.
+     *
      * @param function contract function
      * @return contract type
      */
-    abstract protected long getTransactionType(Function function);
+    protected long getTransactionType(Function function) {
+        return 0;
+    }
+
+    ;
 
     /**
      * Allow {@code gasPrice} to be set.
+     *
      * @param newPrice gas price to use for subsequent transactions
      * @deprecated use ContractGasProvider
      */
@@ -147,6 +187,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     /**
      * Get the current {@code gasPrice} value this contract uses when executing transactions.
+     *
      * @return the gas price set on this contract
      * @deprecated use ContractGasProvider
      */
@@ -214,15 +255,24 @@ public abstract class PlatOnContract extends ManagedTransaction {
      * @return {@link List} of values returned by function call
      */
     private List<Type> executeCall(Function function) throws IOException {
-        String encodedFunction = PlatOnUtil.invokeEncode(function,getTransactionType(function));
+        String encodedFunction = PlatOnUtil.invokeEncode(function);
         org.web3j.protocol.core.methods.response.EthCall ethCall = web3j.ethCall(
                 Transaction.createEthCallTransaction(
                         transactionManager.getFromAddress(), contractAddress, encodedFunction),
                 defaultBlockParameter)
                 .send();
-
         String value = ethCall.getValue();
         return FunctionReturnDecoder.decode(value, function.getOutputParameters());
+    }
+
+    private BaseResponse executePatonCall(Function function) throws IOException {
+        String encodedFunction = PlatOnUtil.invokeEncode(function);
+        org.web3j.protocol.core.methods.response.EthCall ethCall = web3j.ethCall(
+                Transaction.createEthCallTransaction(
+                        transactionManager.getFromAddress(), contractAddress, encodedFunction),
+                defaultBlockParameter)
+                .send();
+        return JSONUtil.parseObject(new String(Numeric.hexStringToByteArray(ethCall.getValue())), BaseResponse.class);
     }
 
     /**
@@ -266,7 +316,6 @@ public abstract class PlatOnContract extends ManagedTransaction {
     }
 
 
-
     @SuppressWarnings("unchecked")
     protected <T extends Type, R> R executeCallSingleValueReturn(
             Function function, Class<R> returnType) throws IOException {
@@ -307,10 +356,6 @@ public abstract class PlatOnContract extends ManagedTransaction {
         }
     }
 
-
-
-
-
     protected List<Type> executeCallMultipleValueReturn(
             Function function) throws IOException {
         return executeCall(function);
@@ -322,17 +367,29 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return executeTransaction(function, BigInteger.ZERO);
     }
 
+    protected EthSendTransaction executePlatonTransaction(Function function) throws IOException, TransactionException {
+        return executePlatonTransaction(function, BigInteger.ZERO);
+    }
+
     private TransactionReceipt executeTransaction(Function function, BigInteger weiValue) throws IOException, TransactionException {
-        return executeTransaction(PlatOnUtil.invokeEncode(function,getTransactionType(function)) , weiValue, function.getName());
+        return executeTransaction(PlatOnUtil.invokeEncode(function, getTransactionType(function)), weiValue, function.getName());
+    }
+
+    private BaseResponse executeTransactionWithFunctionType(Function function, BigInteger weiValue) throws IOException, TransactionException {
+        return executeTransaction(PlatOnUtil.invokeEncode(function), weiValue, function.getType());
+    }
+
+    private EthSendTransaction executePlatonTransaction(Function function, BigInteger weiValue) throws IOException, TransactionException {
+        return executePlatonTransaction(PlatOnUtil.invokeEncode(function), weiValue, function.getType());
     }
 
     /**
      * Given the duration required to execute a transaction.
      *
-     * @param data  to send in transaction
+     * @param data     to send in transaction
      * @param weiValue in Wei to send in transaction
      * @return {@link Optional} containing our transaction receipt
-     * @throws IOException                 if the call to the node fails
+     * @throws IOException          if the call to the node fails
      * @throws TransactionException if the transaction was not mined while waiting
      */
     TransactionReceipt executeTransaction(
@@ -355,6 +412,88 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return receipt;
     }
 
+    /**
+     * Given the duration required to execute a transaction.
+     *
+     * @param data     to send in transaction
+     * @param weiValue in Wei to send in transaction
+     * @return {@link Optional} containing our transaction receipt
+     * @throws IOException          if the call to the node fails
+     * @throws TransactionException if the transaction was not mined while waiting
+     */
+    BaseResponse executeTransaction(
+            String data, BigInteger weiValue, int functionType)
+            throws TransactionException, IOException {
+
+        TransactionReceipt receipt = send(contractAddress, data, weiValue,
+                gasProvider.getGasPrice(functionType),
+                gasProvider.getGasLimit(functionType));
+
+        return getResponseFromTransactionReceipt(transactionReceipt, functionType);
+    }
+
+    BaseResponse getTransactionResult(EthSendTransaction ethSendTransaction, int functionType) throws IOException, TransactionException {
+
+        TransactionReceipt receipt = getTransactionReceipt(ethSendTransaction);
+
+        if (!receipt.isStatusOK()) {
+            throw new TransactionException(
+                    String.format(
+                            "Transaction has failed with status: %s. "
+                                    + "Gas used: %d. (not-enough gas?)",
+                            receipt.getStatus(),
+                            receipt.getGasUsed()));
+        }
+        return getResponseFromTransactionReceipt(transactionReceipt, functionType);
+    }
+
+    EthSendTransaction executePlatonTransaction(
+            String data, BigInteger weiValue, int functionType)
+            throws TransactionException, IOException {
+
+        return sendPlatonRawTransaction(contractAddress, data, weiValue,
+                gasProvider.getGasPrice(functionType),
+                gasProvider.getGasLimit(functionType));
+    }
+
+    private BaseResponse getResponseFromTransactionReceipt(TransactionReceipt transactionReceipt, int functionType) throws TransactionException {
+
+        Event event = new Event(functionType,
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
+
+        List<EventValuesWithLog> eventValuesWithLogList = extractEventParametersWithLog(event, transactionReceipt);
+
+        return JSONUtil.parseObject(getResponseFromLog(eventValuesWithLogList), BaseResponse.class);
+    }
+
+    private String getResponseFromLog(List<EventValuesWithLog> eventValuesWithLogList) throws TransactionException {
+
+        boolean isEventValuesWithLogEmpty = eventValuesWithLogList == null || eventValuesWithLogList.isEmpty();
+
+        List<Type> nonIndexedValues;
+
+        if (isEventValuesWithLogEmpty || (nonIndexedValues = eventValuesWithLogList.get(0).getNonIndexedValues()) == null || nonIndexedValues.isEmpty()) {
+            throw new TransactionException(
+                    String.format(
+                            "Transaction has failed with status: %s. "
+                                    + "Gas used: %d. (not-enough gas?)",
+                            transactionReceipt.getStatus(),
+                            transactionReceipt.getGasUsed()));
+        }
+
+        return (String) nonIndexedValues.get(0).getValue();
+    }
+
+    protected RemoteCall<BaseResponse> executePlatonRemoteCallSingleValueReturn(Function function) {
+        return new RemoteCall<>(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                return executePatonCall(function);
+            }
+        });
+    }
+
     protected <T extends Type> RemoteCall<T> executeRemoteCallSingleValueReturn(Function function) {
         return new RemoteCall<>(() -> executeCallSingleValueReturn(function));
     }
@@ -369,7 +508,6 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return new RemoteCall<>(() -> executeCallSingleValueReturn(function, returnType, number));
     }
 
-
     protected RemoteCall<List<Type>> executeRemoteCallMultipleValueReturn(Function function) {
         return new RemoteCall<>(() -> executeCallMultipleValueReturn(function));
     }
@@ -378,10 +516,46 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return new RemoteCall<>(() -> executeTransaction(function));
     }
 
+    protected RemoteCall<EthSendTransaction> executeRemoteCallPlatonTransaction(Function function, BigInteger weiValue) {
+        return new RemoteCall<>(() -> executePlatonTransaction(function, weiValue));
+    }
+
+    protected RemoteCall<EthSendTransaction> executeRemoteCallPlatonTransaction(Function function) {
+        return new RemoteCall<>(() -> executePlatonTransaction(function, BigInteger.ZERO));
+    }
+
     protected RemoteCall<TransactionReceipt> executeRemoteCallTransaction(
             Function function, BigInteger weiValue) {
         return new RemoteCall<>(() -> executeTransaction(function, weiValue));
     }
+
+    protected RemoteCall<BaseResponse> executeRemoteCallTransactionWithFunctionType(Function function, BigInteger weiValue) {
+        return new RemoteCall<>(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                return executeTransactionWithFunctionType(function, weiValue);
+            }
+        });
+    }
+
+    protected RemoteCall<BaseResponse> executeRemoteCallTransactionWithFunctionType(Function function) {
+        return new RemoteCall<>(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                return executeTransactionWithFunctionType(function, BigInteger.ZERO);
+            }
+        });
+    }
+
+    protected RemoteCall<BaseResponse> executeRemoteCallTransactionWithFunctionType(EthSendTransaction ethSendTransaction, int functionType) {
+        return new RemoteCall<>(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                return getTransactionResult(ethSendTransaction, functionType);
+            }
+        });
+    }
+
 
     private static <T extends PlatOnContract> T create(
             T contract, String binary, String abi, String encodedConstructor, BigInteger value)
@@ -444,7 +618,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
             constructor.setAccessible(true);
 
             // we want to use null here to ensure that "to" parameter on message is not populated
-            T contract = constructor.newInstance(binary,null, web3j, transactionManager, contractGasProvider);
+            T contract = constructor.newInstance(binary, null, web3j, transactionManager, contractGasProvider);
             return create(contract, binary, abi, encodedConstructor, value);
         } catch (TransactionException e) {
             throw e;
@@ -563,7 +737,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
             Event event, Log log) {
 
         List<String> topics = log.getTopics();
-        String encodedEventSignature = PlatOnEventEncoder.encode(event);
+        String encodedEventSignature = PlatOnEventEncoder.encodeWithFunctionType(event);
         if (!topics.get(0).equals(encodedEventSignature)) {
             return null;
         }
@@ -669,7 +843,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
     List<T> convertToNative(List<S> arr) {
         List<T> out = new ArrayList<T>();
         for (Iterator<S> it = arr.iterator(); it.hasNext(); ) {
-            out.add((T)it.next().getValue());
+            out.add((T) it.next().getValue());
         }
         return out;
     }

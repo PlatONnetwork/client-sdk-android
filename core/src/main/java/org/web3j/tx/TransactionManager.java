@@ -51,6 +51,10 @@ public abstract class TransactionManager {
         return processResponse(ethSendTransaction);
     }
 
+    protected TransactionReceipt getTransactionReceipt(EthSendTransaction ethSendTransaction) throws IOException, TransactionException {
+        return processResponse(ethSendTransaction);
+    }
+
     public abstract EthSendTransaction sendTransaction(
             BigInteger gasPrice, BigInteger gasLimit, String to,
             String data, BigInteger value)

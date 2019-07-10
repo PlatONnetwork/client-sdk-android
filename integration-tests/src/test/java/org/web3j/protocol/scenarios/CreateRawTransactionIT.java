@@ -67,7 +67,7 @@ public class CreateRawTransactionIT extends Scenario {
     }
 
     private static RawTransaction createEtherTransaction(BigInteger nonce, String toAddress) {
-        BigInteger value = Convert.toWei("0.5", Convert.Unit.ETHER).toBigInteger();
+        BigInteger value = Convert.toVon("0.5", Convert.Unit.LAT).toBigInteger();
 
         return RawTransaction.createEtherTransaction(
                 nonce, GAS_PRICE, GAS_LIMIT, toAddress, value);

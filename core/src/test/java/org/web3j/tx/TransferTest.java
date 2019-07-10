@@ -31,21 +31,21 @@ public class TransferTest extends ManagedTransactionTester {
     @Test
     public void testSendFunds() throws Exception {
         assertThat(Transfer.sendFunds(web3j, SampleKeys.CREDENTIALS, ADDRESS,
-                BigDecimal.TEN, Convert.Unit.ETHER).send(),
+                BigDecimal.TEN, Convert.Unit.LAT).send(),
                 is(transactionReceipt));
     }
 
     @Test
     public void testSendFundsAsync() throws  Exception {
         assertThat(Transfer.sendFunds(web3j, SampleKeys.CREDENTIALS, ADDRESS,
-                BigDecimal.TEN, Convert.Unit.ETHER).send(),
+                BigDecimal.TEN, Convert.Unit.LAT).send(),
                 is(transactionReceipt));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testTransferInvalidValue() throws Exception {
         Transfer.sendFunds(web3j, SampleKeys.CREDENTIALS, ADDRESS,
-                new BigDecimal(0.1), Convert.Unit.WEI).send();
+                new BigDecimal(0.1), Convert.Unit.VON).send();
     }
 
     @SuppressWarnings("unchecked")

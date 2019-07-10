@@ -54,7 +54,7 @@ public class Transfer extends ManagedTransaction {
             BigInteger gasLimit) throws IOException, InterruptedException,
             TransactionException {
 
-        BigDecimal weiValue = Convert.toWei(value, unit);
+        BigDecimal weiValue = Convert.toVon(value, unit);
         if (!Numeric.isIntegerValue(weiValue)) {
             throw new UnsupportedOperationException(
                     "Non decimal Wei value provided: " + value + " " + unit.toString()
