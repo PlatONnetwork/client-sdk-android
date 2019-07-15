@@ -2,7 +2,6 @@ package org.web3j.platon.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-import org.web3j.abi.datatypes.Type;
 import org.web3j.platon.CustomType;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import org.web3j.crypto.SampleKeys;
 import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthGasPrice;
+import org.web3j.protocol.core.methods.response.PlatonGasPrice;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.utils.Convert;
 
@@ -54,12 +54,12 @@ public class TransferTest extends ManagedTransactionTester {
         transactionReceipt.setTransactionHash(TRANSACTION_HASH);
         prepareTransaction(transactionReceipt);
 
-        final EthGasPrice ethGasPrice = new EthGasPrice();
+        final PlatonGasPrice ethGasPrice = new PlatonGasPrice();
         ethGasPrice.setResult("0x1");
 
-        Request<?, EthGasPrice> gasPriceRequest = mock(Request.class);
+        Request<?, PlatonGasPrice> gasPriceRequest = mock(Request.class);
         when(gasPriceRequest.send()).thenReturn(ethGasPrice);
-        when(web3j.ethGasPrice()).thenReturn((Request) gasPriceRequest);
+        when(web3j.platonGasPrice()).thenReturn((Request) gasPriceRequest);
 
         return transactionReceipt;
     }

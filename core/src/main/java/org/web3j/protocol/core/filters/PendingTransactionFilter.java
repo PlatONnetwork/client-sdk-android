@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthFilter;
-import org.web3j.protocol.core.methods.response.EthLog;
+import org.web3j.protocol.core.methods.response.PlatonFilter;
+import org.web3j.protocol.core.methods.response.PlatonLog;
 
 /**
  * Handler for working with transaction filter requests.
@@ -19,15 +19,15 @@ public class PendingTransactionFilter extends Filter<String> {
     }
 
     @Override
-    EthFilter sendRequest() throws IOException {
-        return web3j.ethNewPendingTransactionFilter().send();
+    PlatonFilter sendRequest() throws IOException {
+        return web3j.platonNewPendingTransactionFilter().send();
     }
 
     @Override
-    void process(List<EthLog.LogResult> logResults) {
-        for (EthLog.LogResult logResult : logResults) {
-            if (logResult instanceof EthLog.Hash) {
-                String blockHash = ((EthLog.Hash) logResult).get();
+    void process(List<PlatonLog.LogResult> logResults) {
+        for (PlatonLog.LogResult logResult : logResults) {
+            if (logResult instanceof PlatonLog.Hash) {
+                String blockHash = ((PlatonLog.Hash) logResult).get();
                 callback.onEvent(blockHash);
             } else {
                 throw new FilterException(
@@ -44,7 +44,7 @@ public class PendingTransactionFilter extends Filter<String> {
      * @return null
      */
     @Override
-    protected Request<?, EthLog> getFilterLogs(BigInteger filterId) {
+    protected Request<?, PlatonLog> getFilterLogs(BigInteger filterId) {
         return null;
     }
 }

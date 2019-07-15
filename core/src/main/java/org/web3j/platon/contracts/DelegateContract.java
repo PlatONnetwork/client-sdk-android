@@ -12,7 +12,7 @@ import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.TransactionCallback;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -25,15 +25,15 @@ import java.util.concurrent.ExecutionException;
 public class DelegateContract extends PlatOnContract {
 
     public static DelegateContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new DelegateContract("", STAKING_CONTRACT_ADDRESS, web3j, credentials, contractGasProvider);
+        return new DelegateContract("", DELEGATE_CONTRACT_ADDRESS, web3j, credentials, contractGasProvider);
     }
 
     public static DelegateContract load(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new DelegateContract("", STAKING_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
+        return new DelegateContract("", DELEGATE_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
     }
 
     public static DelegateContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, String chainId) {
-        return new DelegateContract("", NODE_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
+        return new DelegateContract("", DELEGATE_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
     }
 
     public DelegateContract(String contractBinary, String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider gasProvider) {
@@ -72,7 +72,7 @@ public class DelegateContract extends PlatOnContract {
      * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
      * @return
      */
-    public RemoteCall<EthSendTransaction> delegateReturnTransaction(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
+    public RemoteCall<PlatonSendTransaction> delegateReturnTransaction(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
         Function function = new Function(FunctionType.DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint16(stakingAmountType.getValue())
                         , new Utf8String(nodeId)
@@ -86,7 +86,7 @@ public class DelegateContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getDelegateResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getDelegateResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.DELEGATE_FUNC_TYPE);
     }
 
@@ -104,10 +104,10 @@ public class DelegateContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = delegateReturnTransaction(nodeId, stakingAmountType, amount);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = delegateReturnTransaction(nodeId, stakingAmountType, amount);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }
@@ -156,7 +156,7 @@ public class DelegateContract extends PlatOnContract {
      * @param amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
      * @return
      */
-    public RemoteCall<EthSendTransaction> unDelegateReturnTransaction(String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
+    public RemoteCall<PlatonSendTransaction> unDelegateReturnTransaction(String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
         Function function = new Function(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
                         , new Utf8String(nodeId)
@@ -169,7 +169,7 @@ public class DelegateContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getUnDelegateResult(EthSendTransaction ethSendTransaction){
+    public RemoteCall<BaseResponse> getUnDelegateResult(PlatonSendTransaction ethSendTransaction){
 
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.WITHDREW_DELEGATE_FUNC_TYPE);
     }
@@ -187,10 +187,10 @@ public class DelegateContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = unDelegateReturnTransaction(nodeId, stakingBlockNum, amount);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = unDelegateReturnTransaction(nodeId, stakingBlockNum, amount);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }

@@ -5,29 +5,27 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.methods.response.EthAccounts;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthBlockNumber;
-import org.web3j.protocol.core.methods.response.EthCall;
-import org.web3j.protocol.core.methods.response.EthCompileSerpent;
-import org.web3j.protocol.core.methods.response.EthCompileSolidity;
-import org.web3j.protocol.core.methods.response.EthEstimateGas;
-import org.web3j.protocol.core.methods.response.EthFilter;
-import org.web3j.protocol.core.methods.response.EthGasPrice;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.methods.response.EthGetBlockTransactionCountByHash;
-import org.web3j.protocol.core.methods.response.EthGetBlockTransactionCountByNumber;
-import org.web3j.protocol.core.methods.response.EthGetCode;
-import org.web3j.protocol.core.methods.response.EthGetStorageAt;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
-import org.web3j.protocol.core.methods.response.EthLog;
-import org.web3j.protocol.core.methods.response.EthPendingTransactions;
-import org.web3j.protocol.core.methods.response.EthProtocolVersion;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.EthSyncing;
-import org.web3j.protocol.core.methods.response.EthTransaction;
-import org.web3j.protocol.core.methods.response.EthUninstallFilter;
+import org.web3j.protocol.core.methods.response.PlatonAccounts;
+import org.web3j.protocol.core.methods.response.PlatonBlock;
+import org.web3j.protocol.core.methods.response.PlatonBlockNumber;
+import org.web3j.protocol.core.methods.response.PlatonCall;
+import org.web3j.protocol.core.methods.response.PlatonEstimateGas;
+import org.web3j.protocol.core.methods.response.PlatonFilter;
+import org.web3j.protocol.core.methods.response.PlatonGasPrice;
+import org.web3j.protocol.core.methods.response.PlatonGetBalance;
+import org.web3j.protocol.core.methods.response.PlatonGetBlockTransactionCountByHash;
+import org.web3j.protocol.core.methods.response.PlatonGetBlockTransactionCountByNumber;
+import org.web3j.protocol.core.methods.response.PlatonGetCode;
+import org.web3j.protocol.core.methods.response.PlatonGetStorageAt;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.PlatonLog;
+import org.web3j.protocol.core.methods.response.PlatonPendingTransactions;
+import org.web3j.protocol.core.methods.response.PlatonProtocolVersion;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonSyncing;
+import org.web3j.protocol.core.methods.response.PlatonTransaction;
+import org.web3j.protocol.core.methods.response.PlatonUninstallFilter;
 import org.web3j.protocol.core.methods.response.NetListening;
 import org.web3j.protocol.core.methods.response.NetPeerCount;
 import org.web3j.protocol.core.methods.response.NetVersion;
@@ -101,44 +99,44 @@ public class CoreIT {
 
     @Test
     public void testEthProtocolVersion() throws Exception {
-        EthProtocolVersion ethProtocolVersion = web3j.ethProtocolVersion().send();
+        PlatonProtocolVersion ethProtocolVersion = web3j.platonProtocolVersion().send();
         assertFalse(ethProtocolVersion.getProtocolVersion().isEmpty());
     }
 
     @Test
     public void testEthSyncing() throws Exception {
-        EthSyncing ethSyncing = web3j.ethSyncing().send();
+        PlatonSyncing ethSyncing = web3j.platonSyncing().send();
         assertNotNull(ethSyncing.getResult());
     }
 
     @Test
     public void testEthGasPrice() throws Exception {
-        EthGasPrice ethGasPrice = web3j.ethGasPrice().send();
+        PlatonGasPrice ethGasPrice = web3j.platonGasPrice().send();
         assertTrue(ethGasPrice.getGasPrice().signum() == 1);
     }
 
     @Test
     public void testEthAccounts() throws Exception {
-        EthAccounts ethAccounts = web3j.ethAccounts().send();
+        PlatonAccounts ethAccounts = web3j.platonAccounts().send();
         assertNotNull(ethAccounts.getAccounts());
     }
 
     @Test
     public void testEthBlockNumber() throws Exception {
-        EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().send();
+        PlatonBlockNumber ethBlockNumber = web3j.platonBlockNumber().send();
         assertTrue(ethBlockNumber.getBlockNumber().signum() == 1);
     }
 
     @Test
     public void testEthGetBalance() throws Exception {
-        EthGetBalance ethGetBalance = web3j.ethGetBalance(
+        PlatonGetBalance ethGetBalance = web3j.platonGetBalance(
                 config.validAccount(), DefaultBlockParameterName.valueOf("latest")).send();
         assertTrue(ethGetBalance.getBalance().signum() == 1);
     }
 
     @Test
     public void testEthGetStorageAt() throws Exception {
-        EthGetStorageAt ethGetStorageAt = web3j.ethGetStorageAt(
+        PlatonGetStorageAt ethGetStorageAt = web3j.platonGetStorageAt(
                 config.validContractAddress(),
                 BigInteger.valueOf(0),
                 DefaultBlockParameterName.valueOf("latest")).send();
@@ -147,7 +145,7 @@ public class CoreIT {
 
     @Test
     public void testEthGetTransactionCount() throws Exception {
-        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
+        PlatonGetTransactionCount ethGetTransactionCount = web3j.platonGetTransactionCount(
                 config.validAccount(),
                 DefaultBlockParameterName.valueOf("latest")).send();
         assertTrue(ethGetTransactionCount.getTransactionCount().signum() == 1);
@@ -155,8 +153,8 @@ public class CoreIT {
 
     @Test
     public void testEthGetBlockTransactionCountByHash() throws Exception {
-        EthGetBlockTransactionCountByHash ethGetBlockTransactionCountByHash =
-                web3j.ethGetBlockTransactionCountByHash(
+        PlatonGetBlockTransactionCountByHash ethGetBlockTransactionCountByHash =
+                web3j.platonGetBlockTransactionCountByHash(
                         config.validBlockHash()).send();
         assertThat(ethGetBlockTransactionCountByHash.getTransactionCount(),
                 equalTo(config.validBlockTransactionCount()));
@@ -164,8 +162,8 @@ public class CoreIT {
 
     @Test
     public void testEthGetBlockTransactionCountByNumber() throws Exception {
-        EthGetBlockTransactionCountByNumber ethGetBlockTransactionCountByNumber =
-                web3j.ethGetBlockTransactionCountByNumber(
+        PlatonGetBlockTransactionCountByNumber ethGetBlockTransactionCountByNumber =
+                web3j.platonGetBlockTransactionCountByNumber(
                         DefaultBlockParameterNumber.valueOf(config.validBlock())).send();
         assertThat(ethGetBlockTransactionCountByNumber.getTransactionCount(),
                 equalTo(config.validBlockTransactionCount()));
@@ -173,7 +171,7 @@ public class CoreIT {
 
     @Test
     public void testEthGetCode() throws Exception {
-        EthGetCode ethGetCode = web3j.ethGetCode(config.validContractAddress(),
+        PlatonGetCode ethGetCode = web3j.platonGetCode(config.validContractAddress(),
                 DefaultBlockParameterNumber.valueOf(config.validBlock())).send();
         assertThat(ethGetCode.getCode(), is(config.validContractCode()));
     }
@@ -181,13 +179,13 @@ public class CoreIT {
     @Ignore  // TODO: Once account unlock functionality is available
     @Test
     public void testEthSign() throws Exception {
-        // EthSign ethSign = web3j.ethSign();
+        // EthSign platonSign = web3j.platonSign();
     }
 
     @Ignore  // TODO: Once account unlock functionality is available
     @Test
     public void testEthSendTransaction() throws Exception {
-        EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(
+        PlatonSendTransaction ethSendTransaction = web3j.platonSendTransaction(
                 config.buildTransaction()).send();
         assertFalse(ethSendTransaction.getTransactionHash().isEmpty());
     }
@@ -200,7 +198,7 @@ public class CoreIT {
 
     @Test
     public void testEthCall() throws Exception {
-        EthCall ethCall = web3j.ethCall(config.buildTransaction(),
+        PlatonCall ethCall = web3j.platonCall(config.buildTransaction(),
                 DefaultBlockParameterName.valueOf("latest")).send();
 
         assertThat(DefaultBlockParameterName.LATEST.getValue(), is("latest"));
@@ -209,17 +207,17 @@ public class CoreIT {
 
     @Test
     public void testEthEstimateGas() throws Exception {
-        EthEstimateGas ethEstimateGas = web3j.ethEstimateGas(config.buildTransaction())
+        PlatonEstimateGas ethEstimateGas = web3j.platonEstimateGas(config.buildTransaction())
                 .send();
         assertTrue(ethEstimateGas.getAmountUsed().signum() == 1);
     }
 
     @Test
     public void testEthGetBlockByHashReturnHashObjects() throws Exception {
-        EthBlock ethBlock = web3j.ethGetBlockByHash(config.validBlockHash(), false)
+        PlatonBlock ethBlock = web3j.platonGetBlockByHash(config.validBlockHash(), false)
                 .send();
 
-        EthBlock.Block block = ethBlock.getBlock();
+        PlatonBlock.Block block = ethBlock.getBlock();
         assertNotNull(ethBlock.getBlock());
         assertThat(block.getNumber(), equalTo(config.validBlock()));
         assertThat(block.getTransactions().size(),
@@ -228,10 +226,10 @@ public class CoreIT {
 
     @Test
     public void testEthGetBlockByHashReturnFullTransactionObjects() throws Exception {
-        EthBlock ethBlock = web3j.ethGetBlockByHash(config.validBlockHash(), true)
+        PlatonBlock ethBlock = web3j.platonGetBlockByHash(config.validBlockHash(), true)
                 .send();
 
-        EthBlock.Block block = ethBlock.getBlock();
+        PlatonBlock.Block block = ethBlock.getBlock();
         assertNotNull(ethBlock.getBlock());
         assertThat(block.getNumber(), equalTo(config.validBlock()));
         assertThat(block.getTransactions().size(),
@@ -240,10 +238,10 @@ public class CoreIT {
 
     @Test
     public void testEthGetBlockByNumberReturnHashObjects() throws Exception {
-        EthBlock ethBlock = web3j.ethGetBlockByNumber(
+        PlatonBlock ethBlock = web3j.platonGetBlockByNumber(
                 DefaultBlockParameterNumber.valueOf(config.validBlock()), false).send();
 
-        EthBlock.Block block = ethBlock.getBlock();
+        PlatonBlock.Block block = ethBlock.getBlock();
         assertNotNull(ethBlock.getBlock());
         assertThat(block.getNumber(), equalTo(config.validBlock()));
         assertThat(block.getTransactions().size(),
@@ -252,10 +250,10 @@ public class CoreIT {
 
     @Test
     public void testEthGetBlockByNumberReturnTransactionObjects() throws Exception {
-        EthBlock ethBlock = web3j.ethGetBlockByNumber(
+        PlatonBlock ethBlock = web3j.platonGetBlockByNumber(
                 DefaultBlockParameterNumber.valueOf(config.validBlock()), true).send();
 
-        EthBlock.Block block = ethBlock.getBlock();
+        PlatonBlock.Block block = ethBlock.getBlock();
         assertNotNull(ethBlock.getBlock());
         assertThat(block.getNumber(), equalTo(config.validBlock()));
         assertThat(block.getTransactions().size(),
@@ -264,7 +262,7 @@ public class CoreIT {
 
     @Test
     public void testEthGetTransactionByHash() throws Exception {
-        EthTransaction ethTransaction = web3j.ethGetTransactionByHash(
+        PlatonTransaction ethTransaction = web3j.platonGetTransactionByHash(
                 config.validTransactionHash()).send();
         assertNotNull(ethTransaction.getTransaction());
         Transaction transaction = ethTransaction.getTransaction();
@@ -275,7 +273,7 @@ public class CoreIT {
     public void testEthGetTransactionByBlockHashAndIndex() throws Exception {
         BigInteger index = BigInteger.ONE;
 
-        EthTransaction ethTransaction = web3j.ethGetTransactionByBlockHashAndIndex(
+        PlatonTransaction ethTransaction = web3j.platonGetTransactionByBlockHashAndIndex(
                 config.validBlockHash(), index).send();
         assertNotNull(ethTransaction.getTransaction());
         Transaction transaction = ethTransaction.getTransaction();
@@ -287,7 +285,7 @@ public class CoreIT {
     public void testEthGetTransactionByBlockNumberAndIndex() throws Exception {
         BigInteger index = BigInteger.ONE;
 
-        EthTransaction ethTransaction = web3j.ethGetTransactionByBlockNumberAndIndex(
+        PlatonTransaction ethTransaction = web3j.platonGetTransactionByBlockNumberAndIndex(
                 DefaultBlockParameterNumber.valueOf(config.validBlock()), index).send();
         Transaction transaction = ethTransaction.getTransaction();
         assertNotNull(transaction);
@@ -297,7 +295,7 @@ public class CoreIT {
 
     @Test
     public void testEthGetTransactionReceipt() throws Exception {
-        EthGetTransactionReceipt ethGetTransactionReceipt = web3j.ethGetTransactionReceipt(
+        PlatonGetTransactionReceipt ethGetTransactionReceipt = web3j.platonGetTransactionReceipt(
                 config.validTransactionHash()).send();
         TransactionReceipt transactionReceipt =
                 ethGetTransactionReceipt.getTransactionReceipt();
@@ -307,8 +305,8 @@ public class CoreIT {
 
     @Test
     public void testFiltersByFilterId() throws Exception {
-        org.web3j.protocol.core.methods.request.EthFilter ethFilter =
-                new org.web3j.protocol.core.methods.request.EthFilter(
+        org.web3j.protocol.core.methods.request.PlatonFilter ethFilter =
+                new org.web3j.protocol.core.methods.request.PlatonFilter(
                 DefaultBlockParameterName.EARLIEST,
                 DefaultBlockParameterName.LATEST,
                 config.validContractAddress());
@@ -317,39 +315,39 @@ public class CoreIT {
         ethFilter.addSingleTopic(eventSignature);
 
         // eth_newFilter
-        EthFilter ethNewFilter = web3j.ethNewFilter(ethFilter).send();
+        PlatonFilter ethNewFilter = web3j.platonNewFilter(ethFilter).send();
         BigInteger filterId = ethNewFilter.getFilterId();
 
         // eth_getFilterLogs
-        EthLog ethFilterLogs = web3j.ethGetFilterLogs(filterId).send();
-        List<EthLog.LogResult> filterLogs = ethFilterLogs.getLogs();
+        PlatonLog ethFilterLogs = web3j.platonGetFilterLogs(filterId).send();
+        List<PlatonLog.LogResult> filterLogs = ethFilterLogs.getLogs();
         assertFalse(filterLogs.isEmpty());
 
         // eth_getFilterChanges - nothing will have changed in this interval
-        EthLog ethLog = web3j.ethGetFilterChanges(filterId).send();
+        PlatonLog ethLog = web3j.platonGetFilterChanges(filterId).send();
         assertTrue(ethLog.getLogs().isEmpty());
 
         // eth_uninstallFilter
-        EthUninstallFilter ethUninstallFilter = web3j.ethUninstallFilter(filterId).send();
+        PlatonUninstallFilter ethUninstallFilter = web3j.platonUninstallFilter(filterId).send();
         assertTrue(ethUninstallFilter.isUninstalled());
     }
 
     @Test
     public void testEthNewBlockFilter() throws Exception {
-        EthFilter ethNewBlockFilter = web3j.ethNewBlockFilter().send();
+        PlatonFilter ethNewBlockFilter = web3j.platonNewBlockFilter().send();
         assertNotNull(ethNewBlockFilter.getFilterId());
     }
 
     @Test
     public void testEthNewPendingTransactionFilter() throws Exception {
-        EthFilter ethNewPendingTransactionFilter =
-                web3j.ethNewPendingTransactionFilter().send();
+        PlatonFilter ethNewPendingTransactionFilter =
+                web3j.platonNewPendingTransactionFilter().send();
         assertNotNull(ethNewPendingTransactionFilter.getFilterId());
     }
 
     @Test
     public void testPendingTx() throws Exception {
-        EthPendingTransactions a = web3j.ethPendingTx().send();
+        PlatonPendingTransactions a = web3j.platonPendingTx().send();
         List<Transaction> transaction = a.getTransactions();
         for (Transaction transaction1 : transaction) {
             String from = transaction1.getFrom();
@@ -361,8 +359,8 @@ public class CoreIT {
 
     @Test
     public void testEthGetLogs() throws Exception {
-        org.web3j.protocol.core.methods.request.EthFilter ethFilter =
-                new org.web3j.protocol.core.methods.request.EthFilter(
+        org.web3j.protocol.core.methods.request.PlatonFilter ethFilter =
+                new org.web3j.protocol.core.methods.request.PlatonFilter(
                 DefaultBlockParameterName.EARLIEST,
                 DefaultBlockParameterName.LATEST,
                 config.validContractAddress()
@@ -370,8 +368,8 @@ public class CoreIT {
 
         ethFilter.addSingleTopic(config.encodedEvent());
 
-        EthLog ethLog = web3j.ethGetLogs(ethFilter).send();
-        List<EthLog.LogResult> logs = ethLog.getLogs();
+        PlatonLog ethLog = web3j.ethGetLogs(ethFilter).send();
+        List<PlatonLog.LogResult> logs = ethLog.getLogs();
         assertFalse(logs.isEmpty());
     }
 

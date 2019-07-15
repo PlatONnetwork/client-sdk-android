@@ -12,7 +12,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.request.PlatonFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.PlatOnContract;
@@ -181,7 +181,7 @@ public class TicketContract extends PlatOnContract {
         return responses;
     }
 
-    public Observable<VoteTicketEventEventResponse> voteTicketEventEventObservable(EthFilter filter) {
+    public Observable<VoteTicketEventEventResponse> voteTicketEventEventObservable(PlatonFilter filter) {
         return web3j.ethLogObservable(filter).map(new Func1<Log, VoteTicketEventEventResponse>() {
             @Override
             public VoteTicketEventEventResponse call(Log log) {
@@ -195,7 +195,7 @@ public class TicketContract extends PlatOnContract {
     }
 
     public Observable<VoteTicketEventEventResponse> voteTicketEventEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(VOTETICKETEVENT_EVENT));
         return voteTicketEventEventObservable(filter);
     }

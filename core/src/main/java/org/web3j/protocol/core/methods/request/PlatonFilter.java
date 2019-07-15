@@ -9,25 +9,25 @@ import org.web3j.protocol.core.DefaultBlockParameter;
  * Filter implementation as per
  * <a href="https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_newfilter">docs</a>.
  */
-public class EthFilter extends Filter<EthFilter> {
+public class PlatonFilter extends Filter<PlatonFilter> {
     private DefaultBlockParameter fromBlock;  // optional, params - defaults to latest for both
     private DefaultBlockParameter toBlock;
     private List<String> address;  // spec. implies this can be single address as string or list
 
-    public EthFilter() {
+    public PlatonFilter() {
         super();
     }
 
-    public EthFilter(DefaultBlockParameter fromBlock, DefaultBlockParameter toBlock,
-                     List<String> address) {
+    public PlatonFilter(DefaultBlockParameter fromBlock, DefaultBlockParameter toBlock,
+                        List<String> address) {
         super();
         this.fromBlock = fromBlock;
         this.toBlock = toBlock;
         this.address = address;
     }
 
-    public EthFilter(DefaultBlockParameter fromBlock, DefaultBlockParameter toBlock,
-                     String address) {
+    public PlatonFilter(DefaultBlockParameter fromBlock, DefaultBlockParameter toBlock,
+                        String address) {
         this(fromBlock, toBlock, Arrays.asList(address));
     }
 
@@ -44,7 +44,7 @@ public class EthFilter extends Filter<EthFilter> {
     }
 
     @Override
-    EthFilter getThis() {
+    PlatonFilter getThis() {
         return this;
     }
 }

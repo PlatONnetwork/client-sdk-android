@@ -13,8 +13,8 @@ import rx.functions.Action1;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.methods.request.EthFilter;
-import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.request.PlatonFilter;
+import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.http.HttpService;
 
 import static org.junit.Assert.assertTrue;
@@ -51,7 +51,7 @@ public class ObservableIT {
 
     @Test
     public void testLogObservable() throws Exception {
-        run(web3j.ethLogObservable(new EthFilter()));
+        run(web3j.ethLogObservable(new PlatonFilter()));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ObservableIT {
 
     @Test
     public void testCatchUpToLatestAndSubscribeToNewBlocksObservable() throws Exception {
-        EthBlock ethBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false)
+        PlatonBlock ethBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false)
                 .send();
         BigInteger latestBlockNumber = ethBlock.getBlock().getNumber();
         run(web3j.catchUpToLatestAndSubscribeToNewBlocksObservable(

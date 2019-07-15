@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.SampleKeys;
 import org.web3j.platon.BaseResponse;
+import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.RestrictingPlan;
 import org.web3j.platon.contracts.RestrictingPlanContract;
@@ -77,12 +78,12 @@ public class StakingContractTest {
     @Test
     public void staking() {
 
-//        try {
-//            BaseResponse baseResponse = stakingContract.staking(nodeId, BigInteger.valueOf(10), StakingAmountType.FREE_AMOUNT_TYPE,benifitAddress,nodeId,nodeName,websites,details).send();
-//            System.out.println(baseResponse.toString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            BaseResponse baseResponse = stakingContract.staking(nodeId, BigInteger.valueOf(10), StakingAmountType.FREE_AMOUNT_TYPE,benifitAddress,nodeId,nodeName,websites,details).send();
+            System.out.println(baseResponse.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //        int a = 1000;
 //        Uint32 uint32 = new Uint32(a);

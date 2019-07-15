@@ -12,7 +12,7 @@ import org.web3j.platon.TransactionCallback;
 import org.web3j.platon.bean.RestrictingPlan;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -72,7 +72,7 @@ public class RestrictingPlanContract extends PlatOnContract {
      *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
      * @return
      */
-    public RemoteCall<EthSendTransaction> createRestrictingPlanReturnTransaction(String account, List<RestrictingPlan> restrictingPlanList) {
+    public RemoteCall<PlatonSendTransaction> createRestrictingPlanReturnTransaction(String account, List<RestrictingPlan> restrictingPlanList) {
         final Function function = new Function(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
                 Arrays.<Type>asList(new Utf8String(account), new StaticArray(restrictingPlanList)),
@@ -84,7 +84,7 @@ public class RestrictingPlanContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getCreateRestrictingPlanResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getCreateRestrictingPlanResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE);
     }
 
@@ -101,10 +101,10 @@ public class RestrictingPlanContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = createRestrictingPlanReturnTransaction(account, restrictingPlanList);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = createRestrictingPlanReturnTransaction(account, restrictingPlanList);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }

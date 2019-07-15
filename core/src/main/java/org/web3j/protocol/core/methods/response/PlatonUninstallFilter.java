@@ -3,10 +3,10 @@ package org.web3j.protocol.core.methods.response;
 import org.web3j.protocol.core.Response;
 
 /**
- * eth_getStorageAt.
+ * eth_uninstallFilter.
  */
-public class EthGetStorageAt extends Response<String> {
-    public String getData() {
+public class PlatonUninstallFilter extends Response<Boolean> {
+    public boolean isUninstalled() {
         return getResult();
     }
 }

@@ -22,7 +22,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.request.PlatonFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
@@ -68,7 +68,7 @@ public final class ENS extends Contract {
         final Event event = new Event("NewOwner", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, NewOwnerEventResponse>() {
             @Override
@@ -102,7 +102,7 @@ public final class ENS extends Contract {
         final Event event = new Event("Transfer", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
@@ -135,7 +135,7 @@ public final class ENS extends Contract {
         final Event event = new Event("NewResolver", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, NewResolverEventResponse>() {
             @Override
@@ -168,7 +168,7 @@ public final class ENS extends Contract {
         final Event event = new Event("NewTTL", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint64>() {}));
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, NewTTLEventResponse>() {
             @Override

@@ -3,10 +3,10 @@ package org.web3j.protocol.core.methods.response;
 import org.web3j.protocol.core.Response;
 
 /**
- * eth_call.
+ * eth_protocolVersion.
  */
-public class EthCall extends Response<String> {
-    public String getValue() {
+public class PlatonProtocolVersion extends Response<String> {
+    public String getProtocolVersion() {
         return getResult();
     }
 }

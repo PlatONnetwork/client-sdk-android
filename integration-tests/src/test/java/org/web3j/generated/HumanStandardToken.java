@@ -19,7 +19,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.request.PlatonFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
@@ -68,7 +68,7 @@ public class HumanStandardToken extends Contract {
         final Event event = new Event("Transfer", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, TransferEventResponse>() {
             @Override
@@ -105,7 +105,7 @@ public class HumanStandardToken extends Contract {
         final Event event = new Event("Approval", 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        PlatonFilter filter = new PlatonFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(event));
         return web3j.ethLogObservable(filter).map(new Func1<Log, ApprovalEventResponse>() {
             @Override

@@ -8,9 +8,7 @@ import org.junit.Test;
 import org.web3j.protocol.RequestTester;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.request.PlatonFilter;
 import org.web3j.protocol.core.methods.request.ShhFilter;
 import org.web3j.protocol.core.methods.request.ShhPost;
 import org.web3j.protocol.core.methods.request.Transaction;
@@ -66,7 +64,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthProtocolVersion() throws Exception {
-        web3j.ethProtocolVersion().send();
+        web3j.platonProtocolVersion().send();
 
         verifyResult(
                 "{\"jsonrpc\":\"2.0\",\"method\":\"platon_protocolVersion\",\"params\":[],\"id\":1}");
@@ -74,35 +72,35 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthSyncing() throws Exception {
-        web3j.ethSyncing().send();
+        web3j.platonSyncing().send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_syncing\",\"params\":[],\"id\":1}");
     }
 
     @Test
     public void testEthGasPrice() throws Exception {
-        web3j.ethGasPrice().send();
+        web3j.platonGasPrice().send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_gasPrice\",\"params\":[],\"id\":1}");
     }
 
     @Test
     public void testEthAccounts() throws Exception {
-        web3j.ethAccounts().send();
+        web3j.platonAccounts().send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_accounts\",\"params\":[],\"id\":1}");
     }
 
     @Test
     public void testEthBlockNumber() throws Exception {
-        web3j.ethBlockNumber().send();
+        web3j.platonBlockNumber().send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_blockNumber\",\"params\":[],\"id\":1}");
     }
 
     @Test
     public void testEthGetBalance() throws Exception {
-        web3j.ethGetBalance("0x407d73d8a49eeb85d32cf465507dd71d507100c1",
+        web3j.platonGetBalance("0x407d73d8a49eeb85d32cf465507dd71d507100c1",
                 DefaultBlockParameterName.LATEST).send();
 
         verifyResult(
@@ -113,7 +111,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetStorageAt() throws Exception {
-        web3j.ethGetStorageAt("0x295a70b2de5e3953354a6a8344e616ed314d7251", BigInteger.ZERO,
+        web3j.platonGetStorageAt("0x295a70b2de5e3953354a6a8344e616ed314d7251", BigInteger.ZERO,
                 DefaultBlockParameterName.LATEST).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getStorageAt\","
@@ -123,7 +121,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetTransactionCount() throws Exception {
-        web3j.ethGetTransactionCount("0x407d73d8a49eeb85d32cf465507dd71d507100c1",
+        web3j.platonGetTransactionCount("0x407d73d8a49eeb85d32cf465507dd71d507100c1",
                 DefaultBlockParameterName.LATEST).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getTransactionCount\","
@@ -133,7 +131,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetBlockTransactionCountByHash() throws Exception {
-        web3j.ethGetBlockTransactionCountByHash(
+        web3j.platonGetBlockTransactionCountByHash(
                 "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238").send();
 
         //CHECKSTYLE:OFF
@@ -143,7 +141,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetBlockTransactionCountByNumber() throws Exception {
-        web3j.ethGetBlockTransactionCountByNumber(
+        web3j.platonGetBlockTransactionCountByNumber(
                 DefaultBlockParameterNumber.valueOf(Numeric.toBigInt("0xe8"))).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getBlockTransactionCountByNumber\","
@@ -152,7 +150,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetCode() throws Exception {
-        web3j.ethGetCode("0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b",
+        web3j.platonGetCode("0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b",
                 DefaultBlockParameterNumber.valueOf(Numeric.toBigInt("0x2"))).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getCode\","
@@ -161,7 +159,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthSign() throws Exception {
-        web3j.ethSign("0x8a3106a3e50576d4b6794a0e74d3bb5f8c9acaab",
+        web3j.platonSign("0x8a3106a3e50576d4b6794a0e74d3bb5f8c9acaab",
                 "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470").send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_sign\","
@@ -172,7 +170,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthSendTransaction() throws Exception {
-        web3j.ethSendTransaction(new Transaction(
+        web3j.platonSendTransaction(new Transaction(
                 "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
                 BigInteger.ONE,
                 Numeric.toBigInt("0x9184e72a000"),
@@ -189,7 +187,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthSendRawTransaction() throws Exception {
-        web3j.ethSendRawTransaction(
+        web3j.platonSendRawTransaction(
                 "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f"
                         + "072445675058bb8eb970870f072445675").send();
 
@@ -201,7 +199,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthCall() throws Exception {
-        web3j.ethCall(Transaction.createEthCallTransaction(
+        web3j.platonCall(Transaction.createEthCallTransaction(
                 "0xa70e8dd61c5d32be8058bb8eb970870f07233155",
                 "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
                         "0x0"),
@@ -215,7 +213,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthEstimateGas() throws Exception {
-        web3j.ethEstimateGas(
+        web3j.platonEstimateGas(
                 Transaction.createEthCallTransaction(
                         "0xa70e8dd61c5d32be8058bb8eb970870f07233155",
                         "0x52b93c80364dc2dd4444c146d73b9836bbbb2b3f", "0x0")).send();
@@ -228,7 +226,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthEstimateGasContractCreation() throws Exception {
-        web3j.ethEstimateGas(
+        web3j.platonEstimateGas(
                 Transaction.createContractTransaction(
                         "0x52b93c80364dc2dd4444c146d73b9836bbbb2b3f", BigInteger.ONE,
                         BigInteger.TEN, "")).send();
@@ -240,7 +238,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetBlockByHash() throws Exception {
-        web3j.ethGetBlockByHash(
+        web3j.platonGetBlockByHash(
                 "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331", true).send();
 
         verifyResult(
@@ -251,7 +249,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetBlockByNumber() throws Exception {
-        web3j.ethGetBlockByNumber(
+        web3j.platonGetBlockByNumber(
                 DefaultBlockParameterNumber.valueOf(Numeric.toBigInt("0x1b4")), true).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getBlockByNumber\","
@@ -260,7 +258,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetTransactionByHash() throws Exception {
-        web3j.ethGetTransactionByHash(
+        web3j.platonGetTransactionByHash(
                 "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238").send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getTransactionByHash\",\"params\":["
@@ -270,7 +268,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetTransactionByBlockHashAndIndex() throws Exception {
-        web3j.ethGetTransactionByBlockHashAndIndex(
+        web3j.platonGetTransactionByBlockHashAndIndex(
                 "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331",
                 BigInteger.ZERO).send();
 
@@ -281,7 +279,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetTransactionByBlockNumberAndIndex() throws Exception {
-        web3j.ethGetTransactionByBlockNumberAndIndex(
+        web3j.platonGetTransactionByBlockNumberAndIndex(
                 DefaultBlockParameterNumber.valueOf(Numeric.toBigInt("0x29c")),
                 BigInteger.ZERO).send();
 
@@ -291,7 +289,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetTransactionReceipt() throws Exception {
-        web3j.ethGetTransactionReceipt(
+        web3j.platonGetTransactionReceipt(
                 "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238").send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getTransactionReceipt\",\"params\":["
@@ -301,10 +299,10 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthNewFilter() throws Exception {
-        EthFilter ethFilter = new EthFilter()
+        PlatonFilter ethFilter = new PlatonFilter()
                 .addSingleTopic("0x12341234");
 
-        web3j.ethNewFilter(ethFilter).send();
+        web3j.platonNewFilter(ethFilter).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_newFilter\","
                 + "\"params\":[{\"topics\":[\"0x12341234\"]}],\"id\":1}");
@@ -312,7 +310,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthNewBlockFilter() throws Exception {
-        web3j.ethNewBlockFilter().send();
+        web3j.platonNewBlockFilter().send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_newBlockFilter\","
                 + "\"params\":[],\"id\":1}");
@@ -320,7 +318,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthNewPendingTransactionFilter() throws Exception {
-        web3j.ethNewPendingTransactionFilter().send();
+        web3j.platonNewPendingTransactionFilter().send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_newPendingTransactionFilter\","
                 + "\"params\":[],\"id\":1}");
@@ -328,7 +326,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthUninstallFilter() throws Exception {
-        web3j.ethUninstallFilter(Numeric.toBigInt("0xb")).send();
+        web3j.platonUninstallFilter(Numeric.toBigInt("0xb")).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_uninstallFilter\","
                 + "\"params\":[\"0x0b\"],\"id\":1}");
@@ -336,7 +334,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetFilterChanges() throws Exception {
-        web3j.ethGetFilterChanges(Numeric.toBigInt("0x16")).send();
+        web3j.platonGetFilterChanges(Numeric.toBigInt("0x16")).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getFilterChanges\","
                 + "\"params\":[\"0x16\"],\"id\":1}");
@@ -344,7 +342,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetFilterLogs() throws Exception {
-        web3j.ethGetFilterLogs(Numeric.toBigInt("0x16")).send();
+        web3j.platonGetFilterLogs(Numeric.toBigInt("0x16")).send();
 
         verifyResult("{\"jsonrpc\":\"2.0\",\"method\":\"platon_getFilterLogs\","
                 + "\"params\":[\"0x16\"],\"id\":1}");
@@ -352,7 +350,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetLogs() throws Exception {
-        web3j.ethGetLogs(new EthFilter().addSingleTopic(
+        web3j.ethGetLogs(new PlatonFilter().addSingleTopic(
                 "0x000000000000000000000000a94f5374fce5edbc8e2a8697c15331677e6ebf0b"))
                 .send();
 
@@ -364,7 +362,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetLogsWithNumericBlockRange() throws Exception {
-        web3j.ethGetLogs(new EthFilter(
+        web3j.ethGetLogs(new PlatonFilter(
                 DefaultBlockParameterNumber.valueOf(Numeric.toBigInt("0xe8")),
                 DefaultBlockParameterName.LATEST, ""))
                 .send();
