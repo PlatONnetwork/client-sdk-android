@@ -6,10 +6,10 @@ import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
 
 /**
- * eth_newFilter.
+ * eth_getBalance.
  */
-public class EthFilter extends Response<String> {
-    public BigInteger getFilterId() {
+public class PlatonGetBalance extends Response<String> {
+    public BigInteger getBalance() {
         return Numeric.decodeQuantity(getResult());
     }
 }

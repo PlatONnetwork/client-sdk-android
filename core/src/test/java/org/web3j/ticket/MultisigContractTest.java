@@ -10,7 +10,6 @@ import org.spongycastle.util.encoders.Hex;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
-import org.web3j.platon.contracts.Multisig;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -68,7 +67,7 @@ public class MultisigContractTest {
 
 
     public String deploy() throws Exception {
-        BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+        BigInteger gasPrice = web3j.platonGasPrice().send().getGasPrice();
         Multisig contract = Multisig.deploy(web3j, CREDENTIALS, CONTRACT_BINARY, new StaticGasProvider(gasPrice, BigInteger.valueOf(250000000))).send();
         String contractAddress = contract.getContractAddress();
         logger.debug("Contract Address: {}", contractAddress);
@@ -89,7 +88,7 @@ public class MultisigContractTest {
     @Test
     public void getOwners() throws Exception {
         String contractAddress = deploy();
-        BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+        BigInteger gasPrice = web3j.platonGasPrice().send().getGasPrice();
         Multisig contract = Multisig.load(CONTRACT_BINARY, contractAddress, web3j, CREDENTIALS, new StaticGasProvider(gasPrice, new BigInteger("2000000")));
         String owners = "0xfc6268a75664df3a1f50d77fc95bbfd8faeecaf0:0xfc6268a75664df3a1f50d77fc95bbfd8faeecaf1";
         contract.initWallet(owners, new BigInteger("2")).send();
@@ -105,7 +104,7 @@ public class MultisigContractTest {
     @Test
     public void getListSize() throws Exception {
         String contractAddress = deploy();
-        BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+        BigInteger gasPrice = web3j.platonGasPrice().send().getGasPrice();
         Multisig contract = Multisig.load(CONTRACT_BINARY, contractAddress, web3j, CREDENTIALS, new StaticGasProvider(gasPrice, new BigInteger("2000000")));
         logger.debug("Multisig Before init: {}", JSON.toJSONString(contract, true));
         TransactionReceipt receipt = contract.initWallet("0xfc6268a75664df3a1f50d77fc95bbfd8faeecaf0:0xfc6268a75664df3a1f50d77fc95bbfd8faeecaf1", new BigInteger("2")).send();

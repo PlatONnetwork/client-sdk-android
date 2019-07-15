@@ -18,8 +18,8 @@ import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.AdminFactory;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Files;
@@ -106,14 +106,14 @@ public class Scenario {
 
     private TransactionReceipt sendTransactionReceiptRequest(
             String transactionHash) throws Exception {
-        EthGetTransactionReceipt transactionReceipt =
-                web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get();
+        PlatonGetTransactionReceipt transactionReceipt =
+                web3j.platonGetTransactionReceipt(transactionHash).sendAsync().get();
 
         return transactionReceipt.getTransactionReceipt();
     }
 
     BigInteger getNonce(String address) throws Exception {
-        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
+        PlatonGetTransactionCount ethGetTransactionCount = web3j.platonGetTransactionCount(
                 address, DefaultBlockParameterName.LATEST).sendAsync().get();
 
         return ethGetTransactionCount.getTransactionCount();

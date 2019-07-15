@@ -7,7 +7,7 @@ import org.web3j.protocol.core.Response;
 /**
  * eth_accounts.
  */
-public class EthAccounts extends Response<List<String>> {
+public class PlatonAccounts extends Response<List<String>> {
     public List<String> getAccounts() {
         return getResult();
     }

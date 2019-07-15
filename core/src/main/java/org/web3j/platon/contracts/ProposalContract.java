@@ -8,32 +8,36 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.TransactionCallback;
+import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.Proposal;
 import org.web3j.platon.VoteOption;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.JSONUtil;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 public class ProposalContract extends PlatOnContract {
 
     public static ProposalContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new ProposalContract("", STAKING_CONTRACT_ADDRESS, web3j, credentials, contractGasProvider);
+        return new ProposalContract("", PROPOSAL_CONTRACT_ADDRESS, web3j, credentials, contractGasProvider);
     }
 
     public static ProposalContract load(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new ProposalContract("", STAKING_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
+        return new ProposalContract("", PROPOSAL_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
     }
 
     public static ProposalContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, String chainId) {
-        return new ProposalContract("", NODE_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
+        return new ProposalContract("", PROPOSAL_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
     }
 
     protected ProposalContract(String contractBinary, String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider gasProvider) {
@@ -54,10 +58,17 @@ public class ProposalContract extends PlatOnContract {
      * @param proposalId
      * @return
      */
-    public RemoteCall<BaseResponse> getProposal(String proposalId) {
+    public RemoteCall<BaseResponse<Proposal>> getProposal(String proposalId) {
         Function function = new Function(FunctionType.GET_PROPOSAL_FUNC_TYPE,
                 Arrays.asList(new Utf8String(proposalId)), Collections.emptyList());
-        return executeRemoteCallSingleValueReturn(function, BaseResponse.class);
+        return new RemoteCall<BaseResponse<Proposal>>(new Callable<BaseResponse<Proposal>>() {
+            @Override
+            public BaseResponse<Proposal> call() throws Exception {
+                BaseResponse response = executePatonCall(function);
+                response.data = JSONUtil.parseObject((String) response.data, Proposal.class);
+                return response;
+            }
+        });
     }
 
     /**
@@ -77,10 +88,17 @@ public class ProposalContract extends PlatOnContract {
      *
      * @return
      */
-    public RemoteCall<BaseResponse> getProposalList() {
+    public RemoteCall<BaseResponse<List<Proposal>>> getProposalList() {
         Function function = new Function(FunctionType.GET_PROPOSAL_LIST_FUNC_TYPE,
                 Arrays.<Type>asList(), Collections.emptyList());
-        return executeRemoteCallSingleValueReturn(function, BaseResponse.class);
+        return new RemoteCall<BaseResponse<List<Proposal>>>(new Callable<BaseResponse<List<Proposal>>>() {
+            @Override
+            public BaseResponse<List<Proposal>> call() throws Exception {
+                BaseResponse response = executePatonCall(function);
+                response.data = JSONUtil.parseArray((String) response.data, Proposal.class);
+                return response;
+            }
+        });
     }
 
     /**
@@ -105,7 +123,7 @@ public class ProposalContract extends PlatOnContract {
      * @param voteOption 投票选项
      * @return
      */
-    public RemoteCall<EthSendTransaction> voteReturnTransaction(String proposalID, String verifier, VoteOption voteOption) {
+    public RemoteCall<PlatonSendTransaction> voteReturnTransaction(String proposalID, String verifier, VoteOption voteOption) {
         Function function = new Function(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new Utf8String(verifier),
                         new Utf8String(proposalID), new Uint16(voteOption.getValue())),
@@ -119,7 +137,7 @@ public class ProposalContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getVoteResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getVoteResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.VOTE_FUNC_TYPE);
     }
 
@@ -136,10 +154,10 @@ public class ProposalContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = voteReturnTransaction(proposalID, verifier, voteOption);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = voteReturnTransaction(proposalID, verifier, voteOption);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }
@@ -184,7 +202,7 @@ public class ProposalContract extends PlatOnContract {
      * @param version    声明的版本
      * @return
      */
-    public RemoteCall<EthSendTransaction> declareVersionReturnTransaction(String activeNode, BigInteger version) {
+    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(String activeNode, BigInteger version) {
         Function function = new Function(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new Utf8String(activeNode),
                         new Uint16(version)),
@@ -198,7 +216,7 @@ public class ProposalContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getDeclareVersionResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getDeclareVersionResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.DELEGATE_FUNC_TYPE);
     }
 
@@ -215,10 +233,10 @@ public class ProposalContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(activeNode, version);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(activeNode, version);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }
@@ -265,7 +283,7 @@ public class ProposalContract extends PlatOnContract {
      * @param proposal
      * @return
      */
-    public RemoteCall<EthSendTransaction> submitProposalReturnTransaction(Proposal proposal) {
+    public RemoteCall<PlatonSendTransaction> submitProposalReturnTransaction(Proposal proposal) {
         if (proposal == null) {
             throw new NullPointerException("proposal must not be null");
         }
@@ -281,7 +299,7 @@ public class ProposalContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getSubmitProposalResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getSubmitProposalResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.SUBMIT_TEXT_FUNC_TYPE);
     }
 
@@ -297,10 +315,10 @@ public class ProposalContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = submitProposalReturnTransaction(proposal);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = submitProposalReturnTransaction(proposal);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }

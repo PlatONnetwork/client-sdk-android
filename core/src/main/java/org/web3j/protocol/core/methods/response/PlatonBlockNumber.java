@@ -6,10 +6,10 @@ import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
 
 /**
- * eth_getBlockTransactionCountByNumber.
+ * eth_blockNumber.
  */
-public class EthGetBlockTransactionCountByNumber extends Response<String> {
-    public BigInteger getTransactionCount() {
+public class PlatonBlockNumber extends Response<String> {
+    public BigInteger getBlockNumber() {
         return Numeric.decodeQuantity(getResult());
     }
 }

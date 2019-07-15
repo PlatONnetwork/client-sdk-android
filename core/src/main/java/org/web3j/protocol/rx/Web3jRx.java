@@ -3,8 +3,8 @@ package org.web3j.protocol.rx;
 import rx.Observable;
 
 import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.methods.request.EthFilter;
-import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.request.PlatonFilter;
+import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.Transaction;
 
@@ -19,7 +19,7 @@ public interface Web3jRx {
      * @param ethFilter filter criteria
      * @return Observable that emits all Log events matching the filter
      */
-    Observable<Log> ethLogObservable(EthFilter ethFilter);
+    Observable<Log> ethLogObservable(PlatonFilter ethFilter);
 
     /**
      * Create an Observable to emit block hashes.
@@ -60,7 +60,7 @@ public interface Web3jRx {
      *                              transaction hashes
      * @return Observable that emits all new blocks as they are added to the blockchain
      */
-    Observable<EthBlock> blockObservable(boolean fullTransactionObjects);
+    Observable<PlatonBlock> blockObservable(boolean fullTransactionObjects);
 
     /**
      * Create an Observable that emits all blocks from the blockchain contained within the
@@ -72,7 +72,7 @@ public interface Web3jRx {
      *                               transaction hashes
      * @return Observable to emit these blocks
      */
-    Observable<EthBlock> replayBlocksObservable(
+    Observable<PlatonBlock> replayBlocksObservable(
             DefaultBlockParameter startBlock, DefaultBlockParameter endBlock,
             boolean fullTransactionObjects);
 
@@ -88,7 +88,7 @@ public interface Web3jRx {
      *                  in descending order
      * @return Observable to emit these blocks
      */
-    Observable<EthBlock> replayBlocksObservable(
+    Observable<PlatonBlock> replayBlocksObservable(
             DefaultBlockParameter startBlock, DefaultBlockParameter endBlock,
             boolean fullTransactionObjects, boolean ascending);
 
@@ -113,14 +113,14 @@ public interface Web3jRx {
      *
      * @param startBlock the block number we wish to request from
      * @param fullTransactionObjects if we require full {@link Transaction} objects to be provided
-     *                              in the {@link EthBlock} responses
+     *                              in the {@link PlatonBlock} responses
      * @param onCompleteObservable a subsequent Observable that we wish to run once we are caught
      *                             up with the latest block
      * @return Observable to emit all requested blocks
      */
-    Observable<EthBlock> catchUpToLatestBlockObservable(
+    Observable<PlatonBlock> catchUpToLatestBlockObservable(
             DefaultBlockParameter startBlock, boolean fullTransactionObjects,
-            Observable<EthBlock> onCompleteObservable);
+            Observable<PlatonBlock> onCompleteObservable);
 
     /**
      * Creates an Observable that emits all blocks from the requested block number to the most
@@ -128,10 +128,10 @@ public interface Web3jRx {
      *
      * @param startBlock the block number we wish to request from
      * @param fullTransactionObjects if we require full {@link Transaction} objects to be provided
-     *                               in the {@link EthBlock} responses
+     *                               in the {@link PlatonBlock} responses
      * @return Observable to emit all requested blocks
      */
-    Observable<EthBlock> catchUpToLatestBlockObservable(
+    Observable<PlatonBlock> catchUpToLatestBlockObservable(
             DefaultBlockParameter startBlock, boolean fullTransactionObjects);
 
     /**
@@ -151,10 +151,10 @@ public interface Web3jRx {
      *
      * @param startBlock the block number we wish to request from
      * @param fullTransactionObjects if we require full {@link Transaction} objects to be provided
-     *                               in the {@link EthBlock} responses
+     *                               in the {@link PlatonBlock} responses
      * @return Observable to emit all requested blocks and future
      */
-    Observable<EthBlock> catchUpToLatestAndSubscribeToNewBlocksObservable(
+    Observable<PlatonBlock> catchUpToLatestAndSubscribeToNewBlocksObservable(
             DefaultBlockParameter startBlock, boolean fullTransactionObjects);
 
     /**

@@ -18,11 +18,11 @@ import org.web3j.protocol.core.Response;
  *
  * <p>Returns an object with data about the sync status or false.
  */
-public class EthSyncing extends Response<EthSyncing.Result> {
+public class PlatonSyncing extends Response<PlatonSyncing.Result> {
 
     @Override
-    @JsonDeserialize(using = EthSyncing.ResponseDeserialiser.class)
-    public void setResult(EthSyncing.Result result) {
+    @JsonDeserialize(using = PlatonSyncing.ResponseDeserialiser.class)
+    public void setResult(PlatonSyncing.Result result) {
         super.setResult(result);
     }
 

@@ -12,6 +12,8 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.PlatonCall;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import static junit.framework.TestCase.assertFalse;
@@ -67,8 +69,8 @@ public class DeployContractIT extends Scenario {
                 BigInteger.ZERO,
                 getFibonacciSolidityBinary());
 
-        org.web3j.protocol.core.methods.response.EthSendTransaction
-                transactionResponse = web3j.ethSendTransaction(transaction)
+        PlatonSendTransaction
+                transactionResponse = web3j.platonSendTransaction(transaction)
                 .sendAsync().get();
 
         return transactionResponse.getTransactionHash();
@@ -79,7 +81,7 @@ public class DeployContractIT extends Scenario {
 
         String encodedFunction = FunctionEncoder.encode(function);
 
-        org.web3j.protocol.core.methods.response.EthCall response = web3j.ethCall(
+        PlatonCall response = web3j.platonCall(
                 Transaction.createEthCallTransaction(
                         ALICE.getAddress(), contractAddress, encodedFunction),
                 DefaultBlockParameterName.LATEST)

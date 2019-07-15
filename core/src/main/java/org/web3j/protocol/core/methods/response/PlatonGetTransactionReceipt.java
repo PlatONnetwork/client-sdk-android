@@ -12,35 +12,24 @@ import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.Response;
 
 /**
- * Transaction object returned by:
- * <ul>
- * <li>eth_getTransactionByHash</li>
- * <li>eth_getTransactionByBlockHashAndIndex</li>
- * <li>eth_getTransactionByBlockNumberAndIndex</li>
- * </ul>
- *
- * <p>This differs slightly from the request {@link EthSendTransaction} Transaction object.</p>
- *
- * <p>See
- * <a href="https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionbyhash">docs</a>
- * for further details.</p>
+ * eth_getTransactionReceipt.
  */
-public class EthTransaction extends Response<Transaction> {
+public class PlatonGetTransactionReceipt extends Response<TransactionReceipt> {
 
-    public Transaction getTransaction() {
+    public TransactionReceipt getTransactionReceipt() {
         return getResult();
     }
 
-    public static class ResponseDeserialiser extends JsonDeserializer<Transaction> {
+    public static class ResponseDeserialiser extends JsonDeserializer<TransactionReceipt> {
 
         private ObjectReader objectReader = ObjectMapperFactory.getObjectReader();
 
         @Override
-        public Transaction deserialize(
+        public TransactionReceipt deserialize(
                 JsonParser jsonParser,
                 DeserializationContext deserializationContext) throws IOException {
             if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
-                return objectReader.readValue(jsonParser, Transaction.class);
+                return objectReader.readValue(jsonParser, TransactionReceipt.class);
             } else {
                 return null;  // null is wrapped by Optional in above getter
             }

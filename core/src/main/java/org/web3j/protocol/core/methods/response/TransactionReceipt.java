@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * TransactionReceipt object used by {@link EthGetTransactionReceipt}.
+ * TransactionReceipt object used by {@link PlatonGetTransactionReceipt}.
  */
 public class TransactionReceipt {
     private String transactionHash;

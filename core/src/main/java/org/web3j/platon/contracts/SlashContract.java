@@ -11,7 +11,7 @@ import org.web3j.platon.FunctionType;
 import org.web3j.platon.TransactionCallback;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -24,15 +24,15 @@ import java.util.concurrent.ExecutionException;
 public class SlashContract extends PlatOnContract {
 
     public static SlashContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new SlashContract("", STAKING_CONTRACT_ADDRESS, web3j, credentials, contractGasProvider);
+        return new SlashContract("", SLASH_CONTRACT_ADDRESS, web3j, credentials, contractGasProvider);
     }
 
     public static SlashContract load(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new SlashContract("", STAKING_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
+        return new SlashContract("", SLASH_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
     }
 
     public static SlashContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, String chainId) {
-        return new SlashContract("", NODE_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
+        return new SlashContract("", SLASH_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
     }
 
     protected SlashContract(String contractBinary, String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider gasProvider) {
@@ -66,7 +66,7 @@ public class SlashContract extends PlatOnContract {
      * @param data 证据的json值
      * @return
      */
-    public RemoteCall<EthSendTransaction> reportDoubleSignReturnTransaction(String data) {
+    public RemoteCall<PlatonSendTransaction> reportDoubleSignReturnTransaction(String data) {
         Function function = new Function(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Utf8String(data))
                 , Collections.emptyList());
@@ -77,7 +77,7 @@ public class SlashContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getReportDoubleSignResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getReportDoubleSignResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE);
     }
 
@@ -93,10 +93,10 @@ public class SlashContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = reportDoubleSignReturnTransaction(data);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = reportDoubleSignReturnTransaction(data);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }
@@ -146,7 +146,7 @@ public class SlashContract extends PlatOnContract {
      * @param blockNumber    多签的块高
      * @return
      */
-    public RemoteCall<EthSendTransaction> checkDoubleSignReturnTransaction(DoubleSignType doubleSignType, String address, BigInteger blockNumber) {
+    public RemoteCall<PlatonSendTransaction> checkDoubleSignReturnTransaction(DoubleSignType doubleSignType, String address, BigInteger blockNumber) {
         Function function = new Function(FunctionType.CHECK_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Uint16(doubleSignType.getValue())
                         , new Utf8String(address)
@@ -161,7 +161,7 @@ public class SlashContract extends PlatOnContract {
      * @param ethSendTransaction
      * @return
      */
-    public RemoteCall<BaseResponse> getCheckDoubleSignResult(EthSendTransaction ethSendTransaction) {
+    public RemoteCall<BaseResponse> getCheckDoubleSignResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.CHECK_DOUBLESIGN_FUNC_TYPE);
     }
 
@@ -178,10 +178,10 @@ public class SlashContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<EthSendTransaction> ethSendTransactionRemoteCall = checkDoubleSignReturnTransaction(doubleSignType, address, blockNumber);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = checkDoubleSignReturnTransaction(doubleSignType, address, blockNumber);
 
         try {
-            EthSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
             if (transactionCallback != null) {
                 transactionCallback.onTransaction(ethSendTransaction);
             }

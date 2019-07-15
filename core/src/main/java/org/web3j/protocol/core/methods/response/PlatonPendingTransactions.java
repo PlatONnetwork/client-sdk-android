@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author ziv
  */
-public class EthPendingTransactions extends Response<List<Transaction>> {
+public class PlatonPendingTransactions extends Response<List<Transaction>> {
     
     public List<Transaction> getTransactions() {
         return getResult();

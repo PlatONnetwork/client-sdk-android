@@ -5,8 +5,8 @@ import org.web3j.ens.contracts.generated.ENS;
 import org.web3j.ens.contracts.generated.PublicResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthSyncing;
+import org.web3j.protocol.core.methods.response.PlatonBlock;
+import org.web3j.protocol.core.methods.response.PlatonSyncing;
 import org.web3j.protocol.core.methods.response.NetVersion;
 import org.web3j.tx.ClientTransactionManager;
 import org.web3j.tx.ManagedTransaction;
@@ -135,12 +135,12 @@ public class EnsResolver {
     }
 
     boolean isSynced() throws Exception {
-        EthSyncing ethSyncing = web3j.ethSyncing().send();
+        PlatonSyncing ethSyncing = web3j.platonSyncing().send();
         if (ethSyncing.isSyncing()) {
             return false;
         } else {
-            EthBlock ethBlock =
-                    web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+            PlatonBlock ethBlock =
+                    web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
             long timestamp = ethBlock.getBlock().getTimestamp().longValue() * 1000;
 
             return System.currentTimeMillis() - syncThreshold < timestamp;

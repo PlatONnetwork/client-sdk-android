@@ -15,7 +15,7 @@ import org.web3j.platon.CustomStaticArray;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthEstimateGas;
+import org.web3j.protocol.core.methods.response.PlatonEstimateGas;
 import org.web3j.rlp.*;
 import org.web3j.tx.gas.DefaultGasProvider;
 
@@ -208,11 +208,11 @@ public class PlatOnUtil {
             estimateGasTo = DEFAULT_ADDR;
         }
         Transaction transaction = Transaction.createEthCallTransaction(estimateGasFrom, estimateGasTo, encodedData);
-        Request<?, EthEstimateGas> ethEstimateGasReq = web3j.ethEstimateGas(transaction);
+        Request<?, PlatonEstimateGas> ethEstimateGasReq = web3j.platonEstimateGas(transaction);
         if (ethEstimateGasReq == null) {
             return DefaultGasProvider.GAS_LIMIT;
         }
-        EthEstimateGas ethEstimateGasRes = ethEstimateGasReq.send();
+        PlatonEstimateGas ethEstimateGasRes = ethEstimateGasReq.send();
         BigInteger ethEstimateGasLimit = ethEstimateGasRes.getAmountUsed();
         return ethEstimateGasLimit;
     }

@@ -3,10 +3,10 @@ package org.web3j.protocol.core.methods.response;
 import org.web3j.protocol.core.Response;
 
 /**
- * eth_sign.
+ * eth_sendTransaction.
  */
-public class EthSign extends Response<String> {
-    public String getSignature() {
+public class PlatonSendTransaction extends Response<String> {
+    public String getTransactionHash() {
         return getResult();
     }
 }

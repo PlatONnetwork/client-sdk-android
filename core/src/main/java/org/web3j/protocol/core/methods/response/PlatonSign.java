@@ -3,10 +3,10 @@ package org.web3j.protocol.core.methods.response;
 import org.web3j.protocol.core.Response;
 
 /**
- * eth_uninstallFilter.
+ * eth_sign.
  */
-public class EthUninstallFilter extends Response<Boolean> {
-    public boolean isUninstalled() {
+public class PlatonSign extends Response<String> {
+    public String getSignature() {
         return getResult();
     }
 }

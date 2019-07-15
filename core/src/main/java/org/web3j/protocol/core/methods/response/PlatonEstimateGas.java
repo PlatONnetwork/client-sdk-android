@@ -6,10 +6,10 @@ import org.web3j.protocol.core.Response;
 import org.web3j.utils.Numeric;
 
 /**
- * eth_gasPrice.
+ * eth_estimateGas.
  */
-public class EthGasPrice extends Response<String> {
-    public BigInteger getGasPrice() {
+public class PlatonEstimateGas extends Response<String> {
+    public BigInteger getAmountUsed() {
         return Numeric.decodeQuantity(getResult());
     }
 }

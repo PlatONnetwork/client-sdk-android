@@ -8,8 +8,8 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 import org.web3j.utils.Numeric;
 
@@ -67,11 +67,11 @@ public class RawTransactionManager extends TransactionManager {
     }
 
     protected BigInteger getNonce() throws IOException {
-        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
+        PlatonGetTransactionCount ethGetTransactionCount = web3j.platonGetTransactionCount(
                 credentials.getAddress(), DefaultBlockParameterName.PENDING).send();
 
         if(ethGetTransactionCount.getTransactionCount().intValue()==0){
-            ethGetTransactionCount = web3j.ethGetTransactionCount(
+            ethGetTransactionCount = web3j.platonGetTransactionCount(
                     credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
         }
 
@@ -79,7 +79,7 @@ public class RawTransactionManager extends TransactionManager {
     }
 
     @Override
-    public EthSendTransaction sendTransaction(
+    public PlatonSendTransaction sendTransaction(
             BigInteger gasPrice, BigInteger gasLimit, String to,
             String data, BigInteger value) throws IOException {
 
@@ -96,7 +96,7 @@ public class RawTransactionManager extends TransactionManager {
         return signAndSend(rawTransaction);
     }
 
-    public EthSendTransaction signAndSend(RawTransaction rawTransaction)
+    public PlatonSendTransaction signAndSend(RawTransaction rawTransaction)
             throws IOException {
 
         byte[] signedMessage;
@@ -109,6 +109,6 @@ public class RawTransactionManager extends TransactionManager {
 
         String hexValue = Numeric.toHexString(signedMessage);
 
-        return web3j.ethSendRawTransaction(hexValue).send();
+        return web3j.platonSendRawTransaction(hexValue).send();
     }
 }
