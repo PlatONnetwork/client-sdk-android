@@ -12,33 +12,57 @@ public class Node {
 
     @JSONField(name = "NodeId")
     private String nodeId;
+
     @JSONField(name = "StakingAddress")
     private String stakingAddress;
-    @JSONField(name = "BenifitAddress")
+
+    @JSONField(name = "BenefitAddress")
     private String benifitAddress;
 
     @JSONField(name = "StakingTxIndex")
     private BigInteger stakingTxIndex;
-    @JSONField(name = "ProcessVersion")
-    private BigInteger processVersion;
+
+    @JSONField(name = "ProgramVersion")
+    private BigInteger programVersion;
+
     @JSONField(name = "Status")
     private BigInteger status;
+
     @JSONField(name = "StakingEpoch")
     private BigInteger stakingEpoch;
+
     @JSONField(name = "StakingBlockNum")
     private BigInteger stakingBlockNum;
+
     @JSONField(name = "Shares")
     private BigInteger shares;
+
     @JSONField(name = "Released")
     private BigInteger released;
+
     @JSONField(name = "ReleasedHes")
     private BigInteger releasedHes;
+
     @JSONField(name = "RestrictingPlan")
     private BigInteger restrictingPlan;
+
     @JSONField(name = "RestrictingPlanHes")
     private BigInteger restrictingPlanHes;
 
-    private Description description;
+    @JSONField(name = "ExternalId")
+    private String externalId;
+
+    @JSONField(name = "NodeName")
+    private String nodeName;
+
+    @JSONField(name = "Website")
+    private String website;
+
+    @JSONField(name = "Details")
+    private String details;
+
+    @JSONField(name = "ValidatorTerm")
+    private BigInteger validatorTerm;
 
     public String getNodeId() {
         return nodeId;
@@ -72,12 +96,12 @@ public class Node {
         this.stakingTxIndex = stakingTxIndex;
     }
 
-    public BigInteger getProcessVersion() {
-        return processVersion;
+    public BigInteger getProgramVersion() {
+        return programVersion;
     }
 
-    public void setProcessVersion(BigInteger processVersion) {
-        this.processVersion = processVersion;
+    public void setProgramVersion(BigInteger programVersion) {
+        this.programVersion = programVersion;
     }
 
     public BigInteger getStatus() {
@@ -144,78 +168,69 @@ public class Node {
         this.restrictingPlanHes = restrictingPlanHes;
     }
 
-    public Description getDescription() {
-        return description;
+    public String getExternalId() {
+        return externalId;
     }
 
-    public void setDescription(Description description) {
-        this.description = description;
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public BigInteger getValidatorTerm() {
+        return validatorTerm;
+    }
+
+    public void setValidatorTerm(BigInteger validatorTerm) {
+        this.validatorTerm = validatorTerm;
     }
 
     public Node() {
     }
 
-    public Node(RLPList rlpCandidate) {
-
-        this.nodeId = Hex.toHexString(rlpCandidate.get(0).getRLPData());
-        this.stakingAddress = Hex.toHexString(rlpCandidate.get(1).getRLPData());
-        this.benifitAddress = Hex.toHexString(rlpCandidate.get(2).getRLPData());
-
-        this.stakingTxIndex = ByteUtil.byteArrayToBigInteger(rlpCandidate.get(3).getRLPData());
-        this.processVersion = ByteUtil.byteArrayToBigInteger(rlpCandidate.get(4).getRLPData());
-        this.status = ByteUtil.byteArrayToBigInteger(rlpCandidate.get(5).getRLPData());
-        this.stakingEpoch = ByteUtil.byteArrayToBigInteger(rlpCandidate.get(6).getRLPData());
-        this.stakingBlockNum = ByteUtil.byteArrayToBigInteger(rlpCandidate.get(7).getRLPData());
-
-        this.shares = ByteUtil.bytesToBigInteger(rlpCandidate.get(8).getRLPData());
-        this.released = ByteUtil.bytesToBigInteger(rlpCandidate.get(9).getRLPData());
-        this.releasedHes = ByteUtil.bytesToBigInteger(rlpCandidate.get(10).getRLPData());
-        this.restrictingPlan = ByteUtil.bytesToBigInteger(rlpCandidate.get(11).getRLPData());
-        this.restrictingPlanHes = ByteUtil.bytesToBigInteger(rlpCandidate.get(12).getRLPData());
-        this.description = new Description((RLPList) rlpCandidate.get(13));
-    }
-
     @Override
     public String toString() {
-        return "Candidate{" +
+        return "Node{" +
                 "nodeId='" + nodeId + '\'' +
                 ", stakingAddress='" + stakingAddress + '\'' +
                 ", benifitAddress='" + benifitAddress + '\'' +
                 ", stakingTxIndex=" + stakingTxIndex +
-                ", processVersion=" + processVersion +
+                ", programVersion=" + programVersion +
                 ", status=" + status +
                 ", stakingEpoch=" + stakingEpoch +
                 ", stakingBlockNum=" + stakingBlockNum +
                 ", shares=" + shares +
                 ", released=" + released +
-                ", releasedTmp=" + releasedHes +
-                ", lockRepo=" + restrictingPlan +
-                ", lockRepoTmp=" + restrictingPlanHes +
-                ", description=" + description +
+                ", releasedHes=" + releasedHes +
+                ", restrictingPlan=" + restrictingPlan +
+                ", restrictingPlanHes=" + restrictingPlanHes +
+                ", externalId='" + externalId + '\'' +
+                ", nodeName='" + nodeName + '\'' +
+                ", website='" + website + '\'' +
+                ", details='" + details + '\'' +
                 '}';
-    }
-
-    class Description {
-        private String externalId;
-        private String nodeName;
-        private String website;
-        private String details;
-
-        public Description(RLPList rlpList) {
-            this.externalId = new String(rlpList.get(0).getRLPData());
-            this.nodeName = new String(rlpList.get(1).getRLPData());
-            this.website = new String(rlpList.get(2).getRLPData());
-            this.details = new String(rlpList.get(3).getRLPData());
-        }
-
-        @Override
-        public String toString() {
-            return "Description{" +
-                    "externalId='" + externalId + '\'' +
-                    ", nodeName='" + nodeName + '\'' +
-                    ", website='" + website + '\'' +
-                    ", details='" + details + '\'' +
-                    '}';
-        }
     }
 }

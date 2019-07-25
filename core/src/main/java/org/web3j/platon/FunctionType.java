@@ -1,5 +1,6 @@
 package org.web3j.platon;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.web3j.abi.datatypes.generated.Uint16;
 
 import java.math.BigInteger;
@@ -63,13 +64,17 @@ public class FunctionType {
      */
     public static final int SUBMIT_VERSION_FUNC_TYPE = 2001;
     /**
+     * 提交参数提案
+     */
+    public static final int SUBMIR_PARAM_FUNCTION_TYPE = 2002;
+    /**
      * 给提案投票
      */
-    public static final int VOTE_FUNC_TYPE = 2002;
+    public static final int VOTE_FUNC_TYPE = 2003;
     /**
      * 版本声明
      */
-    public static final int DECLARE_VERSION_FUNC_TYPE = 2003;
+    public static final int DECLARE_VERSION_FUNC_TYPE = 2004;
     /**
      * 查询提案
      */
@@ -82,6 +87,18 @@ public class FunctionType {
      * 查询提案列表
      */
     public static final int GET_PROPOSAL_LIST_FUNC_TYPE = 2102;
+    /**
+     * 查询提案生效版本
+     */
+    public static final int GET_ACTIVE_VERSION = 2103;
+    /**
+     * 查询节点代码版本
+     */
+    public static final int GET_PROGRAM_VERSION = 2104;
+    /**
+     * 查询可治理列表
+     */
+    public static final int GET_PARAM_LIST = 2105;
     /**
      * 举报双签
      */
