@@ -1,8 +1,10 @@
 package org.web3j.platon.contracts;
 
+import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
@@ -15,6 +17,7 @@ import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -131,8 +134,8 @@ public class SlashContract extends PlatOnContract {
      */
     public RemoteCall<BaseResponse> checkDoubleSign(DoubleSignType doubleSignType, String address, BigInteger blockNumber) {
         Function function = new Function(FunctionType.CHECK_DOUBLESIGN_FUNC_TYPE,
-                Arrays.asList(new Uint16(doubleSignType.getValue())
-                        , new Utf8String(address)
+                Arrays.asList(new Uint32(doubleSignType.getValue())
+                        , new BytesType(Numeric.hexStringToByteArray(address))
                         , new Uint64(blockNumber))
                 , Collections.emptyList());
         return executeRemoteCallTransactionWithFunctionType(function);

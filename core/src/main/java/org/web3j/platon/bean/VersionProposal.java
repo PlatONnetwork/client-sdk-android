@@ -1,10 +1,12 @@
 package org.web3j.platon.bean;
 
+import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.platon.FunctionType;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -52,14 +54,15 @@ public class VersionProposal extends Proposal {
 
     @Override
     public List<Type> getSubmitInputParameters() {
-        return Arrays.asList(new Utf8String(this.verifier)
-                , new Utf8String(this.githubId)
-                , new Utf8String(this.topic)
-                , new Utf8String(this.desc)
-                , new Utf8String(this.url)
-                , new Uint16(this.newVersion)
-                , new Uint64(this.endVoltingBlock)
-                , new Uint64(this.activeBlock));
+
+        return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
+                new Utf8String(this.githubId),
+                new Utf8String(this.topic),
+                new Utf8String(this.desc),
+                new Utf8String(this.url),
+                new Uint16(this.newVersion),
+                new Uint64(this.endVoltingBlock),
+                new Uint64(this.activeBlock));
     }
 
     @Override
@@ -67,7 +70,7 @@ public class VersionProposal extends Proposal {
         return FunctionType.SUBMIT_VERSION_FUNC_TYPE;
     }
 
-    static final class Builder {
+    public static final class Builder {
         private String proposalId;
         private String verifier;
         private String githubId;

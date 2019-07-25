@@ -24,4 +24,13 @@ public class BaseResponse<T> {
         this.status = false;
         this.errMsg = throwable.getMessage();
     }
+
+    @Override
+    public String toString() {
+        return "BaseResponse{" +
+                "status=" + status +
+                ", data=" + data +
+                ", errMsg='" + errMsg + '\'' +
+                '}';
+    }
 }

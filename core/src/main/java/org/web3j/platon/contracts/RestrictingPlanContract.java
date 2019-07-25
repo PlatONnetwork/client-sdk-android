@@ -1,14 +1,19 @@
 package org.web3j.platon.contracts;
 
 import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.StaticArray;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
+import org.web3j.platon.CustomStaticArray;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.TransactionCallback;
+import org.web3j.platon.bean.Node;
+import org.web3j.platon.bean.ParamProposal;
+import org.web3j.platon.bean.RestrictingItem;
 import org.web3j.platon.bean.RestrictingPlan;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
@@ -16,10 +21,13 @@ import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.JSONUtil;
+import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 public class RestrictingPlanContract extends PlatOnContract {
@@ -60,7 +68,7 @@ public class RestrictingPlanContract extends PlatOnContract {
     public RemoteCall<BaseResponse> createRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList) {
         final Function function = new Function(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
-                Arrays.<Type>asList(new Utf8String(account), new StaticArray(restrictingPlanList)),
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account)), new CustomStaticArray(restrictingPlanList)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransactionWithFunctionType(function);
     }
@@ -135,12 +143,19 @@ public class RestrictingPlanContract extends PlatOnContract {
      * @param account 锁仓释放到账账户
      * @return
      */
-    public RemoteCall<BaseResponse> getRestrictingInfo(String account) {
+    public RemoteCall<BaseResponse<RestrictingItem>> getRestrictingInfo(String account) {
         final Function function = new Function(
                 FunctionType.GET_RESTRICTINGINFO_FUNC_TYPE,
-                Arrays.<Type>asList(new Utf8String(account)),
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account))),
                 Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransactionWithFunctionType(function);
+        return new RemoteCall<BaseResponse<RestrictingItem>>(new Callable<BaseResponse<RestrictingItem>>() {
+            @Override
+            public BaseResponse<RestrictingItem> call() throws Exception {
+                BaseResponse response = executePatonCall(function);
+                response.data = JSONUtil.parseObject((String) response.data, RestrictingItem.class);
+                return response;
+            }
+        });
     }
 
 }
