@@ -23,6 +23,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
+import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.utils.JSONUtil;
@@ -45,6 +46,10 @@ public class StakingContract extends PlatOnContract {
         return new StakingContract("", STAKING_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
     }
 
+    public static StakingContract load(Web3j web3j, ContractGasProvider contractGasProvider) {
+        return new StakingContract("", STAKING_CONTRACT_ADDRESS, web3j, contractGasProvider);
+    }
+
     public static StakingContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, String chainId) {
         return new StakingContract("", STAKING_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
     }
@@ -53,11 +58,15 @@ public class StakingContract extends PlatOnContract {
         super(contractBinary, contractAddress, web3j, transactionManager, gasProvider);
     }
 
-    public StakingContract(String contractBinary, String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
+    protected StakingContract(String contractBinary, String contractAddress, Web3j web3j, ContractGasProvider gasProvider) {
+        super(contractBinary, contractAddress, web3j, new ReadonlyTransactionManager(web3j,contractAddress), gasProvider);
+    }
+
+    protected StakingContract(String contractBinary, String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
         super(contractBinary, contractAddress, web3j, credentials, gasProvider);
     }
 
-    public StakingContract(String contractBinary, String contractAddress, String chainId, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
+    protected StakingContract(String contractBinary, String contractAddress, String chainId, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
         super(contractBinary, contractAddress, chainId, web3j, credentials, gasProvider);
     }
 
@@ -214,7 +223,6 @@ public class StakingContract extends PlatOnContract {
      * 异步撤销质押
      *
      * @param nodeId 64bytes 被质押的节点Id(也叫候选人的节点Id)
-     * @return
      */
     public void asyncUnStaking(String nodeId, TransactionCallback transactionCallback) {
 
@@ -261,7 +269,7 @@ public class StakingContract extends PlatOnContract {
      * @param details
      * @return
      */
-    public RemoteCall<BaseResponse> updateStakingInfo(String nodeId,String benifitAddress, String externalId, String nodeName, String webSite, String details) {
+    public RemoteCall<BaseResponse> updateStakingInfo(String nodeId, String benifitAddress, String externalId, String nodeName, String webSite, String details) {
         Function function = new Function(FunctionType.UPDATE_STAKING_INFO_FUNC_TYPE,
                 Arrays.asList(new BytesType(Numeric.hexStringToByteArray(benifitAddress)),
                         new BytesType(Numeric.hexStringToByteArray(nodeId)),
