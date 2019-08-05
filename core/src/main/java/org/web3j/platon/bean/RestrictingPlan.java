@@ -2,7 +2,10 @@ package org.web3j.platon.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import org.web3j.abi.datatypes.IntType;
+import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.platon.CustomType;
+import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
@@ -57,6 +60,6 @@ public class RestrictingPlan extends CustomType {
 
     @Override
     public RlpType getRlpEncodeData() {
-        return new RlpList(RlpString.create(epoch), RlpString.create(amount));
+        return new RlpList(RlpString.create(RlpEncoder.encode(RlpString.create(epoch))), RlpString.create(RlpEncoder.encode(RlpString.create(amount))));
     }
 }

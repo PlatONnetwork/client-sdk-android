@@ -1,23 +1,31 @@
 package org.web3j.platon.contracts;
 
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.abi.datatypes.generated.Uint32;
+import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.TransactionCallback;
 import org.web3j.platon.bean.Node;
+import org.web3j.platon.bean.ParamProposal;
 import org.web3j.platon.bean.Proposal;
 import org.web3j.platon.VoteOption;
+import org.web3j.platon.bean.TallyResult;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
+import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.utils.JSONUtil;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -36,6 +44,10 @@ public class ProposalContract extends PlatOnContract {
         return new ProposalContract("", PROPOSAL_CONTRACT_ADDRESS, web3j, transactionManager, contractGasProvider);
     }
 
+    public static ProposalContract load(Web3j web3j, ContractGasProvider contractGasProvider) {
+        return new ProposalContract("", PROPOSAL_CONTRACT_ADDRESS, web3j, contractGasProvider);
+    }
+
     public static ProposalContract load(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, String chainId) {
         return new ProposalContract("", PROPOSAL_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
     }
@@ -44,11 +56,15 @@ public class ProposalContract extends PlatOnContract {
         super(contractBinary, contractAddress, web3j, transactionManager, gasProvider);
     }
 
-    public ProposalContract(String contractBinary, String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
+    protected ProposalContract(String contractBinary, String contractAddress, Web3j web3j, ContractGasProvider gasProvider) {
+        super(contractBinary, contractAddress, web3j, new ReadonlyTransactionManager(web3j, contractAddress), gasProvider);
+    }
+
+    protected ProposalContract(String contractBinary, String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
         super(contractBinary, contractAddress, web3j, credentials, gasProvider);
     }
 
-    public ProposalContract(String contractBinary, String contractAddress, String chainId, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
+    protected ProposalContract(String contractBinary, String contractAddress, String chainId, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
         super(contractBinary, contractAddress, chainId, web3j, credentials, gasProvider);
     }
 
@@ -77,10 +93,17 @@ public class ProposalContract extends PlatOnContract {
      * @param proposalId
      * @return
      */
-    public RemoteCall<BaseResponse> getTallyResult(String proposalId) {
+    public RemoteCall<BaseResponse<TallyResult>> getTallyResult(String proposalId) {
         Function function = new Function(FunctionType.GET_TALLY_RESULT_FUNC_TYPE,
                 Arrays.asList(new Utf8String(proposalId)), Collections.emptyList());
-        return executeRemoteCallSingleValueReturn(function, BaseResponse.class);
+        return new RemoteCall<BaseResponse<TallyResult>>(new Callable<BaseResponse<TallyResult>>() {
+            @Override
+            public BaseResponse<TallyResult> call() throws Exception {
+                BaseResponse response = executePatonCall(function);
+                response.data = JSONUtil.parseObject((String) response.data, TallyResult.class);
+                return response;
+            }
+        });
     }
 
     /**
@@ -111,8 +134,8 @@ public class ProposalContract extends PlatOnContract {
      */
     public RemoteCall<BaseResponse> vote(String proposalID, String verifier, VoteOption voteOption) {
         Function function = new Function(FunctionType.VOTE_FUNC_TYPE,
-                Arrays.<Type>asList(new Utf8String(verifier),
-                        new Utf8String(proposalID), new Uint16(voteOption.getValue())),
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                        new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue())),
                 Collections.emptyList());
         return executeRemoteCallTransactionWithFunctionType(function);
     }
@@ -191,8 +214,8 @@ public class ProposalContract extends PlatOnContract {
      */
     public RemoteCall<BaseResponse> declareVersion(String activeNode, BigInteger version) {
         Function function = new Function(FunctionType.DECLARE_VERSION_FUNC_TYPE,
-                Arrays.<Type>asList(new Utf8String(activeNode),
-                        new Uint16(version)),
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(activeNode)),
+                        new Uint32(version)),
                 Collections.emptyList());
         return executeRemoteCallTransactionWithFunctionType(function);
     }
@@ -221,7 +244,7 @@ public class ProposalContract extends PlatOnContract {
     }
 
     /**
-     * 异步生命版本
+     * 异步声明版本
      *
      * @param activeNode
      * @param version
@@ -341,5 +364,56 @@ public class ProposalContract extends PlatOnContract {
                 transactionCallback.onTransactionFailed(new BaseResponse(e));
             }
         }
+    }
+
+    /**
+     * 查询已生效的版本
+     *
+     * @return
+     */
+    public RemoteCall<BaseResponse> getActiveVersion() {
+        final Function function = new Function(FunctionType.GET_ACTIVE_VERSION,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
+        return new RemoteCall<BaseResponse>(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                return executePatonCall(function);
+            }
+        });
+    }
+
+    /**
+     * 查询节点代码版本
+     *
+     * @return
+     */
+    public RemoteCall<BaseResponse> getProgramVersion() {
+        final Function function = new Function(FunctionType.GET_PROGRAM_VERSION,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
+        return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+    /**
+     * 查询可治理参数列表
+     *
+     * @return
+     */
+    public RemoteCall<BaseResponse<List<ParamProposal>>> getParamList() {
+        final Function function = new Function(FunctionType.GET_PARAM_LIST,
+                Arrays.<Type>asList(),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
+                }));
+        return new RemoteCall<BaseResponse<List<ParamProposal>>>(new Callable<BaseResponse<List<ParamProposal>>>() {
+            @Override
+            public BaseResponse<List<ParamProposal>> call() throws Exception {
+                BaseResponse response = executePatonCall(function);
+                response.data = JSONUtil.parseArray((String) response.data, Node.class);
+                return response;
+            }
+        });
     }
 }

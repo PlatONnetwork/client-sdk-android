@@ -6,12 +6,16 @@ import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeDecoder;
 import org.web3j.abi.PlatOnTypeEncoder;
 import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Bytes;
+import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.IntType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Bytes3;
 import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.platon.CustomStaticArray;
+import org.web3j.platon.CustomType;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.request.Transaction;
@@ -21,6 +25,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,12 +140,14 @@ public class PlatOnUtil {
         for (Type parameter : parameters) {
             if (parameter instanceof IntType) {
                 result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((IntType) parameter).getValue()))));
+            } else if (parameter instanceof BytesType) {
+                result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((BytesType) parameter).getValue()))));
             } else if (parameter instanceof Utf8String) {
-                Utf8String utf8String = (Utf8String) parameter;
-                byte[] payload = Numeric.hexStringToByteArray(utf8String.getValue());
-                result.add(RlpString.create(RlpEncoder.encode(RlpString.create(payload))));
+                result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((Utf8String) parameter).getValue()))));
             } else if (parameter instanceof CustomStaticArray) {
                 result.add(((CustomStaticArray) parameter).getRlpEncodeData());
+            } else if (parameter instanceof CustomType) {
+                result.add(((CustomType) parameter).getRlpEncodeData());
             }
         }
         String data = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));

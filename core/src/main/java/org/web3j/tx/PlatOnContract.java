@@ -56,7 +56,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
      */
 
     public static final BigInteger GAS_LIMIT = BigInteger.valueOf(4_300_000);
-
+    public static final String FUNC_DEPLOY = "deploy";
     public static final String RESTRICTING_PLAN_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000001";
     public static final String STAKING_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
     public static final String DELEGATE_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
@@ -451,10 +451,10 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
         List<EventValuesWithLog> eventValuesWithLogList = extractEventParametersWithLog(event, transactionReceipt);
 
-        return JSONUtil.parseObject(getResponseFromLog(eventValuesWithLogList), BaseResponse.class);
+        return JSONUtil.parseObject(getResponseFromLog(transactionReceipt, eventValuesWithLogList), BaseResponse.class);
     }
 
-    private String getResponseFromLog(List<EventValuesWithLog> eventValuesWithLogList) throws TransactionException {
+    private String getResponseFromLog(TransactionReceipt transactionReceipt, List<EventValuesWithLog> eventValuesWithLogList) throws TransactionException {
 
         boolean isEventValuesWithLogEmpty = eventValuesWithLogList == null || eventValuesWithLogList.isEmpty();
 
