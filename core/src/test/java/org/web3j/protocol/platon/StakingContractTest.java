@@ -49,7 +49,7 @@ public class StakingContractTest {
     private static final int OFFSET_LONG_ITEM = 0xb7;
     private static final int SIZE_THRESHOLD = 56;
 
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://10.10.8.157:6789"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://10.10.8.200:6789"));
 
     private StakingContract stakingContract;
 
@@ -66,12 +66,12 @@ public class StakingContractTest {
     @Before
     public void init() {
 
-        credentials = Credentials.create("0xa11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7");
+        credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
 
         stakingContract = StakingContract.load(
                 web3j,
                 credentials,
-                new DefaultWasmGasProvider(), "102");
+                new DefaultWasmGasProvider(), "100");
 
 //        try {
 //            PlatonGetBalance platonGetBalance = web3j.platonGetBalance(address, DefaultBlockParameterName.LATEST).send();
@@ -85,8 +85,18 @@ public class StakingContractTest {
     @Test
     public void staking() {
 
+        String nodeId = "7dd1e2474a49aa19cd2ef7f806f28d97595674723fc73c38602df12c758126e9eee4e25d44d700ea06aad0eacf3990d7f8f7a4f41350eebbf644cc406305943c";
+        String stakingAmount = "1000000000000000000000000000";
+        StakingAmountType stakingAmountType = StakingAmountType.RESTRICTING_AMOUNT_TYPE;
+        String benifitAddress = "0x5e57ae97e714abe990c882377aaf9c57f4ea363b";
+        String externalId = "liyf-test-id";
+        String nodeName = "liyf-test";
+        String webSite = "www.baidu.com";
+        String details = "details";
+        String nodeVersion = "1792";
+
         try {
-            BaseResponse baseResponse = stakingContract.staking(nodeId, new BigInteger("1000000000000000000000000"), StakingAmountType.FREE_AMOUNT_TYPE, benifitAddress, externalId, nodeName, websites, details, BigInteger.valueOf(1792)).send();
+            BaseResponse baseResponse = stakingContract.staking(nodeId, new BigInteger(stakingAmount), stakingAmountType, benifitAddress, externalId, nodeName, webSite, details, new BigInteger(nodeVersion)).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
