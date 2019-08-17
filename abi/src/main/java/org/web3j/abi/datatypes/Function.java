@@ -1,8 +1,10 @@
 package org.web3j.abi.datatypes;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint32;

@@ -57,7 +57,7 @@ public class SlashContractTest {
 
         slashContract = SlashContract.load(web3j,
                 credentials,
-                new DefaultWasmGasProvider(BigInteger.valueOf(3355440), BigInteger.valueOf(3355440), BigInteger.valueOf(3355440)), "100");
+                new DefaultWasmGasProvider(BigInteger.valueOf(3355440), BigInteger.valueOf(3355440)), "100");
     }
 
     @Test

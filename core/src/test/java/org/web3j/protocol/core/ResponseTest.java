@@ -489,8 +489,6 @@ public class ResponseTest extends ResponseTester {
                 "0x027f07",
                 "0x027f07",
                 "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "0x027f07",
-                "0x9f759",
                 "0x9f759",
                 "0x54e34e8e",
                 Arrays.<PlatonBlock.TransactionResult>asList(
@@ -588,8 +586,6 @@ public class ResponseTest extends ResponseTester {
                 "0x027f07",
                 "0x027f07",
                 "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "0x027f07",
-                "0x9f759",
                 "0x9f759",
                 "0x54e34e8e",
                 //CHECKSTYLE:OFF
@@ -703,8 +699,6 @@ public class ResponseTest extends ResponseTester {
                 "0x027f07",
                 "0x027f07",
                 "0x0000000000000000000000000000000000000000000000000000000000000000",
-                "0x027f07",
-                "0x9f759",
                 "0x9f759",
                 "0x54e34e8e",
                 //CHECKSTYLE:OFF

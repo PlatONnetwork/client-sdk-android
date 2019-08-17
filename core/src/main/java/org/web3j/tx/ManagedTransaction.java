@@ -30,6 +30,14 @@ public abstract class ManagedTransaction {
         this.ensResolver = new EnsResolver(web3j);
     }
 
+    public TransactionManager getTransactionManager() {
+        return transactionManager;
+    }
+
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
     /**
      * This should only be used in case you need to get the {@link EnsResolver#syncThreshold}
      * parameter, which dictates the threshold in milliseconds since the last processed block

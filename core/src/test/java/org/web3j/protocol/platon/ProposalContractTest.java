@@ -2,6 +2,7 @@ package org.web3j.protocol.platon;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.VoteOption;
@@ -16,6 +17,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultWasmGasProvider;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -33,7 +35,7 @@ public class ProposalContractTest {
 
         proposalContract = ProposalContract.load(web3j,
                 credentials,
-                new DefaultWasmGasProvider(BigInteger.valueOf(3355440), BigInteger.valueOf(3355440), BigInteger.valueOf(3355440)), "102");
+                new DefaultWasmGasProvider(BigInteger.valueOf(3355440),  BigInteger.valueOf(3355440)), "102");
     }
 
     @Test
@@ -156,8 +158,12 @@ public class ProposalContractTest {
     @Test
     public void getProgramVersion() {
         try {
-            BaseResponse baseResponse = proposalContract.getProgramVersion().send();
-            System.out.println(baseResponse.data.toString());
+//            BaseResponse baseResponse = proposalContract.getProgramVersion().send();
+            Uint32 uint32 = new Uint32(65536);
+
+            byte[] bytes = uint32.getValue().toByteArray();
+
+            System.out.println(bytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
