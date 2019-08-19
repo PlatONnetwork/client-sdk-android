@@ -3,11 +3,7 @@ package org.web3j.protocol.platon;
 import org.junit.Before;
 import org.junit.Test;
 import org.spongycastle.util.encoders.Hex;
-import org.web3j.abi.PlatOnTypeEncoder;
-import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Delegation;
@@ -15,31 +11,23 @@ import org.web3j.platon.bean.DelegationIdInfo;
 import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.rlp.RlpDecoder;
-import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
-import org.web3j.rlp.RlpType;
 import org.web3j.tx.gas.DefaultWasmGasProvider;
-import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Numeric;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
-import rx.functions.Action1;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.util.List;
 
 public class DelegateContractTest {
 
-    private String nodeId = "1f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2840e429";
-    private String delegateAddress = "0x493301712671Ada506ba6Ca7891F436D29185821";
+    private String nodeId = "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
+    private String delegateAddress = "0xbfCAEc5286822434D59310E03B2F4F162A35CBDd";
 
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6795"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6794"));
 
     private Credentials credentials;
 
@@ -47,7 +35,7 @@ public class DelegateContractTest {
 
     @Before
     public void init() {
-        credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
+        credentials = Credentials.create("0xce4f875efc9d21d06f8607de170d0011e79be86325bacc9639f57a437c65ce8c");
 
         delegateContract = DelegateContract.load(web3j,
                 credentials,
@@ -70,13 +58,13 @@ public class DelegateContractTest {
         RlpString rlpTyp3 = (RlpString) rl.getValues().get(3);
 
         RlpList rlps = RlpDecoder.decode(rlpType.getBytes());
-        BigInteger bigInteger = new BigInteger(((RlpString)rlps.getValues().get(0)).getBytes());
+        BigInteger bigInteger = new BigInteger(((RlpString) rlps.getValues().get(0)).getBytes());
 
         RlpList rlps1 = RlpDecoder.decode(rlpTyp1.getBytes());
-        BigInteger bigInteger1 = new BigInteger(1,((RlpString)rlps1.getValues().get(0)).getBytes());
+        BigInteger bigInteger1 = new BigInteger(1, ((RlpString) rlps1.getValues().get(0)).getBytes());
 
         RlpList rlps2 = RlpDecoder.decode(rlpTyp2.getBytes());
-        String nodeId = Numeric.toHexString(((RlpString)rlps2.getValues().get(0)).getBytes());
+        String nodeId = Numeric.toHexString(((RlpString) rlps2.getValues().get(0)).getBytes());
 
         System.out.println(nodeId);
 
@@ -86,7 +74,7 @@ public class DelegateContractTest {
     public void delegate() {
 
         try {
-            BaseResponse baseResponse = delegateContract.delegate(nodeId, StakingAmountType.FREE_AMOUNT_TYPE, new BigInteger("1000000000000000000000000")).send();
+            BaseResponse baseResponse = delegateContract.delegate(nodeId, StakingAmountType.RESTRICTING_AMOUNT_TYPE, new BigInteger("1000000000000000000000000")).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,7 +96,7 @@ public class DelegateContractTest {
     public void getDelegateInfo() {
 
         try {
-            BaseResponse<Delegation> baseResponse = delegateContract.getDelegateInfo(nodeId, delegateAddress, BigInteger.valueOf(2360)).send();
+            BaseResponse<Delegation> baseResponse = delegateContract.getDelegateInfo(nodeId, delegateAddress, BigInteger.valueOf(1038)).send();
             System.out.println(baseResponse.data.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,35 +112,5 @@ public class DelegateContractTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public String sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, long gasPrice, long gasLimit) {
-
-        BigInteger GAS_PRICE = BigInteger.valueOf(gasPrice);
-        BigInteger GAS_LIMIT = BigInteger.valueOf(gasLimit);
-
-        Credentials credentials = Credentials.create(privateKey);
-
-        try {
-
-            List<RlpType> result = new ArrayList<>();
-            result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(0)))));
-            String txType = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
-
-            BigInteger nonce = web3j.platonGetTransactionCount(from, DefaultBlockParameterName.LATEST).send().getTransactionCount();
-
-            RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
-                    txType);
-
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("100"), credentials);
-            String hexValue = Numeric.toHexString(signedMessage);
-
-            PlatonSendTransaction transaction = web3j.platonSendRawTransaction(hexValue).send();
-
-            return transaction.getTransactionHash();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

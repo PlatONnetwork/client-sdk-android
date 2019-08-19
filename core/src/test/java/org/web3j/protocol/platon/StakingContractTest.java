@@ -1,48 +1,18 @@
 package org.web3j.protocol.platon;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.util.ParameterizedTypeImpl;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.spongycastle.util.encoders.Hex;
-import org.web3j.abi.PlatOnTypeEncoder;
-import org.web3j.abi.datatypes.Bytes;
-import org.web3j.abi.datatypes.BytesType;
-import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.SampleKeys;
 import org.web3j.platon.BaseResponse;
-import org.web3j.platon.CustomStaticArray;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
-import org.web3j.platon.bean.RestrictingPlan;
 import org.web3j.platon.bean.StakingParam;
-import org.web3j.platon.contracts.RestrictingPlanContract;
 import org.web3j.platon.contracts.StakingContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.PlatonGetBalance;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.rlp.RlpEncoder;
-import org.web3j.rlp.RlpList;
-import org.web3j.rlp.RlpString;
-import org.web3j.rlp.RlpType;
-import org.web3j.tx.gas.DefaultWasmGasProvider;
-import org.web3j.utils.Numeric;
-import org.web3j.utils.PlatOnUtil;
-import org.web3j.utils.RLPElement;
-import org.web3j.utils.RLPList;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StakingContractTest {
 
@@ -54,14 +24,15 @@ public class StakingContractTest {
 
     private StakingContract stakingContract;
 
-    private String nodeId = "1f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2840e429";
-    private String benifitAddress = "12c171900f010b17e969702efa044d077e868082";
-    private String externalId = "111111";
-    private String nodeName = "platon";
-    private String websites = "https://www.test.network";
-    private String details = "supper node";
+    String nodeId = "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
+    String stakingAmount = "1000000000000000000000000000";
+    StakingAmountType stakingAmountType = StakingAmountType.FREE_AMOUNT_TYPE;
+    String benifitAddress = "0x5e57ae97e714abe990c882377aaf9c57f4ea363b";
+    String externalId = "liyf-test-id";
+    String nodeName = "liyf-test";
+    String webSite = "www.baidu.com";
+    String details = "details";
 
-    private String address = "0x493301712671Ada506ba6Ca7891F436D29185821";
     private Credentials credentials;
 
     @Before
@@ -78,46 +49,35 @@ public class StakingContractTest {
     @Test
     public void staking() {
 
+//        String text = "f848b8467b22537461747573223a66616c73652c2244617461223a22222c224572724d7367223a22546869732063616e64696461746520697320616c726561647920657869737473227d";
+//
+//        String json = new String(Numeric.hexStringToByteArray(text));
+//
+//        System.out.println(json);
+
         try {
-            BaseResponse baseResponse = stakingContract.getProgramVersion().send();
+            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
+                    .setNodeId(nodeId)
+                    .setAmount(new BigInteger(stakingAmount))
+                    .setStakingAmountType(stakingAmountType)
+                    .setBenifitAddress(benifitAddress)
+                    .setExternalId(externalId)
+                    .setNodeName(nodeName)
+                    .setWebSite(webSite)
+                    .setDetails(details)
+                    .setProcessVersion(new BigInteger(stakingAmount))
+                    .build()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        String nodeId = "77fffc999d9f9403b65009f1eb27bae65774e2d8ea36f7b20a89f82642a5067557430e6edfe5320bb81c3666a19cf4a5172d6533117d7ebcd0f2c82055499050";
-//        String stakingAmount = "1000000000000000000000000000";
-//        StakingAmountType stakingAmountType = StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-//        String benifitAddress = "0x5e57ae97e714abe990c882377aaf9c57f4ea363b";
-//        String externalId = "liyf-test-id";
-//        String nodeName = "liyf-test";
-//        String webSite = "www.baidu.com";
-//        String details = "details";
-//        String nodeVersion = "1792";
-//
-//        try {
-//            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
-//                    .setNodeId(nodeId)
-//                    .setAmount(new BigInteger(stakingAmount))
-//                    .setStakingAmountType(stakingAmountType)
-//                    .setBenifitAddress(benifitAddress)
-//                    .setExternalId(externalId)
-//                    .setNodeName(nodeName)
-//                    .setWebSite(webSite)
-//                    .setDetails(details)
-//                    .setProcessVersion(new BigInteger(stakingAmount))
-//                    .build()).send();
-//            System.out.println(baseResponse.toString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
     }
 
     @Test
     public void updateStakingInfo() {
         try {
-            BaseResponse baseResponse = stakingContract.updateStakingInfo(nodeId, benifitAddress, externalId, nodeName, "www.baidu.com", details).send();
+            BaseResponse baseResponse = stakingContract.updateStakingInfo(nodeId, benifitAddress, externalId, nodeName, "https://www.github.com/", details).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
