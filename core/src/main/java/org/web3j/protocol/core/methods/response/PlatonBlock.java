@@ -56,8 +56,6 @@ public class PlatonBlock extends Response<PlatonBlock.Block> {
         private String author;
         private String miner;
         private String mixHash;
-        private String difficulty;
-        private String totalDifficulty;
         private String extraData;
         private String size;
         private String gasLimit;
@@ -72,8 +70,8 @@ public class PlatonBlock extends Response<PlatonBlock.Block> {
 
         public Block(String number, String hash, String parentHash, String nonce,
                      String sha3Uncles, String logsBloom, String transactionsRoot,
-                     String stateRoot, String receiptsRoot, String author, String miner, 
-                     String mixHash, String difficulty, String totalDifficulty, String extraData, 
+                     String stateRoot, String receiptsRoot, String author, String miner,
+                     String mixHash, String extraData,
                      String size, String gasLimit, String gasUsed, String timestamp,
                      List<TransactionResult> transactions, List<String> uncles,
                      List<String> sealFields) {
@@ -89,8 +87,6 @@ public class PlatonBlock extends Response<PlatonBlock.Block> {
             this.author = author;
             this.miner = miner;
             this.mixHash = mixHash;
-            this.difficulty = difficulty;
-            this.totalDifficulty = totalDifficulty;
             this.extraData = extraData;
             this.size = size;
             this.gasLimit = gasLimit;
@@ -203,30 +199,6 @@ public class PlatonBlock extends Response<PlatonBlock.Block> {
 
         public void setMixHash(String mixHash) {
             this.mixHash = mixHash;
-        }
-
-        public BigInteger getDifficulty() {
-            return Numeric.decodeQuantity(difficulty);
-        }
-
-        public String getDifficultyRaw() {
-            return difficulty;
-        }
-
-        public void setDifficulty(String difficulty) {
-            this.difficulty = difficulty;
-        }
-
-        public BigInteger getTotalDifficulty() {
-            return Numeric.decodeQuantity(totalDifficulty);
-        }
-
-        public String getTotalDifficultyRaw() {
-            return totalDifficulty;
-        }
-
-        public void setTotalDifficulty(String totalDifficulty) {
-            this.totalDifficulty = totalDifficulty;
         }
 
         public String getExtraData() {
@@ -374,16 +346,6 @@ public class PlatonBlock extends Response<PlatonBlock.Block> {
                     ? !getMixHash().equals(block.getMixHash()) : block.getMixHash() != null) {
                 return false;
             }
-            if (getDifficultyRaw() != null
-                    ? !getDifficultyRaw().equals(block.getDifficultyRaw())
-                    : block.getDifficultyRaw() != null) {
-                return false;
-            }
-            if (getTotalDifficultyRaw() != null
-                    ? !getTotalDifficultyRaw().equals(block.getTotalDifficultyRaw())
-                    : block.getTotalDifficultyRaw() != null) {
-                return false;
-            }
             if (getExtraData() != null
                     ? !getExtraData().equals(block.getExtraData())
                     : block.getExtraData() != null) {
@@ -437,9 +399,6 @@ public class PlatonBlock extends Response<PlatonBlock.Block> {
             result = 31 * result + (getAuthor() != null ? getAuthor().hashCode() : 0);
             result = 31 * result + (getMiner() != null ? getMiner().hashCode() : 0);
             result = 31 * result + (getMixHash() != null ? getMixHash().hashCode() : 0);
-            result = 31 * result + (getDifficultyRaw() != null ? getDifficultyRaw().hashCode() : 0);
-            result = 31 * result
-                    + (getTotalDifficultyRaw() != null ? getTotalDifficultyRaw().hashCode() : 0);
             result = 31 * result + (getExtraData() != null ? getExtraData().hashCode() : 0);
             result = 31 * result + (getSizeRaw() != null ? getSizeRaw().hashCode() : 0);
             result = 31 * result + (getGasLimitRaw() != null ? getGasLimitRaw().hashCode() : 0);

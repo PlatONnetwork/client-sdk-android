@@ -10,25 +10,9 @@ import java.util.List;
 public abstract class Proposal {
 
     /**
-     * 提案id
-     */
-    protected String proposalId;
-    /**
      * 提交提案的验证人
      */
     protected String verifier;
-    /**
-     * 提案在github上的id
-     */
-    protected String githubId;
-    /**
-     * 提案主题，长度不超过128
-     */
-    protected String topic;
-    /**
-     * 提案描述，长度不超过512
-     */
-    protected String desc;
     /**
      * 提案URL，长度不超过512
      */
@@ -38,44 +22,12 @@ public abstract class Proposal {
      */
     protected BigInteger endVoltingBlock;
 
-    public String getProposalId() {
-        return proposalId;
-    }
-
-    public void setProposalId(String proposalId) {
-        this.proposalId = proposalId;
-    }
-
     public String getVerifier() {
         return verifier;
     }
 
     public void setVerifier(String verifier) {
         this.verifier = verifier;
-    }
-
-    public String getGithubId() {
-        return githubId;
-    }
-
-    public void setGithubId(String githubId) {
-        this.githubId = githubId;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getUrl() {

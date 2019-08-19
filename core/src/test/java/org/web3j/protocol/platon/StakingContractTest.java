@@ -18,6 +18,7 @@ import org.web3j.platon.CustomStaticArray;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.RestrictingPlan;
+import org.web3j.platon.bean.StakingParam;
 import org.web3j.platon.contracts.RestrictingPlanContract;
 import org.web3j.platon.contracts.StakingContract;
 import org.web3j.protocol.Web3j;
@@ -49,7 +50,7 @@ public class StakingContractTest {
     private static final int OFFSET_LONG_ITEM = 0xb7;
     private static final int SIZE_THRESHOLD = 56;
 
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://10.10.8.200:6789"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6794"));
 
     private StakingContract stakingContract;
 
@@ -70,54 +71,46 @@ public class StakingContractTest {
 
         stakingContract = StakingContract.load(
                 web3j,
-                credentials,
-                new DefaultWasmGasProvider(), "100");
-
-//        try {
-//            PlatonGetBalance platonGetBalance = web3j.platonGetBalance(address, DefaultBlockParameterName.LATEST).send();
-//            System.out.println(platonGetBalance.getBalance());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+                credentials, "100");
     }
 
 
     @Test
     public void staking() {
 
-        String nodeId = "7dd1e2474a49aa19cd2ef7f806f28d97595674723fc73c38602df12c758126e9eee4e25d44d700ea06aad0eacf3990d7f8f7a4f41350eebbf644cc406305943c";
-        String stakingAmount = "1000000000000000000000000000";
-        StakingAmountType stakingAmountType = StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        String benifitAddress = "0x5e57ae97e714abe990c882377aaf9c57f4ea363b";
-        String externalId = "liyf-test-id";
-        String nodeName = "liyf-test";
-        String webSite = "www.baidu.com";
-        String details = "details";
-        String nodeVersion = "1792";
-
         try {
-            BaseResponse baseResponse = stakingContract.staking(nodeId, new BigInteger(stakingAmount), stakingAmountType, benifitAddress, externalId, nodeName, webSite, details, new BigInteger(nodeVersion)).send();
+            BaseResponse baseResponse = stakingContract.getProgramVersion().send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-//        String data = "f8a7838203e88180959412c171900f010b17e969702efa044d077e868082b842b8401f3a8672348ff6b789e416762ad53e69063138b8eb4d8780101658f24b2369f1a8e09499226b467d8bc0c4e03e1dc903df857eeb3c67733d21b6aaee2840e42987863131313131318786706c61746f6e999868747470733a2f2f7777772e746573742e6e6574776f726b8c8b737570706572206e6f64658b8ad3c21bcecceda100000083820700";
+//        String nodeId = "77fffc999d9f9403b65009f1eb27bae65774e2d8ea36f7b20a89f82642a5067557430e6edfe5320bb81c3666a19cf4a5172d6533117d7ebcd0f2c82055499050";
+//        String stakingAmount = "1000000000000000000000000000";
+//        StakingAmountType stakingAmountType = StakingAmountType.RESTRICTING_AMOUNT_TYPE;
+//        String benifitAddress = "0x5e57ae97e714abe990c882377aaf9c57f4ea363b";
+//        String externalId = "liyf-test-id";
+//        String nodeName = "liyf-test";
+//        String webSite = "www.baidu.com";
+//        String details = "details";
+//        String nodeVersion = "1792";
 //
-//        RLPList rlpList = PlatOnUtil.invokeDecode(Numeric.hexStringToByteArray(data));
-//
-//        List<RLPElement> rlpElementList = (List<RLPElement>) rlpList.get(0);
-//
-//        for (RLPElement rlpElement : rlpElementList) {
-//            String text = null;
-//            try {
-//                text = new String(rlpElement.getRLPData(),"utf-8");
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println(text);
+//        try {
+//            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
+//                    .setNodeId(nodeId)
+//                    .setAmount(new BigInteger(stakingAmount))
+//                    .setStakingAmountType(stakingAmountType)
+//                    .setBenifitAddress(benifitAddress)
+//                    .setExternalId(externalId)
+//                    .setNodeName(nodeName)
+//                    .setWebSite(webSite)
+//                    .setDetails(details)
+//                    .setProcessVersion(new BigInteger(stakingAmount))
+//                    .build()).send();
+//            System.out.println(baseResponse.toString());
+//        } catch (Exception e) {
+//            e.printStackTrace();
 //        }
-
 
     }
 
