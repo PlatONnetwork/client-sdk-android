@@ -1,7 +1,5 @@
 package org.web3j.platon.contracts;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
