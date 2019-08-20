@@ -28,5 +28,7 @@ public class SampleKeys {
 
     public static final Credentials CREDENTIALS = Credentials.create(KEY_PAIR);
 
-    private SampleKeys() {}
+    private SampleKeys() {
+
+    }
 }

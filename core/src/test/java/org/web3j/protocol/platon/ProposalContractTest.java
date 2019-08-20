@@ -21,6 +21,7 @@ import java.util.List;
 public class ProposalContractTest {
 
     private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6794"));
+    private String nodeId = "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
     private Credentials credentials;
     private ProposalContract proposalContract;
 
@@ -38,7 +39,7 @@ public class ProposalContractTest {
         try {
             BaseResponse<List<Proposal>> baseResponse = proposalContract.getProposalList().send();
             List<Proposal> proposalList = baseResponse.data;
-            System.out.println(proposalList);
+            System.out.println(proposalList.get(0).toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,7 +55,7 @@ public class ProposalContractTest {
             BigInteger endVoltingBlock = blockNumber.divide(BigInteger.valueOf(200)).multiply(BigInteger.valueOf(200)).add(BigInteger.valueOf(200).multiply(BigInteger.valueOf(10))).subtract(BigInteger.valueOf(10));
 
             BaseResponse baseResponse = proposalContract.submitProposal(new Proposal.Builder(ProposalType.TEXT_PROPOSAL)
-                    .setVerifier("411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c")
+                    .setVerifier(nodeId)
                     .setUrl("http://www.test.inet")
                     .setEndVotingBlock(endVoltingBlock)
                     .build()).send();
@@ -115,7 +116,7 @@ public class ProposalContractTest {
     @Test
     public void vote() {
         try {
-            BaseResponse baseResponse = proposalContract.vote("0x359a26418d0d5d4dbe3c392862fdcfe83e0e33fe5720897698ea403b82bbd747", "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c", VoteOption.YEAS).send();
+            BaseResponse baseResponse = proposalContract.vote("0xdb4c13f35902089051810ab39224f4a2ad6da0ad0ea9d949c471acbcc09b288a", "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c", VoteOption.YEAS).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,7 +136,7 @@ public class ProposalContractTest {
     @Test
     public void getProposal() {
         try {
-            BaseResponse<Proposal> baseResponse = proposalContract.getProposal("0x359a26418d0d5d4dbe3c392862fdcfe83e0e33fe5720897698ea403b82bbd747").send();
+            BaseResponse<Proposal> baseResponse = proposalContract.getProposal("0xdb4c13f35902089051810ab39224f4a2ad6da0ad0ea9d949c471acbcc09b288a").send();
             System.out.println(baseResponse.data.toString());
         } catch (Exception e) {
             e.printStackTrace();

@@ -300,4 +300,22 @@ public class Proposal {
             return new Proposal(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Proposal{" +
+                "proposalId='" + proposalId + '\'' +
+                ", proposer='" + proposer + '\'' +
+                ", proposalType=" + proposalType +
+                ", submitBlock=" + submitBlock +
+                ", endVotingBlock=" + endVotingBlock +
+                ", newVersion=" + newVersion +
+                ", activeBlock=" + activeBlock +
+                ", paramName='" + paramName + '\'' +
+                ", currentValue='" + currentValue + '\'' +
+                ", newValue='" + newValue + '\'' +
+                ", verifier='" + verifier + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

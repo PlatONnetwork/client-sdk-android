@@ -35,11 +35,10 @@ public class DelegateContractTest {
 
     @Before
     public void init() {
-        credentials = Credentials.create("0xce4f875efc9d21d06f8607de170d0011e79be86325bacc9639f57a437c65ce8c");
+        credentials = Credentials.create("0x9614c2b32f2d5d3421591ab3ffc03ac66c831fb6807b532f6e3a8e7aac31f1d9");
 
         delegateContract = DelegateContract.load(web3j,
-                credentials,
-                new DefaultWasmGasProvider(), "100");
+                credentials, "100");
     }
 
     @Test
@@ -74,7 +73,7 @@ public class DelegateContractTest {
     public void delegate() {
 
         try {
-            BaseResponse baseResponse = delegateContract.delegate(nodeId, StakingAmountType.RESTRICTING_AMOUNT_TYPE, new BigInteger("1000000000000000000000000")).send();
+            BaseResponse baseResponse = delegateContract.delegate(nodeId, StakingAmountType.FREE_AMOUNT_TYPE, new BigInteger("100000000000000000000000")).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +95,7 @@ public class DelegateContractTest {
     public void getDelegateInfo() {
 
         try {
-            BaseResponse<Delegation> baseResponse = delegateContract.getDelegateInfo(nodeId, delegateAddress, BigInteger.valueOf(1038)).send();
+            BaseResponse<Delegation> baseResponse = delegateContract.getDelegateInfo(nodeId, delegateAddress, BigInteger.valueOf(4684)).send();
             System.out.println(baseResponse.data.toString());
         } catch (Exception e) {
             e.printStackTrace();
