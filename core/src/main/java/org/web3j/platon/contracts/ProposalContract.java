@@ -11,8 +11,6 @@ import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.platon.TransactionCallback;
-import org.web3j.platon.bean.Node;
-import org.web3j.platon.bean.ParamProposal;
 import org.web3j.platon.bean.Proposal;
 import org.web3j.platon.VoteOption;
 import org.web3j.platon.bean.TallyResult;
@@ -20,8 +18,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
-import org.web3j.tx.ReadonlyTransactionManager;
-import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.JSONUtil;
 import org.web3j.utils.Numeric;
@@ -252,13 +248,13 @@ public class ProposalContract extends PlatOnContract {
      * 版本声明
      *
      * @param activeNode 声明的节点，只能是验证人/候选人
-     * @param version    声明的版本
      * @return
      */
-    public RemoteCall<BaseResponse> declareVersion(String activeNode, BigInteger version) {
+    public RemoteCall<BaseResponse> declareVersion(String activeNode) throws Exception{
+        BigInteger processVersion = new BigInteger(getProgramVersion().send().data);
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(activeNode)),
-                        new Uint32(version)));
+                        new Uint32(processVersion)));
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
@@ -266,29 +262,29 @@ public class ProposalContract extends PlatOnContract {
      * 获取版本声明的gasProvider
      *
      * @param activeNode
-     * @param version
      * @return
      */
-    public Observable<GasProvider> getDeclareVersionGasProvider(String activeNode, BigInteger version) {
+    public Observable<GasProvider> getDeclareVersionGasProvider(String activeNode) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
             public GasProvider call() throws Exception {
+                BigInteger processVersion = new BigInteger(getProgramVersion().send().data);
                 return new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                         Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(activeNode)),
-                                new Uint32(version))).getGasProvider();
+                                new Uint32(processVersion))).getGasProvider();
             }
         });
     }
 
     /**
      * @param activeNode 声明的节点，只能是验证人/候选人
-     * @param version    声明的版本
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(String activeNode, BigInteger version) {
+    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(String activeNode) throws Exception{
+        BigInteger processVersion = new BigInteger(getProgramVersion().send().data);
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(activeNode)),
-                        new Uint32(version)));
+                        new Uint32(processVersion)));
         return executeRemoteCallPlatonTransaction(function);
     }
 
@@ -309,13 +305,13 @@ public class ProposalContract extends PlatOnContract {
      * @param version
      * @param transactionCallback
      */
-    public void asyncDeclareVersion(String activeNode, BigInteger version, TransactionCallback transactionCallback) {
+    public void asyncDeclareVersion(String activeNode, BigInteger version, TransactionCallback transactionCallback) throws Exception{
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(activeNode, version);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(activeNode);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -461,13 +457,13 @@ public class ProposalContract extends PlatOnContract {
      *
      * @return
      */
-    public RemoteCall<BaseResponse<List<ParamProposal>>> getParamList() {
+    public RemoteCall<BaseResponse<List<Proposal>>> getParamList() {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PARAM_LIST);
-        return new RemoteCall<BaseResponse<List<ParamProposal>>>(new Callable<BaseResponse<List<ParamProposal>>>() {
+        return new RemoteCall<BaseResponse<List<Proposal>>>(new Callable<BaseResponse<List<Proposal>>>() {
             @Override
-            public BaseResponse<List<ParamProposal>> call() throws Exception {
+            public BaseResponse<List<Proposal>> call() throws Exception {
                 BaseResponse response = executePatonCall(function);
-                response.data = JSONUtil.parseArray((String) response.data, Node.class);
+                response.data = JSONUtil.parseArray((String) response.data, Proposal.class);
                 return response;
             }
         });

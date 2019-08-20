@@ -11,6 +11,7 @@ import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
+import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.protocol.Web3j;
@@ -163,6 +164,20 @@ public abstract class PlatOnContract extends ManagedTransaction {
     }
 
     protected BaseResponse executePatonCall(PlatOnFunction function) throws IOException {
+        PlatonCall ethCall = web3j.platonCall(
+                Transaction.createEthCallTransaction(
+                        transactionManager.getFromAddress(), contractAddress, function.getEncodeData()),
+                DefaultBlockParameterName.LATEST)
+                .send();
+        String value = ethCall.getValue();
+        BaseResponse response = JSONUtil.parseObject(new String(Numeric.hexStringToByteArray(value)), BaseResponse.class);
+        if (response == null) {
+            response = new BaseResponse();
+        }
+        return response;
+    }
+
+    protected BaseResponse executePatonCall(PlatOnFunction function, String contractAddress) throws IOException {
         PlatonCall ethCall = web3j.platonCall(
                 Transaction.createEthCallTransaction(
                         transactionManager.getFromAddress(), contractAddress, function.getEncodeData()),
@@ -356,11 +371,12 @@ public abstract class PlatOnContract extends ManagedTransaction {
      * @return
      */
     public RemoteCall<BaseResponse<String>> getProgramVersion() {
+
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PROGRAM_VERSION);
         return new RemoteCall<BaseResponse<String>>(new Callable<BaseResponse<String>>() {
             @Override
             public BaseResponse<String> call() throws Exception {
-                return executePatonCall(function);
+                return executePatonCall(function, ensResolver.resolve(ContractAddress.PROPOSAL_CONTRACT_ADDRESS));
             }
         });
     }
