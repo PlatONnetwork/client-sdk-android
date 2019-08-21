@@ -51,7 +51,11 @@ public class StakingParam implements Cloneable {
     /**
      * 程序的真实版本，治理rpc获取
      */
-    private BigInteger processVersion;
+    private ProgramVersion processVersion;
+    /**
+     * bls的公钥
+     */
+    private String blsPubKey;
 
     public String getNodeId() {
         return nodeId;
@@ -117,12 +121,20 @@ public class StakingParam implements Cloneable {
         this.details = details;
     }
 
-    public BigInteger getProcessVersion() {
+    public ProgramVersion getProcessVersion() {
         return processVersion;
     }
 
-    public void setProcessVersion(BigInteger processVersion) {
+    public void setProcessVersion(ProgramVersion processVersion) {
         this.processVersion = processVersion;
+    }
+
+    public String getBlsPubKey() {
+        return blsPubKey;
+    }
+
+    public void setBlsPubKey(String blsPubKey) {
+        this.blsPubKey = blsPubKey;
     }
 
     public StakingParam(Builder builder) {
@@ -135,6 +147,7 @@ public class StakingParam implements Cloneable {
         this.webSite = builder.webSite;
         this.details = builder.details;
         this.processVersion = builder.processVersion;
+        this.blsPubKey = builder.blsPubKey;
     }
 
     public List<Type> getSubmitInputParameters() {
@@ -146,7 +159,10 @@ public class StakingParam implements Cloneable {
                 , new Utf8String(webSite)
                 , new Utf8String(details)
                 , new Int256(amount)
-                , new Uint32(processVersion));
+                , new Uint32(processVersion.getProgramVersion())
+                , new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))
+                , new Utf8String(blsPubKey)
+        );
     }
 
     @Override
@@ -169,7 +185,8 @@ public class StakingParam implements Cloneable {
         private String nodeName;
         private String webSite;
         private String details;
-        private BigInteger processVersion;
+        private ProgramVersion processVersion;
+        private String blsPubKey;
 
         public Builder setNodeId(String nodeId) {
             this.nodeId = nodeId;
@@ -211,8 +228,13 @@ public class StakingParam implements Cloneable {
             return this;
         }
 
-        public Builder setProcessVersion(BigInteger processVersion) {
+        public Builder setProcessVersion(ProgramVersion processVersion) {
             this.processVersion = processVersion;
+            return this;
+        }
+
+        public Builder setBlsPubKey(String blsPubKey) {
+            this.blsPubKey = blsPubKey;
             return this;
         }
 
