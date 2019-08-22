@@ -46,7 +46,7 @@ public class SlashContractTest {
 
     @Before
     public void init() {
-        credentials = Credentials.create("0xe1eb63c6f8d4d2b131b12ea4d06dd690c719afbe703bf9c152346317b0794d57");
+        credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
 
         slashContract = SlashContract.load(web3j,
                 credentials, "100");
