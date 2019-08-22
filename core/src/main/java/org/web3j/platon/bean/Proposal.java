@@ -14,6 +14,7 @@ import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,77 +23,52 @@ public class Proposal {
     /**
      * 提案id
      */
-    @JSONField(name = "ProposalId")
-    protected String proposalId;
+    @JSONField(name = "ProposalID")
+    private String proposalId;
     /**
      * 提案节点ID
      */
     @JSONField(name = "Proposer")
-    protected String proposer;
+    private String proposer;
     /**
      * 提案类型， 0x01：文本提案； 0x02：升级提案；0x03参数提案
      */
     @JSONField(name = "ProposalType")
-    protected int proposalType;
+    private int proposalType;
+    /**
+     * 提案PIPID
+     */
+    @JSONField(name = "PIPID")
+    private String piPid;
     /**
      * 提交提案的块高
      */
     @JSONField(name = "SubmitBlock")
-    protected BigInteger submitBlock;
+    private BigInteger submitBlock;
     /**
      * 提案投票结束的块高
      */
     @JSONField(name = "EndVotingBlock")
-    protected BigInteger endVotingBlock;
+    private BigInteger endVotingBlock;
     /**
      * 升级版本
      */
     @JSONField(name = "NewVersion")
     private BigInteger newVersion;
     /**
+     * 提案要取消的升级提案ID
+     */
+    @JSONField(name = "TobeCanceled")
+    private String toBeCanceled;
+    /**
      * （如果投票通过）生效块高（endVotingBlock + 20 + 4*250 < 生效块高 <= endVotingBlock + 20 + 10*250）
      */
     @JSONField(name = "ActiveBlock")
     private BigInteger activeBlock;
-    /**
-     * 提交提案的验证人
-     */
-    /**
-     * 参数名称
-     */
-    @JSONField(name = "ParamName")
-    private String paramName;
-    /**
-     * 当前值
-     */
-    @JSONField(name = "CurrentValue")
-    private String currentValue;
-    /**
-     * 新的值
-     */
-    @JSONField(name = "NewValue")
-    private String newValue;
 
     private String verifier;
 
-    private String url;
-
     public Proposal() {
-    }
-
-    public Proposal(Builder builder) {
-        this.proposalId = builder.proposalId;
-        this.proposer = builder.proposer;
-        this.proposalType = builder.proposalType;
-        this.submitBlock = builder.submitBlock;
-        this.endVotingBlock = builder.endVotingBlock;
-        this.newVersion = builder.newVersion;
-        this.activeBlock = builder.activeBlock;
-        this.paramName = builder.paramName;
-        this.currentValue = builder.currentValue;
-        this.newValue = builder.newValue;
-        this.verifier = builder.verifier;
-        this.url = builder.url;
     }
 
     public String getProposalId() {
@@ -119,6 +95,14 @@ public class Proposal {
         this.proposalType = proposalType;
     }
 
+    public String getPiPid() {
+        return piPid;
+    }
+
+    public void setPiPid(String piPid) {
+        this.piPid = piPid;
+    }
+
     public BigInteger getSubmitBlock() {
         return submitBlock;
     }
@@ -143,36 +127,20 @@ public class Proposal {
         this.newVersion = newVersion;
     }
 
+    public String getToBeCanceled() {
+        return toBeCanceled;
+    }
+
+    public void setToBeCanceled(String toBeCanceled) {
+        this.toBeCanceled = toBeCanceled;
+    }
+
     public BigInteger getActiveBlock() {
         return activeBlock;
     }
 
     public void setActiveBlock(BigInteger activeBlock) {
         this.activeBlock = activeBlock;
-    }
-
-    public String getParamName() {
-        return paramName;
-    }
-
-    public void setParamName(String paramName) {
-        this.paramName = paramName;
-    }
-
-    public String getCurrentValue() {
-        return currentValue;
-    }
-
-    public void setCurrentValue(String currentValue) {
-        this.currentValue = currentValue;
-    }
-
-    public String getNewValue() {
-        return newValue;
-    }
-
-    public void setNewValue(String newValue) {
-        this.newValue = newValue;
     }
 
     public String getVerifier() {
@@ -183,33 +151,37 @@ public class Proposal {
         this.verifier = verifier;
     }
 
-    public String getUrl() {
-        return url;
+    public Proposal(Builder builder) {
+        this.proposalId = builder.proposalId;
+        this.proposer = builder.proposer;
+        this.proposalType = builder.proposalType;
+        this.piPid = builder.piPid;
+        this.submitBlock = builder.submitBlock;
+        this.endVotingBlock = builder.endVotingBlock;
+        this.newVersion = builder.newVersion;
+        this.toBeCanceled = builder.toBeCanceled;
+        this.activeBlock = builder.activeBlock;
+        this.verifier = builder.verifier;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public List<Type> getSubmitInputParameters() {
-        if (proposalType== ProposalType.TEXT_PROPOSAL) {
+        if (proposalType == ProposalType.TEXT_PROPOSAL) {
             return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
-                    new Utf8String(this.url),
-                    new Uint64(this.endVotingBlock));
+                    new Uint64(new BigInteger(this.piPid)));
         } else if (proposalType == ProposalType.VERSION_PROPOSAL) {
             return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
-                    new Utf8String(this.url),
+                    new Utf8String(this.piPid),
                     new Uint16(this.newVersion),
-                    new Uint64(this.endVotingBlock),
-                    new Uint64(this.activeBlock));
-        } else {
+                    new Uint64(this.endVotingBlock));
+        } else if (proposalType == ProposalType.CANCEL_PROPOSAL) {
             return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
-                    new Utf8String(this.url),
+                    new Utf8String(this.piPid),
                     new Uint64(this.endVotingBlock),
-                    new Utf8String(this.paramName),
-                    new Utf8String(this.currentValue),
-                    new Utf8String(this.newValue));
+                    new BytesType(Numeric.hexStringToByteArray(this.toBeCanceled)));
         }
+
+        return new ArrayList<>();
     }
 
     public int getSubmitFunctionType() {
@@ -217,29 +189,53 @@ public class Proposal {
             return FunctionType.SUBMIT_TEXT_FUNC_TYPE;
         } else if (proposalType == ProposalType.VERSION_PROPOSAL) {
             return FunctionType.SUBMIT_VERSION_FUNC_TYPE;
+        } else if (proposalType == ProposalType.CANCEL_PROPOSAL) {
+            return FunctionType.SUBMIT_CANCEL_FUNC_TYPE;
         } else {
             return FunctionType.SUBMIR_PARAM_FUNCTION_TYPE;
         }
     }
 
+    public static Proposal createSubmitTextProposalParam(String verifier, String pIDID) {
+        return new Proposal.Builder()
+                .setProposalType(ProposalType.TEXT_PROPOSAL)
+                .setVerifier(verifier)
+                .setPiPid(pIDID)
+                .build();
+    }
 
-    public static final class Builder {
+    public static Proposal createSubmitVersionProposalParam(String verifier, String pIDID, BigInteger newVersion, BigInteger endVotingRounds) {
+        return new Proposal.Builder()
+                .setProposalType(ProposalType.VERSION_PROPOSAL)
+                .setVerifier(verifier)
+                .setPiPid(pIDID)
+                .setNewVersion(newVersion)
+                .setEndVotingBlock(endVotingRounds)
+                .build();
+    }
+
+    public static Proposal createSubmitCancelProposalParam(String verifier, String pIDID, BigInteger endVotingRounds, String tobeCanceledProposalID) {
+        return new Proposal.Builder()
+                .setProposalType(ProposalType.CANCEL_PROPOSAL)
+                .setVerifier(verifier)
+                .setPiPid(pIDID)
+                .setEndVotingBlock(endVotingRounds)
+                .setToBeCanceled(tobeCanceledProposalID)
+                .build();
+    }
+
+
+    static final class Builder {
         private String proposalId;
         private String proposer;
         private int proposalType;
+        private String piPid;
         private BigInteger submitBlock;
         private BigInteger endVotingBlock;
         private BigInteger newVersion;
+        private String toBeCanceled;
         private BigInteger activeBlock;
-        private String paramName;
-        private String currentValue;
-        private String newValue;
         private String verifier;
-        private String url;
-
-        public Builder(int proposalType) {
-            this.proposalType = proposalType;
-        }
 
         public Builder setProposalId(String proposalId) {
             this.proposalId = proposalId;
@@ -248,6 +244,16 @@ public class Proposal {
 
         public Builder setProposer(String proposer) {
             this.proposer = proposer;
+            return this;
+        }
+
+        public Builder setProposalType(int proposalType) {
+            this.proposalType = proposalType;
+            return this;
+        }
+
+        public Builder setPiPid(String piPid) {
+            this.piPid = piPid;
             return this;
         }
 
@@ -266,33 +272,18 @@ public class Proposal {
             return this;
         }
 
+        public Builder setToBeCanceled(String toBeCanceled) {
+            this.toBeCanceled = toBeCanceled;
+            return this;
+        }
+
         public Builder setActiveBlock(BigInteger activeBlock) {
             this.activeBlock = activeBlock;
             return this;
         }
 
-        public Builder setParamName(String paramName) {
-            this.paramName = paramName;
-            return this;
-        }
-
-        public Builder setCurrentValue(String currentValue) {
-            this.currentValue = currentValue;
-            return this;
-        }
-
-        public Builder setNewValue(String newValue) {
-            this.newValue = newValue;
-            return this;
-        }
-
         public Builder setVerifier(String verifier) {
             this.verifier = verifier;
-            return this;
-        }
-
-        public Builder setUrl(String url) {
-            this.url = url;
             return this;
         }
 
@@ -307,15 +298,13 @@ public class Proposal {
                 "proposalId='" + proposalId + '\'' +
                 ", proposer='" + proposer + '\'' +
                 ", proposalType=" + proposalType +
+                ", piPid='" + piPid + '\'' +
                 ", submitBlock=" + submitBlock +
                 ", endVotingBlock=" + endVotingBlock +
                 ", newVersion=" + newVersion +
+                ", toBeCanceled='" + toBeCanceled + '\'' +
                 ", activeBlock=" + activeBlock +
-                ", paramName='" + paramName + '\'' +
-                ", currentValue='" + currentValue + '\'' +
-                ", newValue='" + newValue + '\'' +
                 ", verifier='" + verifier + '\'' +
-                ", url='" + url + '\'' +
                 '}';
     }
 }

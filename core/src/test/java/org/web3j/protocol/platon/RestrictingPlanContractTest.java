@@ -30,7 +30,7 @@ public class RestrictingPlanContractTest {
     @Before
     public void init() {
 
-        credentials = Credentials.create("0xe1eb63c6f8d4d2b131b12ea4d06dd690c719afbe703bf9c152346317b0794d57");
+        credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
 
         restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, "100");
     }
@@ -39,8 +39,8 @@ public class RestrictingPlanContractTest {
     public void createRestrictingPlan() {
 
         List<RestrictingPlan> restrictingPlans = new ArrayList<>();
-        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(5), new BigInteger("200000000000000000000000")));
-        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(6), new BigInteger("21000000000000000000000")));
+        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(5), new BigInteger("20000")));
+        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(6), new BigInteger("20000")));
         try {
             BaseResponse baseResponse = restrictingPlanContract.createRestrictingPlan(benifitAddress, restrictingPlans).send();
             System.out.println(baseResponse.toString());

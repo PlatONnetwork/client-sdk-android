@@ -76,6 +76,10 @@ public class FunctionType {
      */
     public static final int DECLARE_VERSION_FUNC_TYPE = 2004;
     /**
+     * 提交取消提案
+     */
+    public static final int SUBMIT_CANCEL_FUNC_TYPE = 2005;
+    /**
      * 查询提案
      */
     public static final int GET_PROPOSAL_FUNC_TYPE = 2100;
