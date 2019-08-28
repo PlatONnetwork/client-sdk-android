@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.DoubleSignType;
+import org.web3j.platon.DuplicateSignType;
 import org.web3j.platon.contracts.SlashContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
@@ -46,7 +47,7 @@ public class SlashContractTest {
 
     @Before
     public void init() {
-        credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
+        credentials = Credentials.create("0xa56f68ca7aa51c24916b9fff027708f856650f9ff36cc3c8da308040ebcc7867");
 
         slashContract = SlashContract.load(web3j,
                 credentials, "100");
@@ -55,6 +56,7 @@ public class SlashContractTest {
     @Test
     public void reportDuplicateSign() {
         try {
+            System.out.println(web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST,false).send().getBlock().getNumberRaw());
             BaseResponse baseResponse = slashContract.reportDoubleSign(data).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
@@ -64,9 +66,10 @@ public class SlashContractTest {
 
     @Test
     public void checkDuplicateSign() {
+
         try {
             PlatonBlock platonBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
-            BaseResponse baseResponse = slashContract.checkDoubleSign(DoubleSignType.PREPARE, "0x4F8eb0B21eb8F16C80A9B7D728EA473b8676Cbb3", platonBlock.getBlock().getNumber()).send();
+            BaseResponse baseResponse = slashContract.checkDoubleSign(DuplicateSignType.PREPARE_BLOCK, "0x4F8eb0B21eb8F16C80A9B7D728EA473b8676Cbb3", platonBlock.getBlock().getNumber()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();

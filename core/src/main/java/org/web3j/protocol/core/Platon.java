@@ -9,6 +9,7 @@ import org.web3j.protocol.core.methods.response.PlatonAccounts;
 import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.core.methods.response.PlatonBlockNumber;
 import org.web3j.protocol.core.methods.response.PlatonEstimateGas;
+import org.web3j.protocol.core.methods.response.PlatonEvidences;
 import org.web3j.protocol.core.methods.response.PlatonFilter;
 import org.web3j.protocol.core.methods.response.PlatonCall;
 import org.web3j.protocol.core.methods.response.PlatonGasPrice;
@@ -160,4 +161,6 @@ public interface Platon {
     Request<?, ShhMessages> shhGetFilterChanges(BigInteger filterId);
 
     Request<?, ShhMessages> shhGetMessages(BigInteger filterId);
+
+    Request<?, PlatonEvidences> platonEvidences();
 }
