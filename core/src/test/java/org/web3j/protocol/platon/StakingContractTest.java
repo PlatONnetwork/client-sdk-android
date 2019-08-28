@@ -50,7 +50,8 @@ public class StakingContractTest {
     private static final int OFFSET_LONG_ITEM = 0xb7;
     private static final int SIZE_THRESHOLD = 56;
 
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6794"));
+    //    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.88:6788"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.112.120:8222"));
 
     private StakingContract stakingContract;
 
@@ -69,34 +70,34 @@ public class StakingContractTest {
     @Before
     public void init() {
 
-        credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
+//        credentials = Credentials.create("0xa11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7");
+        credentials = Credentials.create("0xc783df0e98baf34f2ed791f6087be8e3f55fe9c4e4687e0ddc30a37abc15b287");
 
         stakingContract = StakingContract.load(
                 web3j,
-                credentials, "100");
-
+                credentials, "102");
 
     }
 
 
     @Test
-    public void staking() {
+    public void staking() throws Exception {
 
-//        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("ab9213e44edbd93cd69e1921034d8f5e73f29611d9026ec10fc8440b83c5811b")));
-        String toAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("6fe419582271a4dcf01c51b89195b77b228377fde4bde6e04ef126a0b4373f79")));
-////
-//        sendTransaction("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32", "0x" + toAddress, new BigDecimal("200000000000000000000000000"), 500000000000L, 60000L);
+//        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("a11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7")));
+//        String toAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("9d8dc0c4895d3bc1df7e557dda91089b539fe681807dedcf458850b02d8e7790")));
+//////
+//        String hash = sendTransaction("a11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7", toAddress, new BigDecimal("6000000000000000000000000"), 500000000000L, 210000L);
 ////
 //        try {
 //            PlatonGetBalance platonGetBalance = web3j.platonGetBalance("0x" + toAddress, DefaultBlockParameterName.LATEST).send();
-////            PlatonGetBalance platonGetBalance2 = web3j.platonGetBalance("0x" + fromAddress, DefaultBlockParameterName.LATEST).send();
+//            PlatonGetBalance platonGetBalance2 = web3j.platonGetBalance("0x" + fromAddress, DefaultBlockParameterName.LATEST).send();
 ////
 //            System.out.println(platonGetBalance.getBalance().longValue());
-////            System.out.println(platonGetBalance2.getBalance().longValue());
+//            System.out.println(platonGetBalance2.getBalance().longValue());
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-
+//
 //        try {
 //            PlatonBlock platonBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
 //            System.out.println(platonBlock.getBlock().getNumberRaw());

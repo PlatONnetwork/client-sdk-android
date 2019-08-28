@@ -10,6 +10,7 @@ import org.web3j.protocol.core.methods.response.DbGetString;
 import org.web3j.protocol.core.methods.response.DbPutHex;
 import org.web3j.protocol.core.methods.response.DbPutString;
 import org.web3j.protocol.core.methods.response.PlatonAccounts;
+import org.web3j.protocol.core.methods.response.PlatonEvidences;
 import org.web3j.protocol.core.methods.response.PlatonGasPrice;
 import org.web3j.protocol.core.methods.response.PlatonProtocolVersion;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
@@ -639,5 +640,14 @@ public class JsonRpc2_0Web3j implements Web3j {
             DefaultBlockParameter startBlock) {
         return web3jRx.catchUpToLatestAndSubscribeToNewTransactionsObservable(
                 startBlock, blockTime);
+    }
+
+    @Override
+    public Request<?, PlatonEvidences> platonEvidences() {
+        return new Request<>(
+                "platon_evidences",
+                Collections.<String>emptyList(),
+                web3jService,
+                PlatonEvidences.class);
     }
 }

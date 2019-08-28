@@ -70,6 +70,12 @@ public class PlatOnFunction {
         return new ContractGasProvider(getGasPrice(), gasLimit);
     }
 
+    public BigInteger getFeeAmount(BigInteger gasPrice) {
+        BigInteger gasLimit = BASE_DEFAULT_GAS_LIMIT.add(getContractGasLimit())
+                .add(getFunctionGasLimit()).add(getInterfaceDynamicGasLimit()).add(getDataGasLimit());
+        return gasLimit.multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? getGasPrice() : gasPrice);
+    }
+
     private BigInteger getGasPrice() {
         switch (type) {
             case FunctionType.SUBMIT_TEXT_FUNC_TYPE:
@@ -102,13 +108,14 @@ public class PlatOnFunction {
             case FunctionType.SUBMIT_TEXT_FUNC_TYPE:
             case FunctionType.SUBMIT_VERSION_FUNC_TYPE:
             case FunctionType.SUBMIR_PARAM_FUNCTION_TYPE:
+            case FunctionType.SUBMIT_CANCEL_FUNC_TYPE:
             case FunctionType.VOTE_FUNC_TYPE:
             case FunctionType.DECLARE_VERSION_FUNC_TYPE:
                 return BigInteger.valueOf(9000);
             case FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE:
-                return BigInteger.valueOf(1000);
+                return BigInteger.valueOf(21000);
             case FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE:
-                return BigInteger.valueOf(2000);
+                return BigInteger.valueOf(18000);
             default:
                 return BigInteger.valueOf(0);
         }
@@ -122,6 +129,7 @@ public class PlatOnFunction {
     private BigInteger getFunctionGasLimit() {
         switch (type) {
             case FunctionType.SUBMIR_PARAM_FUNCTION_TYPE:
+            case FunctionType.SUBMIT_CANCEL_FUNC_TYPE:
                 return BigInteger.valueOf(500000);
             case FunctionType.SUBMIT_VERSION_FUNC_TYPE:
                 return BigInteger.valueOf(450000);
@@ -144,7 +152,7 @@ public class PlatOnFunction {
             case FunctionType.VOTE_FUNC_TYPE:
                 return BigInteger.valueOf(2000);
             case FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE:
-                return BigInteger.valueOf(1000);
+                return BigInteger.valueOf(42000);
             default:
                 return BigInteger.valueOf(0);
         }
