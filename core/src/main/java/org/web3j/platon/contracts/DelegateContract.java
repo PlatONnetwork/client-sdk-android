@@ -96,6 +96,7 @@ public class DelegateContract extends PlatOnContract {
 
     /**
      * 获取发起委托的gasProvider
+     *
      * @param nodeId
      * @param stakingAmountType
      * @param amount
@@ -109,6 +110,28 @@ public class DelegateContract extends PlatOnContract {
                         Arrays.asList(new Uint16(stakingAmountType.getValue())
                                 , new BytesType(Numeric.hexStringToByteArray(nodeId))
                                 , new Uint256(amount))).getGasProvider();
+            }
+        });
+    }
+
+    /**
+     * 获取委托手续费
+     *
+     * @param gasPrice
+     * @param nodeId
+     * @param stakingAmountType
+     * @param amount
+     * @return
+     */
+    public Observable<BigInteger> getDelegateFeeAmount(BigInteger gasPrice, String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
+        return Observable.fromCallable(new Callable<BigInteger>() {
+            @Override
+            public BigInteger call() throws Exception {
+                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
+                        Arrays.asList(new Uint16(stakingAmountType.getValue())
+                                , new BytesType(Numeric.hexStringToByteArray(nodeId))
+                                , new Uint256(amount)));
+                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
             }
         });
     }
@@ -199,6 +222,7 @@ public class DelegateContract extends PlatOnContract {
 
     /**
      * 获取减持/撤销委托(全部减持就是撤销)gasProvider
+     *
      * @param nodeId
      * @param stakingBlockNum
      * @param amount
@@ -212,6 +236,28 @@ public class DelegateContract extends PlatOnContract {
                         Arrays.asList(new Uint64(stakingBlockNum)
                                 , new BytesType(Numeric.hexStringToByteArray(nodeId))
                                 , new Uint256(amount))).getGasProvider();
+            }
+        });
+    }
+
+    /**
+     * 获取减持/撤销委托手续费
+     *
+     * @param gasPrice
+     * @param nodeId
+     * @param stakingBlockNum
+     * @param amount
+     * @return
+     */
+    public Observable<BigInteger> getUnDelegateFeeAmount(BigInteger gasPrice, String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
+        return Observable.fromCallable(new Callable<BigInteger>() {
+            @Override
+            public BigInteger call() throws Exception {
+                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
+                        Arrays.asList(new Uint64(stakingBlockNum)
+                                , new BytesType(Numeric.hexStringToByteArray(nodeId))
+                                , new Uint256(amount)));
+                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
             }
         });
     }

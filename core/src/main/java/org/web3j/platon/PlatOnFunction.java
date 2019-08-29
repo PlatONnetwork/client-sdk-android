@@ -15,6 +15,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.plaf.PanelUI;
+
 public class PlatOnFunction {
 
     /**
@@ -65,9 +67,12 @@ public class PlatOnFunction {
 
 
     public ContractGasProvider getGasProvider() {
-        BigInteger gasLimit = BASE_DEFAULT_GAS_LIMIT.add(getContractGasLimit())
+        return new ContractGasProvider(getGasPrice(), getGasLimit());
+    }
+
+    public BigInteger getGasLimit() {
+        return BASE_DEFAULT_GAS_LIMIT.add(getContractGasLimit())
                 .add(getFunctionGasLimit()).add(getInterfaceDynamicGasLimit()).add(getDataGasLimit());
-        return new ContractGasProvider(getGasPrice(), gasLimit);
     }
 
     public BigInteger getFeeAmount(BigInteger gasPrice) {
@@ -76,7 +81,7 @@ public class PlatOnFunction {
         return gasLimit.multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? getGasPrice() : gasPrice);
     }
 
-    private BigInteger getGasPrice() {
+    public BigInteger getGasPrice() {
         switch (type) {
             case FunctionType.SUBMIT_TEXT_FUNC_TYPE:
                 return BigInteger.valueOf(1500000).multiply(BigInteger.valueOf(1000000000));

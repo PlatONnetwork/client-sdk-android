@@ -3,6 +3,8 @@ package org.web3j.platon.contracts;
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
@@ -10,6 +12,7 @@ import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
+import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.TransactionCallback;
 import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.platon.bean.Proposal;
@@ -182,6 +185,35 @@ public class ProposalContract extends PlatOnContract {
     }
 
     /**
+     * 获取提交投票提案的手续费
+     *
+     * @param gasPrice
+     * @param proposalID
+     * @param verifier
+     * @param voteOption
+     * @return
+     */
+    public Observable<BigInteger> getVoteProposalFeeAmount(BigInteger gasPrice, String proposalID, String verifier, VoteOption voteOption) {
+
+        return Observable.fromCallable(new Callable<ProgramVersion>() {
+            @Override
+            public ProgramVersion call() throws Exception {
+                return getProgramVersion().send().data;
+            }
+        }).map(new Func1<ProgramVersion, BigInteger>() {
+            @Override
+            public BigInteger call(ProgramVersion programVersion) {
+                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
+                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                                new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
+                                new Uint32(programVersion.getProgramVersion()),
+                                new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
+                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
+            }
+        });
+    }
+
+    /**
      * @param proposalID 提案ID
      * @param verifier   投票验证人
      * @param voteOption 投票选项
@@ -281,6 +313,33 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
+
+    /**
+     * 获取版本声明的手续费
+     *
+     * @param gasPrice
+     * @param verifier
+     * @return
+     */
+    public Observable<BigInteger> getDeclareVersionFeeAmount(BigInteger gasPrice, String verifier) {
+
+        return Observable.fromCallable(new Callable<ProgramVersion>() {
+            @Override
+            public ProgramVersion call() throws Exception {
+                return getProgramVersion().send().data;
+            }
+        }).map(new Func1<ProgramVersion, BigInteger>() {
+            @Override
+            public BigInteger call(ProgramVersion programVersion) {
+                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
+                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                                new Uint32(programVersion.getProgramVersion()),
+                                new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
+                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
+            }
+        });
+    }
+
     /**
      * @param verifier 声明的节点，只能是验证人/候选人
      * @return
@@ -375,6 +434,27 @@ public class ProposalContract extends PlatOnContract {
             public GasProvider call() throws Exception {
                 return new PlatOnFunction(proposal.getSubmitFunctionType(),
                         proposal.getSubmitInputParameters()).getGasProvider();
+            }
+        });
+    }
+
+    /**
+     * 获取提交提案的手续费
+     * @param gasPrice
+     * @param proposal
+     * @return
+     */
+    public Observable<BigInteger> getSubmitProposalFeeAmount(BigInteger gasPrice, Proposal proposal) {
+        if (proposal == null) {
+            return Observable.error(new Throwable("proposal must not be null"));
+        }
+
+        return Observable.fromCallable(new Callable<BigInteger>() {
+            @Override
+            public BigInteger call() throws Exception {
+                PlatOnFunction platOnFunction = new PlatOnFunction(proposal.getSubmitFunctionType(),
+                        proposal.getSubmitInputParameters());
+                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
             }
         });
     }

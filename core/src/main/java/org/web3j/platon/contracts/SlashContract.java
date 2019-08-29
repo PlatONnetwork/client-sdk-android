@@ -2,6 +2,8 @@ package org.web3j.platon.contracts;
 
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
@@ -10,6 +12,7 @@ import org.web3j.platon.ContractAddress;
 import org.web3j.platon.DuplicateSignType;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
+import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.TransactionCallback;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
@@ -97,6 +100,23 @@ public class SlashContract extends PlatOnContract {
             public GasProvider call() throws Exception {
                 return new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                         Arrays.asList(new Utf8String(data))).getGasProvider();
+            }
+        });
+    }
+
+    /**
+     * 获取手续费
+     * @param gasPrice
+     * @param data
+     * @return
+     */
+    public Observable<BigInteger> getFeeAmount(BigInteger gasPrice, String data) {
+        return Observable.fromCallable(new Callable<BigInteger>() {
+            @Override
+            public BigInteger call() throws Exception {
+                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
+                        Arrays.asList(new Utf8String(data)));
+                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
             }
         });
     }
