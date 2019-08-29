@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
-import org.web3j.platon.DoubleSignType;
 import org.web3j.platon.DuplicateSignType;
 import org.web3j.platon.contracts.SlashContract;
 import org.web3j.protocol.Web3j;
