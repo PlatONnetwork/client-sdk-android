@@ -6,8 +6,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -44,6 +45,12 @@ public class WalletUtils {
             InvalidAlgorithmParameterException, CipherException, IOException {
 
         return generateNewWalletFile(password, destinationDirectory, false);
+    }
+
+    public static String generateNewWalletFile(String password, File destinationDirectory)
+            throws CipherException, InvalidAlgorithmParameterException,
+            NoSuchAlgorithmException, NoSuchProviderException, IOException {
+        return generateFullNewWalletFile(password, destinationDirectory);
     }
 
     public static String generateNewWalletFile(
@@ -118,8 +125,11 @@ public class WalletUtils {
     }
 
     private static String getWalletFileName(WalletFile walletFile) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("'UTC--'yyyy-MM-dd'T'HH-mm-ss.SSS'--'");
-        return dateFormat.format(new Date()) + walletFile.getAddress() + ".json";
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(
+                "'UTC--'yyyy-MM-dd'T'HH-mm-ss.nVV'--'");
+        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+
+        return now.format(format) + walletFile.getAddress() + ".json";
     }
 
     public static String getDefaultKeyDirectory() {
@@ -147,6 +157,15 @@ public class WalletUtils {
 
     public static String getMainnetKeyDirectory() {
         return String.format("%s%skeystore", getDefaultKeyDirectory(), File.separator);
+    }
+    
+    /**
+     * Get keystore destination directory for a Rinkeby network.
+     * @return a String containing destination directory
+     */
+    public static String getRinkebyKeyDirectory() {
+        return String.format(
+                "%s%srinkeby%skeystore", getDefaultKeyDirectory(), File.separator, File.separator);
     }
 
     public static boolean isValidPrivateKey(String privateKey) {

@@ -3,20 +3,17 @@ package org.web3j.crypto;
 import java.math.BigInteger;
 import java.security.SignatureException;
 import java.util.Arrays;
+import java.util.Optional;
+
 
 import org.spongycastle.asn1.x9.X9ECParameters;
 import org.spongycastle.asn1.x9.X9IntegerConverter;
-import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.ec.CustomNamedCurves;
 import org.spongycastle.crypto.params.ECDomainParameters;
-import org.spongycastle.crypto.params.ECPrivateKeyParameters;
-import org.spongycastle.crypto.signers.ECDSASigner;
-import org.spongycastle.crypto.signers.HMacDSAKCalculator;
 import org.spongycastle.math.ec.ECAlgorithms;
 import org.spongycastle.math.ec.ECPoint;
 import org.spongycastle.math.ec.FixedPointCombMultiplier;
 import org.spongycastle.math.ec.custom.sec.SecP256K1Curve;
-
 import org.web3j.utils.Numeric;
 
 import static org.web3j.utils.Assertions.verifyPrecondition;
@@ -39,10 +36,10 @@ public class Sign {
         return signMessage(message, keyPair, true);
     }
 
-    public static SignatureData signMessage(byte[] message, ECKeyPair keyPair, boolean isHashed) {
+    public static SignatureData signMessage(byte[] message, ECKeyPair keyPair, boolean needToHash) {
         BigInteger publicKey = keyPair.getPublicKey();
         byte[] messageHash;
-        if (isHashed) {
+        if (needToHash) {
             messageHash = Hash.sha3(message);
         } else {
             messageHash = message;
@@ -60,13 +57,13 @@ public class Sign {
         }
         if (recId == -1) {
             throw new RuntimeException(
-                    "Could not construct a recoverable key. This should never happen.");
+                    "Could not construct a recoverable key. Are your credentials valid?");
         }
 
         int headerByte = recId + 27;
 
         // 1 header + 32 bytes for R + 32 bytes for S
-        byte v = (byte) headerByte;
+        byte[] v = new byte[] {(byte) headerByte};
         byte[] r = Numeric.toBytesPadded(sig.r, 32);
         byte[] s = Numeric.toBytesPadded(sig.s, 32);
 
@@ -95,7 +92,7 @@ public class Sign {
      * @param message Hash of the data that was signed.
      * @return An ECKey containing only the public part, or null if recovery wasn't possible.
      */
-    private static BigInteger recoverFromSignature(int recId, ECDSASignature sig, byte[] message) {
+    public static BigInteger recoverFromSignature(int recId, ECDSASignature sig, byte[] message) {
         verifyPrecondition(recId >= 0, "recId must be positive");
         verifyPrecondition(sig.r.signum() >= 0, "r must be positive");
         verifyPrecondition(sig.s.signum() >= 0, "s must be positive");
@@ -180,7 +177,7 @@ public class Sign {
         verifyPrecondition(r != null && r.length == 32, "r must be 32 bytes");
         verifyPrecondition(s != null && s.length == 32, "s must be 32 bytes");
 
-        int header = signatureData.getV() & 0xFF;
+        int header = signatureData.getV()[0] & 0xFF;
         // The header byte: 0x1B = first key with even y, 0x1C = first key with odd y,
         //                  0x1D = second key with even y, 0x1E = second key with odd y
         if (header < 27 || header > 34) {
@@ -228,17 +225,21 @@ public class Sign {
     }
 
     public static class SignatureData {
-        private final byte v;
+        private final byte[] v;
         private final byte[] r;
         private final byte[] s;
-
+        
         public SignatureData(byte v, byte[] r, byte[] s) {
+            this(new byte[] {v}, r, s);
+        }
+
+        public SignatureData(byte[] v, byte[] r, byte[] s) {
             this.v = v;
             this.r = r;
             this.s = s;
         }
 
-        public byte getV() {
+        public byte[] getV() {
             return v;
         }
 
@@ -272,7 +273,7 @@ public class Sign {
 
         @Override
         public int hashCode() {
-            int result = (int) v;
+            int result = Arrays.hashCode(v);
             result = 31 * result + Arrays.hashCode(r);
             result = 31 * result + Arrays.hashCode(s);
             return result;

@@ -122,6 +122,33 @@ public class StakingContract extends PlatOnContract {
 
 
     /**
+     * 获取质押gasProvider
+     *
+     * @param gasPrice
+     * @param stakingParam
+     * @return
+     */
+    public Observable<BigInteger> getFeeAmount(BigInteger gasPrice, StakingParam stakingParam) {
+        StakingParam tempStakingParam = stakingParam.clone();
+        return Observable.fromCallable(new Callable<ProgramVersion>() {
+            @Override
+            public ProgramVersion call() throws Exception {
+                return getProgramVersion().send().data;
+            }
+        }).map(new Func1<ProgramVersion, BigInteger>() {
+            @Override
+            public BigInteger call(ProgramVersion programVersion) {
+                tempStakingParam.setProcessVersion(programVersion);
+                PlatOnFunction platOnFunction = new PlatOnFunction(
+                        FunctionType.STAKING_FUNC_TYPE,
+                        tempStakingParam.getSubmitInputParameters());
+                return platOnFunction.getGasLimit().add(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
+            }
+        });
+    }
+
+
+    /**
      * 发起质押
      *
      * @param stakingParam

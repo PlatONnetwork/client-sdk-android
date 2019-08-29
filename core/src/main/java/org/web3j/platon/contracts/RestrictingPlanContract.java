@@ -9,8 +9,10 @@ import org.web3j.platon.CustomStaticArray;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.platon.TransactionCallback;
+import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.platon.bean.RestrictingItem;
 import org.web3j.platon.bean.RestrictingPlan;
+import org.web3j.platon.bean.StakingParam;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
@@ -21,12 +23,14 @@ import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.JSONUtil;
 import org.web3j.utils.Numeric;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class RestrictingPlanContract extends PlatOnContract {
 
@@ -91,6 +95,45 @@ public class RestrictingPlanContract extends PlatOnContract {
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account)), new CustomStaticArray(restrictingPlanList)));
         return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+
+    /**
+     * 获取创建锁仓计划的gasProvider
+     *
+     * @param account
+     * @param restrictingPlanList
+     * @return
+     */
+    public Observable<GasProvider> getCreateRestrictingPlanGasProvider(String account, List<RestrictingPlan> restrictingPlanList) {
+        return Observable.fromCallable(new Callable<GasProvider>() {
+            @Override
+            public GasProvider call() throws Exception {
+                return new PlatOnFunction(
+                        FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
+                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account)), new CustomStaticArray(restrictingPlanList))).getGasProvider();
+            }
+        });
+    }
+
+
+    /**
+     * 获取创建锁仓计划的gasProvider
+     *
+     * @param account
+     * @param restrictingPlanList
+     * @return
+     */
+    public Observable<BigInteger> getFeeAmount(BigInteger gasPrice, String account, List<RestrictingPlan> restrictingPlanList) {
+        return Observable.fromCallable(new Callable<BigInteger>() {
+            @Override
+            public BigInteger call() throws Exception {
+                PlatOnFunction platOnFunction =  new PlatOnFunction(
+                        FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
+                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account)), new CustomStaticArray(restrictingPlanList)));
+                return platOnFunction.getGasLimit().add(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
+            }
+        });
     }
 
     /**
