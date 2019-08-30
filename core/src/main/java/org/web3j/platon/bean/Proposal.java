@@ -5,12 +5,10 @@ import com.alibaba.fastjson.annotation.JSONField;
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.ProposalType;
-import org.web3j.rlp.RlpEncoder;
-import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -69,6 +67,7 @@ public class Proposal {
     private String verifier;
 
     public Proposal() {
+
     }
 
     public String getProposalId() {
@@ -168,11 +167,11 @@ public class Proposal {
     public List<Type> getSubmitInputParameters() {
         if (proposalType == ProposalType.TEXT_PROPOSAL) {
             return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
-                    new Uint64(new BigInteger(this.piPid)));
+                    new Utf8String(this.piPid));
         } else if (proposalType == ProposalType.VERSION_PROPOSAL) {
             return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
                     new Utf8String(this.piPid),
-                    new Uint16(this.newVersion),
+                    new Uint32(this.newVersion),
                     new Uint64(this.endVotingBlock));
         } else if (proposalType == ProposalType.CANCEL_PROPOSAL) {
             return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(this.verifier)),
@@ -223,7 +222,6 @@ public class Proposal {
                 .setToBeCanceled(tobeCanceledProposalID)
                 .build();
     }
-
 
     static final class Builder {
         private String proposalId;

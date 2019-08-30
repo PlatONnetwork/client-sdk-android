@@ -14,7 +14,6 @@ import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
-import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -48,34 +47,13 @@ import java.util.concurrent.Callable;
 public abstract class PlatOnContract extends ManagedTransaction {
 
     protected String contractAddress;
-    protected GasProvider gasProvider;
     protected TransactionReceipt transactionReceipt;
 
     private PlatOnContract(String contractAddress,
-                           Web3j web3j, TransactionManager transactionManager,
-                           GasProvider gasProvider) {
+                           Web3j web3j, TransactionManager transactionManager) {
         super(web3j, transactionManager);
 
         this.contractAddress = ensResolver.resolve(contractAddress);
-
-        this.gasProvider = gasProvider;
-    }
-
-    /**
-     * sendRawTransaction 使用用户自定义的gasProvider，必须传chainId
-     *
-     * @param contractAddress
-     * @param chainId
-     * @param web3j
-     * @param credentials
-     * @param gasProvider
-     */
-    protected PlatOnContract(String contractAddress, String chainId,
-                             Web3j web3j, Credentials credentials,
-                             GasProvider gasProvider) {
-        this(contractAddress, web3j,
-                new RawTransactionManager(web3j, credentials, new Byte(chainId)),
-                gasProvider);
     }
 
     /**
@@ -89,7 +67,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
     protected PlatOnContract(String contractAddress, String chainId,
                              Web3j web3j, Credentials credentials) {
 
-        this(contractAddress, web3j, new RawTransactionManager(web3j, credentials, new Byte(chainId)), null);
+        this(contractAddress, web3j, new RawTransactionManager(web3j, credentials, new Byte(chainId)));
     }
 
     /**
@@ -102,7 +80,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
                              Web3j web3j) {
 
         this(contractAddress, web3j,
-                new ReadonlyTransactionManager(web3j, contractAddress), null);
+                new ReadonlyTransactionManager(web3j, contractAddress));
     }
 
     public void setContractAddress(String contractAddress) {
@@ -115,26 +93,6 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     public void setTransactionReceipt(TransactionReceipt transactionReceipt) {
         this.transactionReceipt = transactionReceipt;
-    }
-
-    /**
-     * Allow {@code gasPrice} to be set.
-     *
-     * @param newPrice gas price to use for subsequent transactions
-     * @deprecated use ContractGasProvider
-     */
-    public void setGasPrice(BigInteger newPrice) {
-        this.gasProvider = new ContractGasProvider(newPrice, gasProvider.getGasLimit());
-    }
-
-    /**
-     * Get the current {@code gasPrice} value this contract uses when executing transactions.
-     *
-     * @return the gas price set on this contract
-     * @deprecated use ContractGasProvider
-     */
-    public BigInteger getGasPrice() {
-        return gasProvider.getGasPrice();
     }
 
     /**
@@ -243,9 +201,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
             PlatOnFunction function, BigInteger weiValue)
             throws TransactionException, IOException {
 
-        if (gasProvider == null) {
-            gasProvider = function.getGasProvider();
-        }
+        GasProvider gasProvider = function.getGasProvider();
 
         TransactionReceipt receipt = send(contractAddress, function.getEncodeData(), weiValue,
                 gasProvider.getGasPrice(),
@@ -273,9 +229,8 @@ public abstract class PlatOnContract extends ManagedTransaction {
             PlatOnFunction function, BigInteger weiValue)
             throws TransactionException, IOException {
 
-        if (gasProvider == null) {
-            gasProvider = function.getGasProvider();
-        }
+        GasProvider gasProvider = function.getGasProvider();
+
         return sendPlatonRawTransaction(contractAddress, function.getEncodeData(), weiValue,
                 gasProvider.getGasPrice(),
                 gasProvider.getGasLimit());
@@ -359,7 +314,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
     }
 
     protected RemoteCall<BaseResponse> executeRemoteCallTransactionWithFunctionType(PlatonSendTransaction ethSendTransaction, int functionType) {
-        return new RemoteCall<BaseResponse>(new Callable<BaseResponse>() {
+        return new RemoteCall<>(new Callable<BaseResponse>() {
             @Override
             public BaseResponse call() throws Exception {
                 return getTransactionResult(ethSendTransaction, functionType);
