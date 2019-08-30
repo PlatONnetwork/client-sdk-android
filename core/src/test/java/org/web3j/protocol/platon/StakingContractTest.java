@@ -16,6 +16,7 @@ import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.StakingParam;
+import org.web3j.platon.bean.UpdateStakingParam;
 import org.web3j.platon.contracts.StakingContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
@@ -127,7 +128,14 @@ public class StakingContractTest {
     @Test
     public void updateStakingInfo() {
         try {
-            BaseResponse baseResponse = stakingContract.updateStakingInfo(nodeId, benifitAddress, externalId, nodeName, "https://www.github.com/", details).send();
+            BaseResponse baseResponse = stakingContract.updateStakingInfo(new UpdateStakingParam.Builder()
+                    .setNodeId(nodeId)
+                    .setBenifitAddress(benifitAddress)
+                    .setExternalId(externalId)
+                    .setNodeName(nodeName)
+                    .setWebSite("https://www.github.com/")
+                    .setDetails(details)
+                    .build()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();

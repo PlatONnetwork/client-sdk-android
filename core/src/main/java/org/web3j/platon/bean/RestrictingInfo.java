@@ -1,6 +1,6 @@
 package org.web3j.platon.bean;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 
@@ -27,8 +27,8 @@ public class RestrictingInfo {
         return amount;
     }
 
-    public void setAmount(BigInteger amount) {
-        this.amount = amount;
+    public void setAmount(String amount) {
+        this.amount = Numeric.decodeQuantity(amount);
     }
 
     @Override

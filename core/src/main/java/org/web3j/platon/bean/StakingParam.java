@@ -6,7 +6,6 @@ import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Int256;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint32;
-import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.utils.Numeric;
 

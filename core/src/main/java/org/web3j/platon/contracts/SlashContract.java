@@ -52,29 +52,12 @@ public class SlashContract extends PlatOnContract {
         return new SlashContract(ContractAddress.SLASH_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
-    /**
-     * sendRawTransaction 使用自定义的gasProvider
-     *
-     * @param web3j
-     * @param credentials
-     * @param contractGasProvider
-     * @param chainId
-     * @return
-     */
-    public static SlashContract load(Web3j web3j, Credentials credentials, GasProvider contractGasProvider, String chainId) {
-        return new SlashContract(ContractAddress.SLASH_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
-    }
-
     private SlashContract(String contractAddress, Web3j web3j) {
         super(contractAddress, web3j);
     }
 
     private SlashContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials) {
-        super(contractAddress, chainId, web3j, credentials, null);
-    }
-
-    private SlashContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials, GasProvider gasProvider) {
-        super(contractAddress, chainId, web3j, credentials, gasProvider);
+        super(contractAddress, chainId, web3j, credentials);
     }
 
     /**
@@ -86,6 +69,19 @@ public class SlashContract extends PlatOnContract {
     public RemoteCall<BaseResponse> reportDoubleSign(String data) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Utf8String(data)));
+        return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+    /**
+     * 举报双签
+     *
+     * @param data 证据的json值
+     * @param gasProvider
+     * @return
+     */
+    public RemoteCall<BaseResponse> reportDoubleSign(String data,GasProvider gasProvider) {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
+                Arrays.asList(new Utf8String(data)),gasProvider);
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
@@ -134,6 +130,19 @@ public class SlashContract extends PlatOnContract {
     }
 
     /**
+     * 举报双签
+     *
+     * @param data 证据的json值
+     * @param gasProvider
+     * @return
+     */
+    public RemoteCall<PlatonSendTransaction> reportDoubleSignReturnTransaction(String data,GasProvider gasProvider) {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
+                Arrays.asList(new Utf8String(data)),gasProvider);
+        return executeRemoteCallPlatonTransaction(function);
+    }
+
+    /**
      * @param ethSendTransaction
      * @return
      */
@@ -154,6 +163,47 @@ public class SlashContract extends PlatOnContract {
         }
 
         RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = reportDoubleSignReturnTransaction(data);
+
+        try {
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            if (transactionCallback != null) {
+                transactionCallback.onTransaction(ethSendTransaction);
+            }
+            BaseResponse baseResponse = getReportDoubleSignResult(ethSendTransaction).sendAsync().get();
+            if (transactionCallback != null) {
+                if (baseResponse.isStatusOk()) {
+                    transactionCallback.onTransactionSucceed(baseResponse);
+                } else {
+                    transactionCallback.onTransactionFailed(baseResponse);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        }
+    }
+
+    /**
+     * 异步举报双签
+     *
+     * @param data                证据的json值
+     * @param gasProvider
+     * @param transactionCallback
+     */
+    public void asyncReportDoubleSignResult(String data, GasProvider gasProvider,TransactionCallback transactionCallback) {
+
+        if (transactionCallback != null) {
+            transactionCallback.onTransactionStart();
+        }
+
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = reportDoubleSignReturnTransaction(data,gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();

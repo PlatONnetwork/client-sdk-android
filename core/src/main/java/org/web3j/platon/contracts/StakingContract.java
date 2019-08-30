@@ -15,6 +15,7 @@ import org.web3j.platon.TransactionCallback;
 import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.platon.bean.StakingParam;
+import org.web3j.platon.bean.UpdateStakingParam;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
@@ -41,10 +42,6 @@ public class StakingContract extends PlatOnContract {
         return new StakingContract(ContractAddress.STAKING_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
-    public static StakingContract load(Web3j web3j, Credentials credentials, GasProvider contractGasProvider, String chainId) {
-        return new StakingContract(ContractAddress.STAKING_CONTRACT_ADDRESS, chainId, web3j, credentials, contractGasProvider);
-    }
-
     /**
      * 查询操作
      *
@@ -68,19 +65,6 @@ public class StakingContract extends PlatOnContract {
     }
 
     /**
-     * sendRawTransaction 使用用户自定义的gasProvider
-     *
-     * @param contractAddress
-     * @param chainId
-     * @param web3j
-     * @param credentials
-     * @param gasProvider
-     */
-    protected StakingContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials, GasProvider gasProvider) {
-        super(contractAddress, chainId, web3j, credentials, gasProvider);
-    }
-
-    /**
      * 发起质押
      *
      * @param stakingParam
@@ -93,6 +77,23 @@ public class StakingContract extends PlatOnContract {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.STAKING_FUNC_TYPE,
                 tempStakingParam.getSubmitInputParameters());
+        return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+    /**
+     * 发起质押
+     *
+     * @param stakingParam
+     * @param gasProvider
+     * @return
+     * @see StakingParam
+     */
+    public RemoteCall<BaseResponse> staking(StakingParam stakingParam, GasProvider gasProvider) throws Exception {
+        StakingParam tempStakingParam = stakingParam.clone();
+        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
+        final PlatOnFunction function = new PlatOnFunction(
+                FunctionType.STAKING_FUNC_TYPE,
+                tempStakingParam.getSubmitInputParameters(), gasProvider);
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
@@ -165,6 +166,23 @@ public class StakingContract extends PlatOnContract {
     }
 
     /**
+     * 发起质押
+     *
+     * @param stakingParam
+     * @param gasProvider
+     * @return
+     * @see StakingParam
+     */
+    public RemoteCall<PlatonSendTransaction> stakingReturnTransaction(StakingParam stakingParam, GasProvider gasProvider) throws Exception {
+        StakingParam tempStakingParam = stakingParam.clone();
+        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
+        final PlatOnFunction function = new PlatOnFunction(
+                FunctionType.STAKING_FUNC_TYPE,
+                stakingParam.getSubmitInputParameters(), gasProvider);
+        return executeRemoteCallPlatonTransaction(function);
+    }
+
+    /**
      * 获取质押结果
      *
      * @param ethSendTransaction
@@ -217,6 +235,51 @@ public class StakingContract extends PlatOnContract {
         }
     }
 
+
+    /**
+     * 异步获取质押结果
+     *
+     * @param stakingParam
+     * @param gasProvider
+     * @param transactionCallback
+     */
+    public void asyncStaking(StakingParam stakingParam, GasProvider gasProvider, TransactionCallback<BaseResponse> transactionCallback) throws Exception {
+
+        if (transactionCallback != null) {
+            transactionCallback.onTransactionStart();
+        }
+
+        StakingParam tempStakingParam = stakingParam.clone();
+        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
+
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = stakingReturnTransaction(tempStakingParam, gasProvider);
+
+        try {
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            if (transactionCallback != null) {
+                transactionCallback.onTransaction(ethSendTransaction);
+            }
+            BaseResponse baseResponse = getStakingResult(ethSendTransaction).sendAsync().get();
+            if (transactionCallback != null) {
+                if (baseResponse.isStatusOk()) {
+                    transactionCallback.onTransactionSucceed(baseResponse);
+                } else {
+                    transactionCallback.onTransactionFailed(baseResponse);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        }
+    }
+
     /**
      * 撤销质押
      *
@@ -226,6 +289,19 @@ public class StakingContract extends PlatOnContract {
     public RemoteCall<BaseResponse> unStaking(String nodeId) {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_STAKING_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(nodeId))));
+        return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+    /**
+     * 撤销质押
+     *
+     * @param nodeId      64bytes 被质押的节点Id(也叫候选人的节点Id)
+     * @param gasProvider
+     * @return
+     */
+    public RemoteCall<BaseResponse> unStaking(String nodeId, GasProvider gasProvider) {
+        final PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_STAKING_FUNC_TYPE,
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(nodeId))), gasProvider);
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
@@ -254,6 +330,19 @@ public class StakingContract extends PlatOnContract {
     public RemoteCall<PlatonSendTransaction> unStakingReturnTransaction(String nodeId) {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_STAKING_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(nodeId))));
+        return executeRemoteCallPlatonTransaction(function);
+    }
+
+    /**
+     * 撤销质押
+     *
+     * @param nodeId      64bytes 被质押的节点Id(也叫候选人的节点Id)
+     * @param gasProvider
+     * @return
+     */
+    public RemoteCall<PlatonSendTransaction> unStakingReturnTransaction(String nodeId, GasProvider gasProvider) {
+        final PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_STAKING_FUNC_TYPE,
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(nodeId))), gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
@@ -306,50 +395,83 @@ public class StakingContract extends PlatOnContract {
         }
     }
 
+
+    /**
+     * 异步撤销质押
+     *
+     * @param nodeId 64bytes 被质押的节点Id(也叫候选人的节点Id)
+     */
+    public void asyncUnStaking(String nodeId, GasProvider gasProvider, TransactionCallback transactionCallback) {
+
+        if (transactionCallback != null) {
+            transactionCallback.onTransactionStart();
+        }
+
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = unStakingReturnTransaction(nodeId, gasProvider);
+
+        try {
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            if (transactionCallback != null) {
+                transactionCallback.onTransaction(ethSendTransaction);
+            }
+            BaseResponse baseResponse = getUnStakingResult(ethSendTransaction).sendAsync().get();
+            if (transactionCallback != null) {
+                if (baseResponse.isStatusOk()) {
+                    transactionCallback.onTransactionSucceed(baseResponse);
+                } else {
+                    transactionCallback.onTransactionFailed(baseResponse);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        }
+    }
+
     /**
      * 更新质押信息
      *
-     * @param nodeId
-     * @param benifitAddress
-     * @param externalId
-     * @param nodeName
-     * @param webSite
-     * @param details
+     * @param updateStakingParam
      * @return
      */
-    public RemoteCall<BaseResponse> updateStakingInfo(String nodeId, String benifitAddress, String externalId, String nodeName, String webSite, String details) {
+    public RemoteCall<BaseResponse> updateStakingInfo(UpdateStakingParam updateStakingParam) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.UPDATE_STAKING_INFO_FUNC_TYPE,
-                Arrays.asList(new BytesType(Numeric.hexStringToByteArray(benifitAddress)),
-                        new BytesType(Numeric.hexStringToByteArray(nodeId)),
-                        new Utf8String(externalId),
-                        new Utf8String(nodeName),
-                        new Utf8String(webSite),
-                        new Utf8String(details)));
+                updateStakingParam.getSubmitInputParameters());
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
     /**
-     * 获取
+     * 更新质押信息
      *
-     * @param nodeId
-     * @param benifitAddress
-     * @param externalId
-     * @param nodeName
-     * @param webSite
-     * @param details
+     * @param updateStakingParam
+     * @param gasProvider
      * @return
      */
-    public Observable<GasProvider> getUpdateStakingInfo(String nodeId, String benifitAddress, String externalId, String nodeName, String webSite, String details) {
+    public RemoteCall<BaseResponse> updateStakingInfo(UpdateStakingParam updateStakingParam, GasProvider gasProvider) {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.UPDATE_STAKING_INFO_FUNC_TYPE,
+                updateStakingParam.getSubmitInputParameters(), gasProvider);
+        return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+    /**
+     * 获取更新质押信息gasProvider
+     *
+     * @param updateStakingParam
+     * @return
+     */
+    public Observable<GasProvider> getUpdateStakingInfoGasProvider(UpdateStakingParam updateStakingParam) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
             public GasProvider call() throws Exception {
                 return new PlatOnFunction(FunctionType.UPDATE_STAKING_INFO_FUNC_TYPE,
-                        Arrays.asList(new BytesType(Numeric.hexStringToByteArray(benifitAddress)),
-                                new BytesType(Numeric.hexStringToByteArray(nodeId)),
-                                new Utf8String(externalId),
-                                new Utf8String(nodeName),
-                                new Utf8String(webSite),
-                                new Utf8String(details))).getGasProvider();
+                        updateStakingParam.getSubmitInputParameters()).getGasProvider();
             }
         });
     }
@@ -357,23 +479,27 @@ public class StakingContract extends PlatOnContract {
     /**
      * 更新质押信息
      *
-     * @param nodeId         被质押的节点Id(也叫候选人的节点Id)
-     * @param benifitAddress 用于接受出块奖励和质押奖励的收益账户
-     * @param externalId     外部Id(有长度限制，给第三方拉取节点描述的Id)
-     * @param nodeName       被质押节点的名称(有长度限制，表示该节点的名称)
-     * @param webSite        节点的第三方主页(有长度限制，表示该节点的主页)
-     * @param details        节点的第三方主页(有长度限制，表示该节点的主页)
+     * @param updateStakingParam
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> updateStakingInfoReturnTransaction(String nodeId, String benifitAddress, String externalId, String nodeName, String webSite, String details) {
+    public RemoteCall<PlatonSendTransaction> updateStakingInfoReturnTransaction(UpdateStakingParam updateStakingParam) {
 
         PlatOnFunction function = new PlatOnFunction(FunctionType.UPDATE_STAKING_INFO_FUNC_TYPE,
-                Arrays.asList(new BytesType(Numeric.hexStringToByteArray(benifitAddress)),
-                        new BytesType(Numeric.hexStringToByteArray(nodeId)),
-                        new Utf8String(externalId),
-                        new Utf8String(nodeName),
-                        new Utf8String(webSite),
-                        new Utf8String(details)));
+                updateStakingParam.getSubmitInputParameters());
+        return executeRemoteCallPlatonTransaction(function);
+    }
+
+    /**
+     * 更新质押信息
+     *
+     * @param updateStakingParam
+     * @param gasProvider
+     * @return
+     */
+    public RemoteCall<PlatonSendTransaction> updateStakingInfoReturnTransaction(UpdateStakingParam updateStakingParam, GasProvider gasProvider) {
+
+        PlatOnFunction function = new PlatOnFunction(FunctionType.UPDATE_STAKING_INFO_FUNC_TYPE,
+                updateStakingParam.getSubmitInputParameters(), gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
@@ -390,21 +516,57 @@ public class StakingContract extends PlatOnContract {
     /**
      * 异步更新质押信息
      *
-     * @param nodeId              被质押的节点Id(也叫候选人的节点Id)
-     * @param benifitAddress      用于接受出块奖励和质押奖励的收益账户
-     * @param externalId          外部Id(有长度限制，给第三方拉取节点描述的Id)
-     * @param nodeName            被质押节点的名称(有长度限制，表示该节点的名称)
-     * @param webSite             节点的第三方主页(有长度限制，表示该节点的主页)
-     * @param details             节点的第三方主页(有长度限制，表示该节点的主页)
+     * @param updateStakingParam
      * @param transactionCallback
      */
-    public void asyncUpdateStakingInfo(String nodeId, String benifitAddress, String externalId, String nodeName, String webSite, String details, TransactionCallback transactionCallback) {
+    public void asyncUpdateStakingInfo(UpdateStakingParam updateStakingParam, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = updateStakingInfoReturnTransaction(nodeId, benifitAddress, externalId, nodeName, webSite, details);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = updateStakingInfoReturnTransaction(updateStakingParam);
+
+        try {
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            if (transactionCallback != null) {
+                transactionCallback.onTransaction(ethSendTransaction);
+            }
+            BaseResponse baseResponse = getUpdateStakingInfoResult(ethSendTransaction).sendAsync().get();
+            if (transactionCallback != null) {
+                if (baseResponse.isStatusOk()) {
+                    transactionCallback.onTransactionSucceed(baseResponse);
+                } else {
+                    transactionCallback.onTransactionFailed(baseResponse);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        }
+    }
+
+    /**
+     * 异步更新质押信息
+     *
+     * @param updateStakingParam
+     * @param gasProvider
+     * @param transactionCallback
+     */
+    public void asyncUpdateStakingInfo(UpdateStakingParam updateStakingParam, GasProvider gasProvider, TransactionCallback transactionCallback) {
+
+        if (transactionCallback != null) {
+            transactionCallback.onTransactionStart();
+        }
+
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = updateStakingInfoReturnTransaction(updateStakingParam, gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -449,6 +611,23 @@ public class StakingContract extends PlatOnContract {
     }
 
     /**
+     * 增持质押
+     *
+     * @param nodeId            被质押的节点Id(也叫候选人的节点Id)
+     * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做质押，0: 自由金额； 1: 锁仓金额
+     * @param amount            增持的von
+     * @param gasProvider
+     * @return
+     */
+    public RemoteCall<BaseResponse> addStaking(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, GasProvider gasProvider) {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.ADD_STAKING_FUNC_TYPE,
+                Arrays.asList(new BytesType(Numeric.hexStringToByteArray(nodeId)),
+                        new Uint16(stakingAmountType.getValue()),
+                        new Uint256(amount)));
+        return executeRemoteCallTransactionWithFunctionType(function);
+    }
+
+    /**
      * 获取增持质押gasProvider
      *
      * @param nodeId
@@ -485,6 +664,23 @@ public class StakingContract extends PlatOnContract {
     }
 
     /**
+     * 增持质押
+     *
+     * @param nodeId            被质押的节点Id(也叫候选人的节点Id)
+     * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做质押，0: 自由金额； 1: 锁仓金额
+     * @param amount            增持的von
+     * @param gasProvider       gasProvider
+     * @return
+     */
+    public RemoteCall<PlatonSendTransaction> addStakingReturnTransaction(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, GasProvider gasProvider) {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.ADD_STAKING_FUNC_TYPE,
+                Arrays.asList(new BytesType(Numeric.hexStringToByteArray(nodeId)),
+                        new Uint16(stakingAmountType.getValue()),
+                        new Uint256(amount)),gasProvider);
+        return executeRemoteCallPlatonTransaction(function);
+    }
+
+    /**
      * 获取增持质押的结果
      *
      * @param ethSendTransaction
@@ -506,6 +702,46 @@ public class StakingContract extends PlatOnContract {
         }
 
         RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = addStakingReturnTransaction(nodeId, stakingAmountType, amount);
+
+        try {
+            PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
+            if (transactionCallback != null) {
+                transactionCallback.onTransaction(ethSendTransaction);
+            }
+            BaseResponse baseResponse = getAddStakingResult(ethSendTransaction).sendAsync().get();
+            if (transactionCallback != null) {
+                if (baseResponse.isStatusOk()) {
+                    transactionCallback.onTransactionSucceed(baseResponse);
+                } else {
+                    transactionCallback.onTransactionFailed(baseResponse);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            if (transactionCallback != null) {
+                transactionCallback.onTransactionFailed(new BaseResponse(e));
+            }
+        }
+    }
+
+    /**
+     * @param nodeId              被质押的节点Id(也叫候选人的节点Id)
+     * @param stakingAmountType   表示使用账户自由金额还是账户的锁仓金额做质押，0: 自由金额； 1: 锁仓金额
+     * @param amount              增持的von
+     * @param gasProvider
+     * @param transactionCallback
+     */
+    public void asyncAddStaking(String nodeId, StakingAmountType stakingAmountType, BigInteger amount,GasProvider gasProvider, TransactionCallback transactionCallback) {
+        if (transactionCallback != null) {
+            transactionCallback.onTransactionStart();
+        }
+
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = addStakingReturnTransaction(nodeId, stakingAmountType, amount,gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();

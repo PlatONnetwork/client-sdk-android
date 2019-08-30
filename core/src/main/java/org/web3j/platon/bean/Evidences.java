@@ -40,6 +40,13 @@ public class Evidences {
         this.duplicateViewChange = duplicateViewChange;
     }
 
+    public int getEvidencesSize() {
+        int duplicatePrepareSize = duplicatePrepare != null ? duplicatePrepare.size() : 0;
+        int duplicateVoteSize = duplicateVote != null ? duplicateVote.size() : 0;
+        int dulicateViewChangeSize = duplicateViewChange != null ? duplicateViewChange.size() : 0;
+        return duplicatePrepareSize + duplicateVoteSize + dulicateViewChangeSize;
+    }
+
     @Override
     public String toString() {
         return "Evidences{" +
