@@ -64,10 +64,10 @@ public abstract class PlatOnContract extends ManagedTransaction {
      * @param web3j
      * @param credentials
      */
-    protected PlatOnContract(String contractAddress, String chainId,
+    protected PlatOnContract(String contractAddress, long chainId,
                              Web3j web3j, Credentials credentials) {
 
-        this(contractAddress, web3j, new RawTransactionManager(web3j, credentials, new Byte(chainId)));
+        this(contractAddress, web3j, new RawTransactionManager(web3j, credentials, chainId));
     }
 
     /**
@@ -243,8 +243,11 @@ public abstract class PlatOnContract extends ManagedTransaction {
                 }));
 
         List<EventValuesWithLog> eventValuesWithLogList = extractEventParametersWithLog(event, transactionReceipt);
-
-        return JSONUtil.parseObject(getResponseFromLog(transactionReceipt, eventValuesWithLogList), BaseResponse.class);
+        BaseResponse result = JSONUtil.parseObject(getResponseFromLog(transactionReceipt, eventValuesWithLogList), BaseResponse.class);
+        if (result != null) {
+            result.transactionReceipt = transactionReceipt;
+        }
+        return result;
     }
 
     private String getResponseFromLog(TransactionReceipt transactionReceipt, List<EventValuesWithLog> eventValuesWithLogList) throws TransactionException {

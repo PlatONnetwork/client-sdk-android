@@ -38,7 +38,7 @@ public class DelegateContractTest {
         credentials = Credentials.create("0x9614c2b32f2d5d3421591ab3ffc03ac66c831fb6807b532f6e3a8e7aac31f1d9");
 
         delegateContract = DelegateContract.load(web3j,
-                credentials, "100");
+                credentials, 100);
     }
 
     @Test

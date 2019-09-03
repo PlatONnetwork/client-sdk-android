@@ -38,7 +38,7 @@ public class StakingContract extends PlatOnContract {
         return new StakingContract(ContractAddress.STAKING_CONTRACT_ADDRESS, web3j);
     }
 
-    public static StakingContract load(Web3j web3j, Credentials credentials, String chainId) {
+    public static StakingContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new StakingContract(ContractAddress.STAKING_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
@@ -60,7 +60,7 @@ public class StakingContract extends PlatOnContract {
      * @param web3j
      * @param credentials
      */
-    private StakingContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials) {
+    private StakingContract(String contractAddress, long chainId, Web3j web3j, Credentials credentials) {
         super(contractAddress, chainId, web3j, credentials);
     }
 

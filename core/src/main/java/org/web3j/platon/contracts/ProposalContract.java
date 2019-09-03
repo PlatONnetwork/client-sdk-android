@@ -55,7 +55,7 @@ public class ProposalContract extends PlatOnContract {
      * @param chainId
      * @return
      */
-    public static ProposalContract load(Web3j web3j, Credentials credentials, String chainId) {
+    public static ProposalContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new ProposalContract(ContractAddress.PROPOSAL_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
@@ -63,7 +63,7 @@ public class ProposalContract extends PlatOnContract {
         super(contractAddress, web3j);
     }
 
-    private ProposalContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials) {
+    private ProposalContract(String contractAddress, long chainId, Web3j web3j, Credentials credentials) {
         super(contractAddress, chainId, web3j, credentials);
     }
 

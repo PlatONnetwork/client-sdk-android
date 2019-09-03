@@ -49,7 +49,7 @@ public class DelegateContract extends PlatOnContract {
      * @param chainId
      * @return
      */
-    public static DelegateContract load(Web3j web3j, Credentials credentials, String chainId) {
+    public static DelegateContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new DelegateContract(ContractAddress.DELEGATE_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
@@ -57,7 +57,7 @@ public class DelegateContract extends PlatOnContract {
         super(contractAddress, web3j);
     }
 
-    private DelegateContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials) {
+    private DelegateContract(String contractAddress, long chainId, Web3j web3j, Credentials credentials) {
         super(contractAddress, chainId, web3j, credentials);
     }
 

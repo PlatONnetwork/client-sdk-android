@@ -48,7 +48,7 @@ public class SlashContract extends PlatOnContract {
      * @param chainId
      * @return
      */
-    public static SlashContract load(Web3j web3j, Credentials credentials, String chainId) {
+    public static SlashContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new SlashContract(ContractAddress.SLASH_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
@@ -56,7 +56,7 @@ public class SlashContract extends PlatOnContract {
         super(contractAddress, web3j);
     }
 
-    private SlashContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials) {
+    private SlashContract(String contractAddress, long chainId, Web3j web3j, Credentials credentials) {
         super(contractAddress, chainId, web3j, credentials);
     }
 
