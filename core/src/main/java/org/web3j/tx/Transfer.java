@@ -3,16 +3,26 @@ package org.web3j.tx;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import org.spongycastle.util.encoders.Hex;
+import org.web3j.abi.PlatOnTypeEncoder;
+import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.rlp.RlpEncoder;
+import org.web3j.rlp.RlpList;
+import org.web3j.rlp.RlpString;
+import org.web3j.rlp.RlpType;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
+import org.web3j.utils.PlatOnUtil;
 
 /**
  * Class for performing Ether transactions on the Ethereum blockchain.
@@ -31,12 +41,11 @@ public class Transfer extends ManagedTransaction {
      * recommended via {@link Transfer#sendFunds(String, BigDecimal, Convert.Unit)}.
      *
      * @param toAddress destination address
-     * @param value amount to send
-     * @param unit of specified send
-     *
-     * @return the transaction receipt
-     * @throws ExecutionException if the computation threw an
-     *                            exception
+     * @param value     amount to send
+     * @param unit      of specified send
+     * @return {@link Optional} containing our transaction receipt
+     * @throws ExecutionException   if the computation threw an
+     *                              exception
      * @throws InterruptedException if the current thread was interrupted
      *                              while waiting
      * @throws TransactionException if the transaction was not mined while waiting
@@ -49,9 +58,8 @@ public class Transfer extends ManagedTransaction {
         return send(toAddress, value, unit, gasPrice, GAS_LIMIT);
     }
 
-    private TransactionReceipt send(
-            String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasPrice,
-            BigInteger gasLimit) throws IOException, InterruptedException,
+    private TransactionReceipt send(String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasPrice,
+                                    BigInteger gasLimit) throws IOException, InterruptedException,
             TransactionException {
 
         BigDecimal weiValue = Convert.toVon(value, unit);
@@ -62,23 +70,23 @@ public class Transfer extends ManagedTransaction {
         }
 
         String resolvedAddress = ensResolver.resolve(toAddress);
-        return send(resolvedAddress, "", weiValue.toBigIntegerExact(), gasPrice, gasLimit);
+
+        List<RlpType> result = new ArrayList<>();
+        result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(0)))));
+        String data = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
+
+        return send(resolvedAddress, data, weiValue.toBigIntegerExact(), gasPrice, gasLimit);
     }
 
     public static RemoteCall<TransactionReceipt> sendFunds(
-            final Web3j web3j, final Credentials credentials,
-            final String toAddress, final BigDecimal value, final Convert.Unit unit)
-            throws InterruptedException,
+            Web3j web3j, Credentials credentials, String chainId,
+            String toAddress, BigDecimal value, Convert.Unit unit) throws InterruptedException,
             IOException, TransactionException {
 
-        final TransactionManager transactionManager = new RawTransactionManager(web3j, credentials);
+        TransactionManager transactionManager = new RawTransactionManager(web3j, credentials, new Byte(chainId));
 
-        return new RemoteCall<TransactionReceipt>(new Callable<TransactionReceipt>() {
-            @Override
-            public TransactionReceipt call() throws Exception {
-                return new Transfer(web3j, transactionManager).send(toAddress, value, unit);
-            }
-        });
+        return new RemoteCall<>(() ->
+                new Transfer(web3j, transactionManager).send(toAddress, value, unit));
     }
 
     /**
@@ -86,29 +94,19 @@ public class Transfer extends ManagedTransaction {
      * fund transfers. For multiple, create an instance.
      *
      * @param toAddress destination address
-     * @param value amount to send
-     * @param unit of specified send
-     *
+     * @param value     amount to send
+     * @param unit      of specified send
      * @return {@link RemoteCall} containing executing transaction
      */
     public RemoteCall<TransactionReceipt> sendFunds(
-            final String toAddress, final BigDecimal value, final Convert.Unit unit) {
-        return new RemoteCall<TransactionReceipt>(new Callable<TransactionReceipt>() {
-            @Override
-            public TransactionReceipt call() throws Exception {
-                return Transfer.this.send(toAddress, value, unit);
-            }
-        });
+            String toAddress, BigDecimal value, Convert.Unit unit) {
+        return new RemoteCall<>(() -> send(toAddress, value, unit));
     }
 
     public RemoteCall<TransactionReceipt> sendFunds(
-            final String toAddress, final BigDecimal value, final Convert.Unit unit,
-            final BigInteger gasPrice, final BigInteger gasLimit) {
-        return new RemoteCall<TransactionReceipt>(new Callable<TransactionReceipt>() {
-            @Override
-            public TransactionReceipt call() throws Exception {
-                return Transfer.this.send(toAddress, value, unit, gasPrice, gasLimit);
-            }
-        });
+            String toAddress, BigDecimal value, Convert.Unit unit, BigInteger gasPrice,
+            BigInteger gasLimit) {
+        return new RemoteCall<>(() -> send(toAddress, value, unit, gasPrice, gasLimit));
     }
+
 }

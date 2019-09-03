@@ -33,7 +33,7 @@ public class ProposalContractTest {
         credentials = Credentials.create("0xa7f1d33a30c1e8b332443825f2209755c52086d0a88b084301a6727d9f84bf32");
 
         proposalContract = ProposalContract.load(web3j,
-                credentials, "100");
+                credentials, 100);
     }
 
     @Test

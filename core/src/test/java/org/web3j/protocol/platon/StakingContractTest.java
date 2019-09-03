@@ -52,7 +52,7 @@ public class StakingContractTest {
     private static final int SIZE_THRESHOLD = 56;
 
     //    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.88:6788"));
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.112.120:8222"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:443/rpc"));
 
     private StakingContract stakingContract;
 
@@ -72,11 +72,11 @@ public class StakingContractTest {
     public void init() {
 
 //        credentials = Credentials.create("0xa11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7");
-        credentials = Credentials.create("0xc783df0e98baf34f2ed791f6087be8e3f55fe9c4e4687e0ddc30a37abc15b287");
+        credentials = Credentials.create("0xa689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b");
 
         stakingContract = StakingContract.load(
                 web3j,
-                credentials, "102");
+                credentials, 203);
 
     }
 
@@ -84,10 +84,12 @@ public class StakingContractTest {
     @Test
     public void staking() throws Exception {
 
-//        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("a11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7")));
-//        String toAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("9d8dc0c4895d3bc1df7e557dda91089b539fe681807dedcf458850b02d8e7790")));
+//        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("a689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b")));
+//        String toAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("6fe419582271a4dcf01c51b89195b77b228377fde4bde6e04ef126a0b4373f79")));
+//
+//        BigDecimal amount = Convert.toVon(BigDecimal.valueOf(1), Convert.Unit.LAT);
 //////
-//        String hash = sendTransaction("a11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7", toAddress, new BigDecimal("6000000000000000000000000"), 500000000000L, 210000L);
+//        String hash = sendTransaction("a11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7", toAddress, amount, 500000000000L, 210000L);
 ////
 //        try {
 //            PlatonGetBalance platonGetBalance = web3j.platonGetBalance("0x" + toAddress, DefaultBlockParameterName.LATEST).send();
@@ -98,13 +100,13 @@ public class StakingContractTest {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//
-//        try {
-//            PlatonBlock platonBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
-//            System.out.println(platonBlock.getBlock().getNumberRaw());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
+        try {
+            PlatonBlock platonBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+            System.out.println(platonBlock.getBlock().getNumberRaw());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
@@ -190,7 +192,7 @@ public class StakingContractTest {
             RawTransaction rawTransaction = RawTransaction.createTransaction(getNonce(), GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
                     txType);
 
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("100"), credentials);
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, 203, credentials);
             String hexValue = Numeric.toHexString(signedMessage);
 
             PlatonSendTransaction transaction = web3j.platonSendRawTransaction(hexValue).send();

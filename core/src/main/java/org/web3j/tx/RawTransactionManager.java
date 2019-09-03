@@ -25,9 +25,9 @@ public class RawTransactionManager extends TransactionManager {
     private final Web3j web3j;
     final Credentials credentials;
 
-    private final byte chainId;
+    private final long chainId;
 
-    public RawTransactionManager(Web3j web3j, Credentials credentials, byte chainId) {
+    public RawTransactionManager(Web3j web3j, Credentials credentials, long chainId) {
         super(web3j, credentials.getAddress());
 
         this.web3j = web3j;

@@ -52,7 +52,7 @@ public class RestrictingPlanContract extends PlatOnContract {
      * @param chainId
      * @return
      */
-    public static RestrictingPlanContract load(Web3j web3j, Credentials credentials, String chainId) {
+    public static RestrictingPlanContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new RestrictingPlanContract(ContractAddress.RESTRICTING_PLAN_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
 
@@ -60,7 +60,7 @@ public class RestrictingPlanContract extends PlatOnContract {
         super(contractAddress, web3j);
     }
 
-    private RestrictingPlanContract(String contractAddress, String chainId, Web3j web3j, Credentials credentials) {
+    private RestrictingPlanContract(String contractAddress, long chainId, Web3j web3j, Credentials credentials) {
         super(contractAddress, chainId, web3j, credentials);
     }
 
