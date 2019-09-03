@@ -277,7 +277,7 @@ public class DelegateContract extends PlatOnContract {
                 Arrays.asList(new Uint64(stakingBlockNum)
                         , new BytesType(Numeric.hexStringToByteArray(nodeId))
                         , new Uint256(amount)));
-        return executeRemoteCallTransactionWithFunctionType(function, amount);
+        return executeRemoteCallTransactionWithFunctionType(function);
     }
 
     /**
@@ -294,7 +294,7 @@ public class DelegateContract extends PlatOnContract {
                 Arrays.asList(new Uint64(stakingBlockNum)
                         , new BytesType(Numeric.hexStringToByteArray(nodeId))
                         , new Uint256(amount)), gasProvider);
-        return executeRemoteCallTransactionWithFunctionType(function, amount);
+        return executeRemoteCallTransactionWithFunctionType(function);
     }
 
     /**
@@ -364,11 +364,11 @@ public class DelegateContract extends PlatOnContract {
      * @param gasProvider
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> unDelegateReturnTransaction(String nodeId, BigInteger stakingBlockNum, BigInteger amount,GasProvider gasProvider) {
+    public RemoteCall<PlatonSendTransaction> unDelegateReturnTransaction(String nodeId, BigInteger stakingBlockNum, BigInteger amount, GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
                         , new BytesType(Numeric.hexStringToByteArray(nodeId))
-                        , new Uint256(amount)),gasProvider);
+                        , new Uint256(amount)), gasProvider);
         return executeRemoteCallPlatonTransaction(function, amount);
     }
 
@@ -435,13 +435,13 @@ public class DelegateContract extends PlatOnContract {
      * @param gasProvider
      * @param transactionCallback
      */
-    public void asyncUnDelegate(String nodeId, BigInteger stakingBlockNum, BigInteger amount, GasProvider gasProvider,TransactionCallback transactionCallback) {
+    public void asyncUnDelegate(String nodeId, BigInteger stakingBlockNum, BigInteger amount, GasProvider gasProvider, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = unDelegateReturnTransaction(nodeId, stakingBlockNum, amount,gasProvider);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = unDelegateReturnTransaction(nodeId, stakingBlockNum, amount, gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
