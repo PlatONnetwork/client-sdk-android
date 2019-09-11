@@ -11,15 +11,6 @@ import java.util.Arrays;
 
 public class PlatOnFunctionFactory {
 
-
-    /**
-     * 创建转账实例
-     * @return
-     */
-    public static PlatOnFunction createTransferFunction() {
-        return new PlatOnFunction(FunctionType.TRANSFER_FUNC_TYPE);
-    }
-
     /**
      * 创建委托实例
      * @param nodeId
