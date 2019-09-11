@@ -8,6 +8,10 @@ import java.math.BigInteger;
 public class FunctionType {
 
     /**
+     * 普通转账
+     */
+    public static final int TRANSFER_FUNC_TYPE = 0;
+    /**
      * 发起质押
      */
     public static final int STAKING_FUNC_TYPE = 1000;
