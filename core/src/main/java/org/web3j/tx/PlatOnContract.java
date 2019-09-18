@@ -12,6 +12,7 @@ import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
+import org.web3j.platon.ErrorCode;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.platon.bean.ProgramVersion;
@@ -331,13 +332,14 @@ public abstract class PlatOnContract extends ManagedTransaction {
      * @return
      */
     public RemoteCall<BaseResponse<ProgramVersion>> getProgramVersion() {
-
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PROGRAM_VERSION);
         return new RemoteCall<BaseResponse<ProgramVersion>>(new Callable<BaseResponse<ProgramVersion>>() {
             @Override
             public BaseResponse<ProgramVersion> call() throws Exception {
-                BaseResponse baseResponse = executePatonCall(function, ensResolver.resolve(ContractAddress.PROPOSAL_CONTRACT_ADDRESS));
-                baseResponse.data = JSONUtil.parseObject((String) baseResponse.data, ProgramVersion.class);
+                ProgramVersion programVersion = web3j.getProgramVersion().send().getAdminProgramVersion();
+                BaseResponse<ProgramVersion> baseResponse = new BaseResponse<ProgramVersion>();
+                baseResponse.data = programVersion;
+                baseResponse.code = ErrorCode.SUCCESS;
                 return baseResponse;
             }
         });
