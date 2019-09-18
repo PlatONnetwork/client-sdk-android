@@ -1,6 +1,7 @@
 package org.web3j.protocol.core;
 
 import org.web3j.protocol.core.methods.request.ShhFilter;
+import org.web3j.protocol.core.methods.response.AdminProgramVersion;
 import org.web3j.protocol.core.methods.response.DbGetHex;
 import org.web3j.protocol.core.methods.response.DbGetString;
 import org.web3j.protocol.core.methods.response.DbPutHex;
@@ -163,4 +164,6 @@ public interface Platon {
     Request<?, ShhMessages> shhGetMessages(BigInteger filterId);
 
     Request<?, PlatonEvidences> platonEvidences();
+
+    public Request<?, AdminProgramVersion> getProgramVersion();
 }

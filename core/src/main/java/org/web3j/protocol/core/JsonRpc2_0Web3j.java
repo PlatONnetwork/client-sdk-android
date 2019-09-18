@@ -5,6 +5,7 @@ import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.request.ShhFilter;
 import org.web3j.protocol.core.methods.request.ShhPost;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.AdminProgramVersion;
 import org.web3j.protocol.core.methods.response.DbGetHex;
 import org.web3j.protocol.core.methods.response.DbGetString;
 import org.web3j.protocol.core.methods.response.DbPutHex;
@@ -649,5 +650,14 @@ public class JsonRpc2_0Web3j implements Web3j {
                 Collections.<String>emptyList(),
                 web3jService,
                 PlatonEvidences.class);
+    }
+
+    @Override
+    public Request<?, AdminProgramVersion> getProgramVersion() {
+        return new Request<>(
+                "admin_getProgramVersion",
+                Collections.<String>emptyList(),
+                web3jService,
+                AdminProgramVersion.class);
     }
 }
