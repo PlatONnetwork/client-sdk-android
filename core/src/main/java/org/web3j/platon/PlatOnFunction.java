@@ -217,27 +217,28 @@ public class PlatOnFunction {
 
         List<RlpType> result = new ArrayList<>();
 
-        result.add(RlpString.create(RlpEncoder.encode(RlpString.create(type))));
+        if (type != FunctionType.TRANSFER) {
+            result.add(RlpString.create(RlpEncoder.encode(RlpString.create(type))));
 
-        List<Type> parameters = inputParameters;
+            List<Type> parameters = inputParameters;
 
-        if (parameters != null && parameters.size() > 0) {
+            if (parameters != null && parameters.size() > 0) {
 
-            for (Type parameter : parameters) {
-                if (parameter instanceof IntType) {
-                    result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((IntType) parameter).getValue()))));
-                } else if (parameter instanceof BytesType) {
-                    result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((BytesType) parameter).getValue()))));
-                } else if (parameter instanceof Utf8String) {
-                    result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((Utf8String) parameter).getValue()))));
-                } else if (parameter instanceof CustomStaticArray) {
-                    result.add(((CustomStaticArray) parameter).getRlpEncodeData());
-                } else if (parameter instanceof CustomType) {
-                    result.add(((CustomType) parameter).getRlpEncodeData());
+                for (Type parameter : parameters) {
+                    if (parameter instanceof IntType) {
+                        result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((IntType) parameter).getValue()))));
+                    } else if (parameter instanceof BytesType) {
+                        result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((BytesType) parameter).getValue()))));
+                    } else if (parameter instanceof Utf8String) {
+                        result.add(RlpString.create(RlpEncoder.encode(RlpString.create(((Utf8String) parameter).getValue()))));
+                    } else if (parameter instanceof CustomStaticArray) {
+                        result.add(((CustomStaticArray) parameter).getRlpEncodeData());
+                    } else if (parameter instanceof CustomType) {
+                        result.add(((CustomType) parameter).getRlpEncodeData());
+                    }
                 }
             }
         }
-
         String data = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
         return data;
     }
