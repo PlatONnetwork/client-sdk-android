@@ -9,9 +9,6 @@ import org.web3j.platon.bean.Node;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.tx.PlatOnContract;
-import org.web3j.tx.ReadonlyTransactionManager;
-import org.web3j.tx.TransactionManager;
-import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.JSONUtil;
 
 import java.util.List;

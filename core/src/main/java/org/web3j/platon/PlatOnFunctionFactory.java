@@ -11,8 +11,21 @@ import java.util.Arrays;
 
 public class PlatOnFunctionFactory {
 
+    private PlatOnFunctionFactory() {
+
+    }
+
+    /**
+     * 创建
+     * @return
+     */
+    public static PlatOnFunction createTransferFunction() {
+        return new PlatOnFunction(FunctionType.TRANSFER);
+    }
+
     /**
      * 创建委托实例
+     *
      * @param nodeId
      * @param stakingAmountType
      * @param amount
@@ -27,6 +40,7 @@ public class PlatOnFunctionFactory {
 
     /**
      * 创建解除委托实例
+     *
      * @param nodeId
      * @param stakingBlockNum
      * @param amount

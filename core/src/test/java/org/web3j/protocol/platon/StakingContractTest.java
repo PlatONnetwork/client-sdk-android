@@ -53,7 +53,7 @@ public class StakingContractTest {
     private static final int SIZE_THRESHOLD = 56;
 
     //    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.88:6788"));
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:443/rpc"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:1000/rpc"));
 
     private StakingContract stakingContract;
 
@@ -73,11 +73,11 @@ public class StakingContractTest {
     public void init() {
 
 //        credentials = Credentials.create("0xa11859ce23effc663a9460e332ca09bd812acc390497f8dc7542b6938e13f8d7");
-        credentials = Credentials.create("0xa689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b");
+        credentials = Credentials.create("0x961bda67790709a870dc2cf03bcf7448b6803dff152443a62ad5065473432034");
 
         stakingContract = StakingContract.load(
                 web3j,
-                credentials, 203);
+                credentials, 101);
 
     }
 

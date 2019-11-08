@@ -126,13 +126,13 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 给提案投票
      *
-     * @param proposalID 提案ID
-     * @param verifier   投票验证人
-     * @param voteOption 投票选项
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption     投票选项
+     * @param proposalID     提案ID
+     * @param verifier       投票验证人
      * @return
      */
-    public RemoteCall<BaseResponse> vote(String proposalID, String verifier, VoteOption voteOption) throws Exception {
-        ProgramVersion programVersion = getProgramVersion().send().data;
+    public RemoteCall<BaseResponse> vote(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
                         new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
@@ -144,14 +144,14 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 给提案投票
      *
-     * @param proposalID  提案ID
-     * @param verifier    投票验证人
-     * @param voteOption  投票选项
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption     投票选项
      * @param gasProvider
+     * @param proposalID     提案ID
+     * @param verifier       投票验证人
      * @return
      */
-    public RemoteCall<BaseResponse> vote(String proposalID, String verifier, VoteOption voteOption, GasProvider gasProvider) throws Exception {
-        ProgramVersion programVersion = getProgramVersion().send().data;
+    public RemoteCall<BaseResponse> vote(ProgramVersion programVersion, VoteOption voteOption, GasProvider gasProvider, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
                         new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
@@ -163,66 +163,49 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 给提案投票
      *
-     * @param proposalID 提案ID
-     * @param verifier   投票验证人
-     * @param voteOption 投票选项
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption     投票选项
+     * @param proposalID     提案ID
+     * @param verifier       投票验证人
      * @return
      */
-    public Observable<GasProvider> getVoteProposalGasProvider(String proposalID, String verifier, VoteOption voteOption) {
-        return Observable.fromCallable(new Callable<ProgramVersion>() {
-            @Override
-            public ProgramVersion call() throws Exception {
-                return getProgramVersion().send().data;
-            }
-        }).map(new Func1<ProgramVersion, GasProvider>() {
-            @Override
-            public GasProvider call(ProgramVersion programVersion) {
-                return new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
-                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                                new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
-                                new Uint32(programVersion.getProgramVersion()),
-                                new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign())))).getGasProvider();
-            }
-        });
+    public GasProvider getVoteProposalGasProvider(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier) {
+        return new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                        new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign())))).getGasProvider();
     }
+
 
     /**
      * 获取提交投票提案的手续费
      *
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption     投票选项
      * @param gasPrice
      * @param proposalID
      * @param verifier
-     * @param voteOption
      * @return
      */
-    public Observable<BigInteger> getVoteProposalFeeAmount(BigInteger gasPrice, String proposalID, String verifier, VoteOption voteOption) {
+    public BigInteger getVoteProposalFeeAmount(ProgramVersion programVersion, VoteOption voteOption, BigInteger gasPrice, String proposalID, String verifier) {
 
-        return Observable.fromCallable(new Callable<ProgramVersion>() {
-            @Override
-            public ProgramVersion call() throws Exception {
-                return getProgramVersion().send().data;
-            }
-        }).map(new Func1<ProgramVersion, BigInteger>() {
-            @Override
-            public BigInteger call(ProgramVersion programVersion) {
-                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
-                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                                new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
-                                new Uint32(programVersion.getProgramVersion()),
-                                new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
-                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
-            }
-        });
+        PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                        new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
+        return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
     }
 
     /**
-     * @param proposalID 提案ID
-     * @param verifier   投票验证人
-     * @param voteOption 投票选项
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption     投票选项
+     * @param proposalID     提案ID
+     * @param verifier       投票验证人
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> voteReturnTransaction(String proposalID, String verifier, VoteOption voteOption) throws Exception {
-        ProgramVersion programVersion = getProgramVersion().send().data;
+    public RemoteCall<PlatonSendTransaction> voteReturnTransaction(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
                         new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
@@ -231,13 +214,13 @@ public class ProposalContract extends PlatOnContract {
     }
 
     /**
-     * @param proposalID 提案ID
-     * @param verifier   投票验证人
-     * @param voteOption 投票选项
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption     投票选项
+     * @param proposalID     提案ID
+     * @param verifier       投票验证人
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> voteReturnTransaction(String proposalID, String verifier, VoteOption voteOption, GasProvider gasProvider) throws Exception {
-        ProgramVersion programVersion = getProgramVersion().send().data;
+    public RemoteCall<PlatonSendTransaction> voteReturnTransaction(ProgramVersion programVersion, VoteOption voteOption, GasProvider gasProvider, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
                         new BytesType(Numeric.hexStringToByteArray(proposalID)), new Uint8(voteOption.getValue()),
@@ -257,18 +240,19 @@ public class ProposalContract extends PlatOnContract {
 
 
     /**
+     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param voteOption          投票选项
      * @param proposalID          提案ID
      * @param verifier            投票验证人
-     * @param voteOption          投票选项
      * @param transactionCallback
      */
-    public void asyncVote(String proposalID, String verifier, VoteOption voteOption, TransactionCallback transactionCallback) throws Exception {
+    public void asyncVote(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = voteReturnTransaction(proposalID, verifier, voteOption);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = voteReturnTransaction(programVersion, voteOption, proposalID, verifier);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -297,19 +281,20 @@ public class ProposalContract extends PlatOnContract {
     }
 
     /**
-     * @param proposalID          提案ID
-     * @param verifier            投票验证人
+     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
      * @param voteOption          投票选项
      * @param gasProvider
+     * @param proposalID          提案ID
+     * @param verifier            投票验证人
      * @param transactionCallback
      */
-    public void asyncVote(String proposalID, String verifier, VoteOption voteOption, GasProvider gasProvider, TransactionCallback transactionCallback) throws Exception {
+    public void asyncVote(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier, GasProvider gasProvider, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = voteReturnTransaction(proposalID, verifier, voteOption, gasProvider);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = voteReturnTransaction(programVersion, voteOption, gasProvider, proposalID, verifier);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -340,105 +325,92 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 版本声明
      *
-     * @param verifier 声明的节点，只能是验证人/候选人
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param verifier       声明的节点，只能是验证人/候选人
      * @return
      */
-    public RemoteCall<BaseResponse> declareVersion(String verifier) throws Exception {
-        ProgramVersion processVersion = getProgramVersion().send().data;
+    public RemoteCall<BaseResponse> declareVersion(ProgramVersion programVersion, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                        new Uint32(processVersion.getProgramVersion()),
-                        new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))));
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
     /**
      * 版本声明
      *
-     * @param verifier    声明的节点，只能是验证人/候选人
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param verifier       声明的节点，只能是验证人/候选人
      * @param gasProvider
      * @return
      */
-    public RemoteCall<BaseResponse> declareVersion(String verifier, GasProvider gasProvider) throws Exception {
-        ProgramVersion processVersion = getProgramVersion().send().data;
+    public RemoteCall<BaseResponse> declareVersion(ProgramVersion programVersion, GasProvider gasProvider, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                        new Uint32(processVersion.getProgramVersion()),
-                        new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))), gasProvider);
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))), gasProvider);
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
     /**
      * 获取版本声明的gasProvider
      *
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
      * @param verifier
      * @return
      */
-    public Observable<GasProvider> getDeclareVersionGasProvider(String verifier) {
-        return Observable.fromCallable(new Callable<GasProvider>() {
-            @Override
-            public GasProvider call() throws Exception {
-                ProgramVersion processVersion = getProgramVersion().send().data;
-                return new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
-                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                                new Uint32(processVersion.getProgramVersion()),
-                                new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign())))).getGasProvider();
-            }
-        });
+    public GasProvider getDeclareVersionGasProvider(ProgramVersion programVersion, String verifier) {
+        return new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign())))).getGasProvider();
     }
 
 
     /**
      * 获取版本声明的手续费
      *
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
      * @param gasPrice
      * @param verifier
      * @return
      */
-    public Observable<BigInteger> getDeclareVersionFeeAmount(BigInteger gasPrice, String verifier) {
+    public BigInteger getDeclareVersionFeeAmount(ProgramVersion programVersion, BigInteger gasPrice, String verifier) {
 
-        return Observable.fromCallable(new Callable<ProgramVersion>() {
-            @Override
-            public ProgramVersion call() throws Exception {
-                return getProgramVersion().send().data;
-            }
-        }).map(new Func1<ProgramVersion, BigInteger>() {
-            @Override
-            public BigInteger call(ProgramVersion programVersion) {
-                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
-                        Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                                new Uint32(programVersion.getProgramVersion()),
-                                new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
-                return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
-            }
-        });
+        PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
+                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
+        return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
     }
 
+
     /**
-     * @param verifier 声明的节点，只能是验证人/候选人
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param verifier       声明的节点，只能是验证人/候选人
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(String verifier) throws Exception {
-        ProgramVersion processVersion = getProgramVersion().send().data;
+    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(ProgramVersion programVersion, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                        new Uint32(processVersion.getProgramVersion()),
-                        new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))));
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))));
         return executeRemoteCallPlatonTransaction(function);
     }
 
 
     /**
-     * @param verifier    声明的节点，只能是验证人/候选人
+     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+     * @param verifier       声明的节点，只能是验证人/候选人
      * @param gasProvider
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(String verifier, GasProvider gasProvider) throws Exception {
-        ProgramVersion processVersion = getProgramVersion().send().data;
+    public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(ProgramVersion programVersion, String verifier, GasProvider gasProvider) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
-                        new Uint32(processVersion.getProgramVersion()),
-                        new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))), gasProvider);
+                        new Uint32(programVersion.getProgramVersion()),
+                        new BytesType(Numeric.hexStringToByteArray(programVersion.getProgramVersionSign()))), gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
@@ -455,17 +427,18 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 异步声明版本
      *
+     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
      * @param activeNode
      * @param version
      * @param transactionCallback
      */
-    public void asyncDeclareVersion(String activeNode, BigInteger version, TransactionCallback transactionCallback) throws Exception {
+    public void asyncDeclareVersion(ProgramVersion programVersion, String activeNode, BigInteger version, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(activeNode);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(programVersion, activeNode);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -497,18 +470,19 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 异步声明版本
      *
+     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
      * @param activeNode
      * @param version
      * @param gasProvider
      * @param transactionCallback
      */
-    public void asyncDeclareVersion(String activeNode, BigInteger version, GasProvider gasProvider, TransactionCallback transactionCallback) throws Exception {
+    public void asyncDeclareVersion(ProgramVersion programVersion, String activeNode, BigInteger version, GasProvider gasProvider, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(activeNode, gasProvider);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = declareVersionReturnTransaction(programVersion, activeNode, gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -554,7 +528,7 @@ public class ProposalContract extends PlatOnContract {
     /**
      * 提交提案
      *
-     * @param proposal 包括文本提案、升级提案、取消提案
+     * @param proposal    包括文本提案、升级提案、取消提案
      * @param gasProvider
      * @return
      */
@@ -630,12 +604,12 @@ public class ProposalContract extends PlatOnContract {
      * @param gasProvider
      * @return
      */
-    public RemoteCall<PlatonSendTransaction> submitProposalReturnTransaction(Proposal proposal,GasProvider gasProvider) {
+    public RemoteCall<PlatonSendTransaction> submitProposalReturnTransaction(Proposal proposal, GasProvider gasProvider) {
         if (proposal == null) {
             throw new NullPointerException("proposal must not be null");
         }
         PlatOnFunction function = new PlatOnFunction(proposal.getSubmitFunctionType(),
-                proposal.getSubmitInputParameters(),gasProvider);
+                proposal.getSubmitInputParameters(), gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
@@ -696,13 +670,13 @@ public class ProposalContract extends PlatOnContract {
      * @param proposal
      * @param transactionCallback
      */
-    public void asyncSubmitProposal(Proposal proposal, GasProvider gasProvider,TransactionCallback transactionCallback) {
+    public void asyncSubmitProposal(Proposal proposal, GasProvider gasProvider, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = submitProposalReturnTransaction(proposal,gasProvider);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = submitProposalReturnTransaction(proposal, gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();

@@ -30,10 +30,10 @@ import java.util.List;
 public class RestrictingPlanContractTest {
 
 
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6794"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:1000/rpc"));
 
     private String address = "0x493301712671Ada506ba6Ca7891F436D29185821";
-    private String benifitAddress = "0x12c171900f010b17e869702efa044d077e868082";
+    private String benifitAddress = "0xc54298e791fccc70985084d017d8491311fc4d57";
 
     private RestrictingPlanContract restrictingPlanContract;
 
@@ -42,17 +42,16 @@ public class RestrictingPlanContractTest {
     @Before
     public void init() {
 
-        credentials = Credentials.create("0xa56f68ca7aa51c24916b9fff027708f856650f9ff36cc3c8da308040ebcc7867");
+        credentials = Credentials.create("0x961bda67790709a870dc2cf03bcf7448b6803dff152443a62ad5065473432034");
 
-        restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, 100);
+        restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, 101);
     }
 
     @Test
     public void createRestrictingPlan() {
 
         List<RestrictingPlan> restrictingPlans = new ArrayList<>();
-        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(5), new BigInteger("10000000000000000000000")));
-        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(6), new BigInteger("20000000000000000000000")));
+        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(100), new BigInteger("1000000000000000000000")));
         try {
             BaseResponse baseResponse = restrictingPlanContract.createRestrictingPlan(benifitAddress, restrictingPlans).send();
             System.out.println(baseResponse.toString());

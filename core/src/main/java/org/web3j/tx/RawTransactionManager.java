@@ -70,7 +70,7 @@ public class RawTransactionManager extends TransactionManager {
         PlatonGetTransactionCount ethGetTransactionCount = web3j.platonGetTransactionCount(
                 credentials.getAddress(), DefaultBlockParameterName.PENDING).send();
 
-        if(ethGetTransactionCount.getTransactionCount().intValue()==0){
+        if (ethGetTransactionCount.getTransactionCount().intValue() == 0) {
             ethGetTransactionCount = web3j.platonGetTransactionCount(
                     credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
         }
@@ -96,8 +96,7 @@ public class RawTransactionManager extends TransactionManager {
         return signAndSend(rawTransaction);
     }
 
-    public PlatonSendTransaction signAndSend(RawTransaction rawTransaction)
-            throws IOException {
+    public String signedTransaction(RawTransaction rawTransaction) {
 
         byte[] signedMessage;
 
@@ -107,8 +106,15 @@ public class RawTransactionManager extends TransactionManager {
             signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
         }
 
-        String hexValue = Numeric.toHexString(signedMessage);
+        return Numeric.toHexString(signedMessage);
+    }
 
-        return web3j.platonSendRawTransaction(hexValue).send();
+    public PlatonSendTransaction sendTransaction(String signedMessage) throws IOException {
+        return web3j.platonSendRawTransaction(signedMessage).send();
+    }
+
+    public PlatonSendTransaction signAndSend(RawTransaction rawTransaction)
+            throws IOException {
+        return sendTransaction(signedTransaction(rawTransaction));
     }
 }

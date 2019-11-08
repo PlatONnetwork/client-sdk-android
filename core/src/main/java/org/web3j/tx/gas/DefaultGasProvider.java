@@ -6,7 +6,7 @@ import org.web3j.tx.ManagedTransaction;
 
 public class DefaultGasProvider extends ContractGasProvider {
 
-    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(210000);
+    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(21000L);
 
     public static final BigInteger GAS_PRICE = BigInteger.valueOf(500000000000L);
 

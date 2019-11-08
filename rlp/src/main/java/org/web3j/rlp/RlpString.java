@@ -1,5 +1,7 @@
 package org.web3j.rlp;
 
+import org.web3j.utils.Numeric;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -25,6 +27,17 @@ public class RlpString implements RlpType {
 
     public static RlpString create(byte value) {
         return new RlpString(new byte[]{ value });
+    }
+
+    public String asString() {
+        return Numeric.toHexString(value);
+    }
+
+    public BigInteger asPositiveBigInteger() {
+        if (value.length == 0) {
+            return BigInteger.ZERO;
+        }
+        return new BigInteger(1, value);
     }
 
     public static RlpString create(BigInteger value) {

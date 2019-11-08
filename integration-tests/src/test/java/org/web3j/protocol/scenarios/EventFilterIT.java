@@ -120,7 +120,7 @@ public class EventFilterIT extends Scenario {
 
         ethFilter.addSingleTopic(encodedEventSignature);
 
-        PlatonLog ethLog = web3j.ethGetLogs(ethFilter).send();
+        PlatonLog ethLog = web3j.platonGetLogs(ethFilter).send();
         return ethLog.getLogs();
     }
 }
