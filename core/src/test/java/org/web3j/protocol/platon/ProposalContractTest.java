@@ -6,6 +6,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ProposalType;
 import org.web3j.platon.VoteOption;
+import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.platon.bean.Proposal;
 import org.web3j.platon.bean.TallyResult;
 import org.web3j.platon.contracts.ProposalContract;
@@ -99,7 +100,7 @@ public class ProposalContractTest {
     @Test
     public void vote() {
         try {
-            BaseResponse baseResponse = proposalContract.vote("0xdb4c13f35902089051810ab39224f4a2ad6da0ad0ea9d949c471acbcc09b288a", "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c", VoteOption.YEAS).send();
+            BaseResponse baseResponse = proposalContract.vote(proposalContract.getProgramVersion(), VoteOption.YEAS, "0xdb4c13f35902089051810ab39224f4a2ad6da0ad0ea9d949c471acbcc09b288a", "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c").send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +110,7 @@ public class ProposalContractTest {
     @Test
     public void declareVersion() {
         try {
-            BaseResponse baseResponse = proposalContract.declareVersion("411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c").send();
+            BaseResponse baseResponse = proposalContract.declareVersion(proposalContract.getProgramVersion(), "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c").send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,8 +140,8 @@ public class ProposalContractTest {
     @Test
     public void getProgramVersion() {
         try {
-            BaseResponse baseResponse = proposalContract.getProgramVersion().send();
-            System.out.println(baseResponse.data);
+            ProgramVersion programVersion = proposalContract.getProgramVersion();
+            System.out.println(programVersion.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

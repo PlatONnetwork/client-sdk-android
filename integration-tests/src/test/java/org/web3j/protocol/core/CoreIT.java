@@ -368,7 +368,7 @@ public class CoreIT {
 
         ethFilter.addSingleTopic(config.encodedEvent());
 
-        PlatonLog ethLog = web3j.ethGetLogs(ethFilter).send();
+        PlatonLog ethLog = web3j.platonGetLogs(ethFilter).send();
         List<PlatonLog.LogResult> logs = ethLog.getLogs();
         assertFalse(logs.isEmpty());
     }

@@ -33,7 +33,7 @@ public class RestrictingPlanContractTest {
     private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:1000/rpc"));
 
     private String address = "0x493301712671Ada506ba6Ca7891F436D29185821";
-    private String benifitAddress = "0xd79af06736eceda68d5cf85736ff09b18bfedbb8";
+    private String benifitAddress = "0xc54298e791fccc70985084d017d8491311fc4d57";
 
     private RestrictingPlanContract restrictingPlanContract;
 
@@ -42,16 +42,16 @@ public class RestrictingPlanContractTest {
     @Before
     public void init() {
 
-        credentials = Credentials.create("0xdbf0a2d285c9668dafc908d5096b98d30746cdae7c2fd978b65c1e3d15abe5f9");
+        credentials = Credentials.create("0x961bda67790709a870dc2cf03bcf7448b6803dff152443a62ad5065473432034");
 
-        restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, 103);
+        restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, 101);
     }
 
     @Test
     public void createRestrictingPlan() {
 
         List<RestrictingPlan> restrictingPlans = new ArrayList<>();
-        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(100), new BigInteger("15000000000000000000")));
+        restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(100), new BigInteger("1000000000000000000000")));
         try {
             BaseResponse baseResponse = restrictingPlanContract.createRestrictingPlan(benifitAddress, restrictingPlans).send();
             System.out.println(baseResponse.toString());

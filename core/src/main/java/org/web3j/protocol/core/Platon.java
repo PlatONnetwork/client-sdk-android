@@ -2,10 +2,12 @@ package org.web3j.protocol.core;
 
 import org.web3j.protocol.core.methods.request.ShhFilter;
 import org.web3j.protocol.core.methods.response.AdminProgramVersion;
+import org.web3j.protocol.core.methods.response.AdminSchnorrNIZKProve;
 import org.web3j.protocol.core.methods.response.DbGetHex;
 import org.web3j.protocol.core.methods.response.DbGetString;
 import org.web3j.protocol.core.methods.response.DbPutHex;
 import org.web3j.protocol.core.methods.response.DbPutString;
+import org.web3j.protocol.core.methods.response.DebugEconomicConfig;
 import org.web3j.protocol.core.methods.response.PlatonAccounts;
 import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.core.methods.response.PlatonBlockNumber;
@@ -130,7 +132,7 @@ public interface Platon {
 
     Request<?, PlatonLog> platonGetFilterLogs(BigInteger filterId);
 
-    Request<?, PlatonLog> ethGetLogs(org.web3j.protocol.core.methods.request.PlatonFilter ethFilter);
+    Request<?, PlatonLog> platonGetLogs(org.web3j.protocol.core.methods.request.PlatonFilter ethFilter);
 
     Request<?, PlatonPendingTransactions> platonPendingTx();
 
@@ -166,4 +168,8 @@ public interface Platon {
     Request<?, PlatonEvidences> platonEvidences();
 
     public Request<?, AdminProgramVersion> getProgramVersion();
+
+    Request<?, AdminSchnorrNIZKProve> getSchnorrNIZKProve();
+
+    Request<?, DebugEconomicConfig> getEconomicConfig();
 }

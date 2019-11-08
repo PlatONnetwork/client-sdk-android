@@ -350,7 +350,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetLogs() throws Exception {
-        web3j.ethGetLogs(new PlatonFilter().addSingleTopic(
+        web3j.platonGetLogs(new PlatonFilter().addSingleTopic(
                 "0x000000000000000000000000a94f5374fce5edbc8e2a8697c15331677e6ebf0b"))
                 .send();
 
@@ -362,7 +362,7 @@ public class RequestTest extends RequestTester {
 
     @Test
     public void testEthGetLogsWithNumericBlockRange() throws Exception {
-        web3j.ethGetLogs(new PlatonFilter(
+        web3j.platonGetLogs(new PlatonFilter(
                 DefaultBlockParameterNumber.valueOf(Numeric.toBigInt("0xe8")),
                 DefaultBlockParameterName.LATEST, ""))
                 .send();

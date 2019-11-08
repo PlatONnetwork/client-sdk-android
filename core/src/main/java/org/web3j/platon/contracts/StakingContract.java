@@ -73,7 +73,6 @@ public class StakingContract extends PlatOnContract {
      */
     public RemoteCall<BaseResponse> staking(StakingParam stakingParam) throws Exception {
         StakingParam tempStakingParam = stakingParam.clone();
-        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.STAKING_FUNC_TYPE,
                 tempStakingParam.getSubmitInputParameters());
@@ -90,7 +89,6 @@ public class StakingContract extends PlatOnContract {
      */
     public RemoteCall<BaseResponse> staking(StakingParam stakingParam, GasProvider gasProvider) throws Exception {
         StakingParam tempStakingParam = stakingParam.clone();
-        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.STAKING_FUNC_TYPE,
                 tempStakingParam.getSubmitInputParameters(), gasProvider);
@@ -103,22 +101,10 @@ public class StakingContract extends PlatOnContract {
      * @param stakingParam
      * @return
      */
-    public Observable<GasProvider> getStakingGasProvider(StakingParam stakingParam) {
-        StakingParam tempStakingParam = stakingParam.clone();
-        return Observable.fromCallable(new Callable<ProgramVersion>() {
-            @Override
-            public ProgramVersion call() throws Exception {
-                return getProgramVersion().send().data;
-            }
-        }).map(new Func1<ProgramVersion, GasProvider>() {
-            @Override
-            public GasProvider call(ProgramVersion programVersion) {
-                tempStakingParam.setProcessVersion(programVersion);
-                return new PlatOnFunction(
-                        FunctionType.STAKING_FUNC_TYPE,
-                        tempStakingParam.getSubmitInputParameters()).getGasProvider();
-            }
-        });
+    public GasProvider getStakingGasProvider(StakingParam stakingParam) {
+        return new PlatOnFunction(
+                FunctionType.STAKING_FUNC_TYPE,
+                stakingParam.getSubmitInputParameters()).getGasProvider();
     }
 
 
@@ -134,7 +120,7 @@ public class StakingContract extends PlatOnContract {
         return Observable.fromCallable(new Callable<ProgramVersion>() {
             @Override
             public ProgramVersion call() throws Exception {
-                return getProgramVersion().send().data;
+                return getProgramVersion();
             }
         }).map(new Func1<ProgramVersion, BigInteger>() {
             @Override
@@ -158,7 +144,6 @@ public class StakingContract extends PlatOnContract {
      */
     public RemoteCall<PlatonSendTransaction> stakingReturnTransaction(StakingParam stakingParam) throws Exception {
         StakingParam tempStakingParam = stakingParam.clone();
-        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.STAKING_FUNC_TYPE,
                 stakingParam.getSubmitInputParameters());
@@ -175,11 +160,14 @@ public class StakingContract extends PlatOnContract {
      */
     public RemoteCall<PlatonSendTransaction> stakingReturnTransaction(StakingParam stakingParam, GasProvider gasProvider) throws Exception {
         StakingParam tempStakingParam = stakingParam.clone();
-        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.STAKING_FUNC_TYPE,
                 stakingParam.getSubmitInputParameters(), gasProvider);
         return executeRemoteCallPlatonTransaction(function);
+    }
+
+    public String getAdminSchnorrNIZKProve() throws Exception {
+        return web3j.getSchnorrNIZKProve().send().getAdminSchnorrNIZKProve();
     }
 
     /**
@@ -204,10 +192,7 @@ public class StakingContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        StakingParam tempStakingParam = stakingParam.clone();
-        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
-
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = stakingReturnTransaction(tempStakingParam);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = stakingReturnTransaction(stakingParam);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -249,10 +234,7 @@ public class StakingContract extends PlatOnContract {
             transactionCallback.onTransactionStart();
         }
 
-        StakingParam tempStakingParam = stakingParam.clone();
-        tempStakingParam.setProcessVersion(getProgramVersion().send().data);
-
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = stakingReturnTransaction(tempStakingParam, gasProvider);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = stakingReturnTransaction(stakingParam, gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();
@@ -676,7 +658,7 @@ public class StakingContract extends PlatOnContract {
         PlatOnFunction function = new PlatOnFunction(FunctionType.ADD_STAKING_FUNC_TYPE,
                 Arrays.asList(new BytesType(Numeric.hexStringToByteArray(nodeId)),
                         new Uint16(stakingAmountType.getValue()),
-                        new Uint256(amount)),gasProvider);
+                        new Uint256(amount)), gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
@@ -736,12 +718,12 @@ public class StakingContract extends PlatOnContract {
      * @param gasProvider
      * @param transactionCallback
      */
-    public void asyncAddStaking(String nodeId, StakingAmountType stakingAmountType, BigInteger amount,GasProvider gasProvider, TransactionCallback transactionCallback) {
+    public void asyncAddStaking(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, GasProvider gasProvider, TransactionCallback transactionCallback) {
         if (transactionCallback != null) {
             transactionCallback.onTransactionStart();
         }
 
-        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = addStakingReturnTransaction(nodeId, stakingAmountType, amount,gasProvider);
+        RemoteCall<PlatonSendTransaction> ethSendTransactionRemoteCall = addStakingReturnTransaction(nodeId, stakingAmountType, amount, gasProvider);
 
         try {
             PlatonSendTransaction ethSendTransaction = ethSendTransactionRemoteCall.sendAsync().get();

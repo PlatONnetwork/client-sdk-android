@@ -331,7 +331,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
      *
      * @return
      */
-    public RemoteCall<BaseResponse<ProgramVersion>> getProgramVersion() {
+    public ProgramVersion getProgramVersion() throws Exception {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PROGRAM_VERSION);
         return new RemoteCall<BaseResponse<ProgramVersion>>(new Callable<BaseResponse<ProgramVersion>>() {
             @Override
@@ -339,10 +339,10 @@ public abstract class PlatOnContract extends ManagedTransaction {
                 ProgramVersion programVersion = web3j.getProgramVersion().send().getAdminProgramVersion();
                 BaseResponse<ProgramVersion> baseResponse = new BaseResponse<ProgramVersion>();
                 baseResponse.data = programVersion;
-                baseResponse.code = ErrorCode.SUCCESS;
+                baseResponse.code = 0;
                 return baseResponse;
             }
-        });
+        }).send().data;
     }
 
     public static EventValues staticExtractEventParameters(

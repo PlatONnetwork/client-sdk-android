@@ -6,10 +6,12 @@ import org.web3j.protocol.core.methods.request.ShhFilter;
 import org.web3j.protocol.core.methods.request.ShhPost;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.AdminProgramVersion;
+import org.web3j.protocol.core.methods.response.AdminSchnorrNIZKProve;
 import org.web3j.protocol.core.methods.response.DbGetHex;
 import org.web3j.protocol.core.methods.response.DbGetString;
 import org.web3j.protocol.core.methods.response.DbPutHex;
 import org.web3j.protocol.core.methods.response.DbPutString;
+import org.web3j.protocol.core.methods.response.DebugEconomicConfig;
 import org.web3j.protocol.core.methods.response.PlatonAccounts;
 import org.web3j.protocol.core.methods.response.PlatonEvidences;
 import org.web3j.protocol.core.methods.response.PlatonGasPrice;
@@ -407,7 +409,7 @@ public class JsonRpc2_0Web3j implements Web3j {
     }
 
     @Override
-    public Request<?, PlatonLog> ethGetLogs(
+    public Request<?, PlatonLog> platonGetLogs(
             org.web3j.protocol.core.methods.request.PlatonFilter platonFilter) {
         return new Request<org.web3j.protocol.core.methods.request.PlatonFilter, PlatonLog>(
                 "platon_getLogs",
@@ -659,5 +661,23 @@ public class JsonRpc2_0Web3j implements Web3j {
                 Collections.<String>emptyList(),
                 web3jService,
                 AdminProgramVersion.class);
+    }
+
+    @Override
+    public Request<?, AdminSchnorrNIZKProve> getSchnorrNIZKProve() {
+        return new Request<>(
+                "admin_getSchnorrNIZKProve",
+                Collections.<String>emptyList(),
+                web3jService,
+                AdminSchnorrNIZKProve.class);
+    }
+
+    @Override
+    public Request<?, DebugEconomicConfig> getEconomicConfig() {
+        return new Request<>(
+                "debug_economicConfig",
+                Collections.<String>emptyList(),
+                web3jService,
+                DebugEconomicConfig.class);
     }
 }
