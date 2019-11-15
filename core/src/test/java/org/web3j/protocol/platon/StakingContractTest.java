@@ -85,27 +85,27 @@ public class StakingContractTest {
     @Test
     public void staking() throws Exception {
 
-        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("a689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b")));
-        String toAddress = "0xFAc238aD67f9ff52466dbaB7CaC44861cd2f8A70";
-
-        BigDecimal amount = Convert.toVon(BigDecimal.valueOf(100), Convert.Unit.LAT);
+//        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("a689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b")));
+//        String toAddress = "0xFAc238aD67f9ff52466dbaB7CaC44861cd2f8A70";
+//
+//        BigDecimal amount = Convert.toVon(BigDecimal.valueOf(100), Convert.Unit.LAT);
+//////
+//        String hash = sendTransaction("a689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b", toAddress, amount, 500000000000L, 210000L);
 ////
-        String hash = sendTransaction("a689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b", toAddress, amount, 500000000000L, 210000L);
+//        System.out.println(hash);
+////
+//        PlatonGetTransactionReceipt platonGetTransactionReceipt = web3j.platonGetTransactionReceipt(hash).send();
+////
+//        try {
+//            PlatonGetBalance platonGetBalance = web3j.platonGetBalance(toAddress, DefaultBlockParameterName.LATEST).send();
+//            PlatonGetBalance platonGetBalance2 = web3j.platonGetBalance("0x" + fromAddress, DefaultBlockParameterName.LATEST).send();
+////
+//            System.out.println(platonGetBalance.getBalance().longValue());
+//            System.out.println(platonGetBalance2.getBalance().longValue());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //
-        System.out.println(hash);
-//
-        PlatonGetTransactionReceipt platonGetTransactionReceipt = web3j.platonGetTransactionReceipt(hash).send();
-//
-        try {
-            PlatonGetBalance platonGetBalance = web3j.platonGetBalance(toAddress, DefaultBlockParameterName.LATEST).send();
-            PlatonGetBalance platonGetBalance2 = web3j.platonGetBalance("0x" + fromAddress, DefaultBlockParameterName.LATEST).send();
-//
-            System.out.println(platonGetBalance.getBalance().longValue());
-            System.out.println(platonGetBalance2.getBalance().longValue());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 //        try {
 //            PlatonBlock platonBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
 //            System.out.println(platonBlock.getBlock().getNumberRaw());
@@ -113,22 +113,23 @@ public class StakingContractTest {
 //            e.printStackTrace();
 //        }
 
-//        try {
-//            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
-//                    .setNodeId(nodeId)
-//                    .setAmount(new BigInteger(stakingAmount))
-//                    .setStakingAmountType(stakingAmountType)
-//                    .setBenifitAddress(benifitAddress)
-//                    .setExternalId(externalId)
-//                    .setNodeName(nodeName)
-//                    .setWebSite(webSite)
-//                    .setDetails(details)
-//                    .setBlsPubKey(blsPubKey)
-//                    .build()).send();
-//            System.out.println(baseResponse.toString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
+                    .setNodeId(nodeId)
+                    .setAmount(new BigInteger(stakingAmount))
+                    .setStakingAmountType(stakingAmountType)
+                    .setBenifitAddress(benifitAddress)
+                    .setExternalId(externalId)
+                    .setNodeName(nodeName)
+                    .setWebSite(webSite)
+                    .setDetails(details)
+                    .setProcessVersion(stakingContract.getProgramVersion())
+                    .setBlsPubKey(stakingContract.getAdminSchnorrNIZKProve())
+                    .build()).send();
+            System.out.println(baseResponse.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
