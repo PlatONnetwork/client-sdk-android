@@ -25,6 +25,7 @@ import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.protocol.exceptions.UnableParseLogException;
 import org.web3j.tx.exceptions.ContractCallException;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -130,12 +131,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
                         transactionManager.getFromAddress(), contractAddress, function.getEncodeData()),
                 DefaultBlockParameterName.LATEST)
                 .send();
-        String value = ethCall.getValue();
-        BaseResponse response = JSONUtil.parseObject(new String(Numeric.hexStringToByteArray(value)), BaseResponse.class);
-        if (response == null) {
-            response = new BaseResponse();
-        }
-        return response;
+        return PlatOnUtil.invokeDecode(ethCall.getValue());
     }
 
     protected BaseResponse executePatonCall(PlatOnFunction function, String contractAddress) throws IOException {
@@ -237,36 +233,44 @@ public abstract class PlatOnContract extends ManagedTransaction {
                 gasProvider.getGasLimit());
     }
 
-    private BaseResponse getResponseFromTransactionReceipt(TransactionReceipt transactionReceipt, int functionType) throws TransactionException {
+    protected BaseResponse getResponseFromTransactionReceipt(TransactionReceipt transactionReceipt, int functionType) throws TransactionException {
 
         Event event = new Event(functionType,
                 Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {
                 }));
 
         List<EventValuesWithLog> eventValuesWithLogList = extractEventParametersWithLog(event, transactionReceipt);
-        BaseResponse result = JSONUtil.parseObject(getResponseFromLog(transactionReceipt, eventValuesWithLogList), BaseResponse.class);
-        if (result != null) {
-            result.transactionReceipt = transactionReceipt;
+
+        int code = ErrorCode.SYSTEM_ERROR;
+        try {
+            code = Integer.valueOf(getResponseFromLog(eventValuesWithLogList));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-        return result;
+
+        return new BaseResponse(code, transactionReceipt);
     }
 
-    private String getResponseFromLog(TransactionReceipt transactionReceipt, List<EventValuesWithLog> eventValuesWithLogList) throws TransactionException {
+    private String getResponseFromLog(List<EventValuesWithLog> eventValuesWithLogList) throws TransactionException {
 
         boolean isEventValuesWithLogEmpty = eventValuesWithLogList == null || eventValuesWithLogList.isEmpty();
 
         List<Type> nonIndexedValues;
 
         if (isEventValuesWithLogEmpty || (nonIndexedValues = eventValuesWithLogList.get(0).getNonIndexedValues()) == null || nonIndexedValues.isEmpty()) {
-            throw new TransactionException(
+            throw new UnableParseLogException(
                     String.format(
-                            "Transaction has failed with status: %s. "
-                                    + "Gas used: %d. (not-enough gas?)",
-                            transactionReceipt.getStatus(),
-                            transactionReceipt.getGasUsed()));
+                            "logs is empty or cannot parse to normal log message"));
         }
 
-        return (String) nonIndexedValues.get(0).getValue();
+        String code = (String) nonIndexedValues.get(0).getValue();
+
+        if (code == null || code == "" || !code.matches("\\d+")) {
+            throw new UnableParseLogException(
+                    String.format(
+                            "logs is empty or cannot parse to normal log message"));
+        }
+        return code;
     }
 
     protected <T> RemoteCall<BaseResponse<T>> executePlatonRemoteCallSingleValueReturn(PlatOnFunction function) {
@@ -332,7 +336,6 @@ public abstract class PlatOnContract extends ManagedTransaction {
      * @return
      */
     public ProgramVersion getProgramVersion() throws Exception {
-        final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PROGRAM_VERSION);
         return new RemoteCall<BaseResponse<ProgramVersion>>(new Callable<BaseResponse<ProgramVersion>>() {
             @Override
             public BaseResponse<ProgramVersion> call() throws Exception {

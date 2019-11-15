@@ -44,7 +44,7 @@ public class NodeContract extends PlatOnContract {
             @Override
             public BaseResponse<List<Node>> call() throws Exception {
                 BaseResponse response = executePatonCall(function);
-                response.data = JSONUtil.parseArray((String) response.data, Node.class);
+                response.data = JSONUtil.parseArray(JSONUtil.toJSONString(response.data), Node.class);
                 return response;
             }
         });
@@ -61,7 +61,7 @@ public class NodeContract extends PlatOnContract {
             @Override
             public BaseResponse<List<Node>> call() throws Exception {
                 BaseResponse response = executePatonCall(function);
-                response.data = JSONUtil.parseArray((String) response.data, Node.class);
+                response.data = JSONUtil.parseArray(JSONUtil.toJSONString(response.data), Node.class);
                 return response;
             }
         });
@@ -78,7 +78,7 @@ public class NodeContract extends PlatOnContract {
             @Override
             public BaseResponse<List<Node>> call() throws Exception {
                 BaseResponse response = executePatonCall(function);
-                response.data = JSONUtil.parseArray((String) response.data, Node.class);
+                response.data = JSONUtil.parseArray(JSONUtil.toJSONString(response.data), Node.class);
                 return response;
             }
         });
