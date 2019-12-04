@@ -24,6 +24,7 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.Platon;
+import org.web3j.protocol.core.methods.response.DebugEconomicConfig;
 import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.core.methods.response.PlatonGetBalance;
 import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
@@ -53,7 +54,7 @@ public class StakingContractTest {
     private static final int SIZE_THRESHOLD = 56;
 
     //    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.88:6788"));
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:1000/rpc"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://10.10.8.19:6789/rpc"));
 
     private StakingContract stakingContract;
 
@@ -65,7 +66,7 @@ public class StakingContractTest {
     String nodeName = "liyf-test";
     String webSite = "www.baidu.com";
     String details = "details";
-    String blsPubKey = "a3709aba3deb9a49411b61d930735e4ff8828c5973d76f91554ffd835803b724c22c58656d1698b6395098234cf31fe22761a56bde3527d54b85f44fa6627d22";
+    String blsPubKey = "9c26c7914cf93222214d6b3f06339de0ae66596ed59beaeda72836c543bd64fbc0bdf2c37a973fb6439db4590da1d1155043dcf943f432c05665754181ee59d43405565f0f481e00f6488974391fb0b186a1ee88c9916a5779d446d4e8a1bd11";
 
     private Credentials credentials;
 
@@ -84,6 +85,15 @@ public class StakingContractTest {
 
     @Test
     public void staking() throws Exception {
+
+        DebugEconomicConfig economicConfig = web3j.getEconomicConfig().send();
+
+        System.out.println(economicConfig.getEconomicConfig());
+
+
+//        PlatonGetTransactionReceipt platonGetTransactionReceipt = web3j.platonGetTransactionReceipt("0x257f76de655fec7c61b2ed53db9bc166b93c230d97fb10ee086fa83089cba48b").send();
+//
+//        System.out.println(platonGetTransactionReceipt.toString());
 
 //        String fromAddress = Keys.getAddress(ECKeyPair.create(Numeric.toBigIntNoPrefix("a689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b")));
 //        String toAddress = "0xFAc238aD67f9ff52466dbaB7CaC44861cd2f8A70";
@@ -113,23 +123,23 @@ public class StakingContractTest {
 //            e.printStackTrace();
 //        }
 
-        try {
-            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
-                    .setNodeId(nodeId)
-                    .setAmount(new BigInteger(stakingAmount))
-                    .setStakingAmountType(stakingAmountType)
-                    .setBenifitAddress(benifitAddress)
-                    .setExternalId(externalId)
-                    .setNodeName(nodeName)
-                    .setWebSite(webSite)
-                    .setDetails(details)
-                    .setProcessVersion(stakingContract.getProgramVersion())
-                    .setBlsPubKey(stakingContract.getAdminSchnorrNIZKProve())
-                    .build()).send();
-            System.out.println(baseResponse.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            BaseResponse baseResponse = stakingContract.staking(new StakingParam.Builder()
+//                    .setNodeId(nodeId)
+//                    .setAmount(new BigInteger(stakingAmount))
+//                    .setStakingAmountType(stakingAmountType)
+//                    .setBenifitAddress(benifitAddress)
+//                    .setExternalId(externalId)
+//                    .setNodeName(nodeName)
+//                    .setWebSite(webSite)
+//                    .setDetails(details)
+//                    .setProcessVersion(stakingContract.getProgramVersion())
+//                    .setBlsPubKey(stakingContract.getAdminSchnorrNIZKProve())
+//                    .build()).send();
+//            System.out.println(baseResponse.toString());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
