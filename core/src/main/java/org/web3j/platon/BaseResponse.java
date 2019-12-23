@@ -77,6 +77,6 @@ public class BaseResponse<T> {
     @Override
     public String toString() {
         return "BaseResponse [code=" + code + ", data=" + data + ", errMsg=" + errMsg + ", transactionReceipt="
-                + transactionReceipt.toString() + "]";
+                + transactionReceipt + "]";
     }
 }
