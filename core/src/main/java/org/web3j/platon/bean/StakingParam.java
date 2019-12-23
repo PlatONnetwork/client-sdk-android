@@ -1,18 +1,19 @@
 package org.web3j.platon.bean;
 
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Int256;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint32;
-import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.platon.StakingAmountType;
+import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.utils.Numeric;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
 
 public class StakingParam implements Cloneable {
 
@@ -56,6 +57,11 @@ public class StakingParam implements Cloneable {
      * bls的公钥
      */
     private String blsPubKey;
+
+    /**
+     * bls的证明
+     */
+    private String blsProof;
 
     public String getNodeId() {
         return nodeId;
@@ -137,6 +143,15 @@ public class StakingParam implements Cloneable {
         this.blsPubKey = blsPubKey;
     }
 
+    public String getBlsProof() {
+        return blsProof;
+    }
+
+    public void setBlsProof(String blsProof) {
+        this.blsProof = blsProof;
+    }
+
+
     public StakingParam(Builder builder) {
         this.nodeId = builder.nodeId;
         this.amount = builder.amount;
@@ -148,6 +163,7 @@ public class StakingParam implements Cloneable {
         this.details = builder.details;
         this.processVersion = builder.processVersion;
         this.blsPubKey = builder.blsPubKey;
+        this.blsProof = builder.blsProof;
     }
 
     public List<Type> getSubmitInputParameters() {
@@ -161,7 +177,8 @@ public class StakingParam implements Cloneable {
                 , new Int256(amount)
                 , new Uint32(processVersion.getProgramVersion())
                 , new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))
-                , new Utf8String(blsPubKey)
+                , new BytesType(Numeric.hexStringToByteArray(blsPubKey))
+                , new BytesType(Numeric.hexStringToByteArray(blsProof))
         );
     }
 
@@ -187,6 +204,7 @@ public class StakingParam implements Cloneable {
         private String details;
         private ProgramVersion processVersion;
         private String blsPubKey;
+        private String blsProof;
 
         public Builder setNodeId(String nodeId) {
             this.nodeId = nodeId;
@@ -235,6 +253,11 @@ public class StakingParam implements Cloneable {
 
         public Builder setBlsPubKey(String blsPubKey) {
             this.blsPubKey = blsPubKey;
+            return this;
+        }
+
+        public Builder setBlsProof(String blsProof) {
+            this.blsProof = blsProof;
             return this;
         }
 

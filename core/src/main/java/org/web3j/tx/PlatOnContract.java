@@ -1,5 +1,6 @@
 package org.web3j.tx;
 
+import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.EventValues;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.PlatOnEventEncoder;

@@ -6,6 +6,7 @@ import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
+import org.web3j.exceptions.MessageDecodingException;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
@@ -63,6 +64,56 @@ public class StakingContract extends PlatOnContract {
     private StakingContract(String contractAddress, long chainId, Web3j web3j, Credentials credentials) {
         super(contractAddress, chainId, web3j, credentials);
     }
+
+    /**
+     * 查询当前结算周期的区块奖励
+     *
+     * @return
+     */
+    public RemoteCall<BaseResponse<BigInteger>> getPackageReward() {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PACKAGEREWARD_FUNC_TYPE);
+        return new RemoteCall<BaseResponse<BigInteger>>(new Callable<BaseResponse<BigInteger>>() {
+            @Override
+            public BaseResponse<BigInteger> call() throws Exception {
+                BaseResponse baseResponse = executePatonCall(function);
+                baseResponse.data = Numeric.decodeQuantity((String) baseResponse.data);
+                return baseResponse;
+            }
+        });
+    }
+
+    /**
+     * 查询当前结算周期的质押奖励
+     *
+     * @return
+     */
+    public RemoteCall<BaseResponse<BigInteger>> getStakingReward() {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.GET_STAKINGREWARD_FUNC_TYPE);
+        return new RemoteCall<BaseResponse<BigInteger>>(new Callable<BaseResponse<BigInteger>>() {
+            @Override
+            public BaseResponse<BigInteger> call() throws Exception {
+                BaseResponse baseResponse = executePatonCall(function);
+                baseResponse.data = Numeric.decodeQuantity((String) baseResponse.data);
+                return baseResponse;
+            }
+        });
+    }
+
+    /**
+     * 查询打包区块的平均时间
+     *
+     * @return
+     */
+    public RemoteCall<BaseResponse<BigInteger>> getAvgPackTime() {
+        PlatOnFunction function = new PlatOnFunction(FunctionType.GET_AVGPACKTIME_FUNC_TYPE);
+        return new RemoteCall<BaseResponse<BigInteger>>(new Callable<BaseResponse<BigInteger>>() {
+            @Override
+            public BaseResponse<BigInteger> call() throws Exception {
+                return executePatonCall(function);
+            }
+        });
+    }
+
 
     /**
      * 发起质押

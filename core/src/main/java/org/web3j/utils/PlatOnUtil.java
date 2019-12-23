@@ -106,45 +106,18 @@ public class PlatOnUtil {
     private static final String DEFAULT_ADDR = "0x0000000000000000000000000000000000000000";
 
     /**
-     * 合约方法调用编码
+     * 解析call方法返回
      *
-     * @param function 合约函数
-     * @param txType   交易类型
-     * @return encoded data
+     * @param result
+     * @return
      */
-    public static String invokeEncode(Function function, long txType) {
-        List<RlpType> result = new ArrayList<>();
-        result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(txType)))));
-        result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Utf8String(function.getName())))));
-
-        List<Type> parameters = function.getInputParameters();
-        for (Type parameter : parameters) {
-            String encodedValue = PlatOnTypeEncoder.encode(parameter);
-            result.add(RlpString.create(Numeric.hexStringToByteArray(encodedValue)));
-        }
-        String data = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
-        return data;
-    }
-
-
     public static BaseResponse invokeDecode(String result) {
 
         if (result == null) {
             return new BaseResponse();
         }
 
-        RlpList rlpList = RlpDecoder.decode(Hex.decode(Numeric.cleanHexPrefix(result)));
-
-        List<RlpType> rlpTypeList = rlpList.getValues();
-
-        StringBuilder sb = new StringBuilder();
-
-        for (RlpType rlpType : rlpTypeList) {
-            byte[] bytes = RlpEncoder.encode(rlpType);
-            sb.append(new String(bytes));
-        }
-
-        BaseResponse baseResponse = JSONUtil.parseObject(sb.toString(), BaseResponse.class);
+        BaseResponse baseResponse = JSONUtil.parseObject(new String(Hex.decode(Numeric.cleanHexPrefix(result))), BaseResponse.class);
 
         if (baseResponse == null) {
             return new BaseResponse();
