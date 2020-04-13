@@ -3,8 +3,10 @@ package org.web3j.platon.bean;
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.utils.Numeric;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +36,10 @@ public class UpdateStakingParam {
      * 节点的描述(有长度限制，表示该节点的描述)
      */
     private String details;
+    /**
+     * 奖励分成比例，采用BasePoint 1BP=0.01%
+     */
+    private BigInteger rewardPer;
 
     public UpdateStakingParam(Builder builder) {
         this.nodeId = builder.nodeId;
@@ -42,11 +48,13 @@ public class UpdateStakingParam {
         this.nodeName = builder.nodeName;
         this.webSite = builder.webSite;
         this.details = builder.details;
+        this.rewardPer = builder.rewardPer;
     }
 
     public List<Type> getSubmitInputParameters() {
         return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(benifitAddress)),
                 new BytesType(Numeric.hexStringToByteArray(nodeId)),
+                new Uint16(rewardPer),
                 new Utf8String(externalId),
                 new Utf8String(nodeName),
                 new Utf8String(webSite),
@@ -61,6 +69,7 @@ public class UpdateStakingParam {
         private String nodeName;
         private String webSite;
         private String details;
+        private BigInteger rewardPer;
 
         public Builder setNodeId(String nodeId) {
             this.nodeId = nodeId;
@@ -89,6 +98,11 @@ public class UpdateStakingParam {
 
         public Builder setDetails(String details) {
             this.details = details;
+            return this;
+        }
+
+        public Builder setRewardPer(BigInteger rewardPer){
+            this.rewardPer = rewardPer;
             return this;
         }
 

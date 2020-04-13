@@ -10,6 +10,7 @@ import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Int256;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint32;
+import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.utils.Numeric;
@@ -49,6 +50,10 @@ public class StakingParam implements Cloneable {
      * 节点的描述(有长度限制，表示该节点的描述)
      */
     private String details;
+    /**
+     * 奖励分成比例，采用BasePoint 1BP=0.01%
+     */
+    private BigInteger rewardPer;
     /**
      * 程序的真实版本，治理rpc获取
      */
@@ -151,6 +156,13 @@ public class StakingParam implements Cloneable {
         this.blsProof = blsProof;
     }
 
+    public BigInteger getRewardPer() {
+        return rewardPer;
+    }
+
+    public void setRewardPer(BigInteger rewardPer) {
+        this.rewardPer = rewardPer;
+    }
 
     public StakingParam(Builder builder) {
         this.nodeId = builder.nodeId;
@@ -161,6 +173,7 @@ public class StakingParam implements Cloneable {
         this.nodeName = builder.nodeName;
         this.webSite = builder.webSite;
         this.details = builder.details;
+        this.rewardPer = builder.rewardPer;
         this.processVersion = builder.processVersion;
         this.blsPubKey = builder.blsPubKey;
         this.blsProof = builder.blsProof;
@@ -175,6 +188,7 @@ public class StakingParam implements Cloneable {
                 , new Utf8String(webSite)
                 , new Utf8String(details)
                 , new Int256(amount)
+                , new Uint16(rewardPer)
                 , new Uint32(processVersion.getProgramVersion())
                 , new BytesType(Numeric.hexStringToByteArray(processVersion.getProgramVersionSign()))
                 , new BytesType(Numeric.hexStringToByteArray(blsPubKey))
@@ -202,6 +216,7 @@ public class StakingParam implements Cloneable {
         private String nodeName;
         private String webSite;
         private String details;
+        private BigInteger rewardPer;
         private ProgramVersion processVersion;
         private String blsPubKey;
         private String blsProof;
@@ -243,6 +258,11 @@ public class StakingParam implements Cloneable {
 
         public Builder setDetails(String details) {
             this.details = details;
+            return this;
+        }
+
+        public Builder setRewardPer(BigInteger rewardPer){
+            this.rewardPer = rewardPer;
             return this;
         }
 

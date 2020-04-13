@@ -17,6 +17,12 @@ public class Node {
     @JSONField(name = "BenefitAddress")
     private String benifitAddress;
 
+    @JSONField(name = "RewardPer")
+    private BigInteger rewardPer;
+
+    @JSONField(name = "NextRewardPer")
+    private BigInteger nextRewardPer;
+
     @JSONField(name = "StakingTxIndex")
     private BigInteger stakingTxIndex;
 
@@ -206,6 +212,42 @@ public class Node {
         this.validatorTerm = validatorTerm;
     }
 
+    public BigInteger getRewardPer() {
+        return rewardPer;
+    }
+
+    public void setRewardPer(BigInteger rewardPer) {
+        this.rewardPer = rewardPer;
+    }
+
+    public BigInteger getNextRewardPer() {
+        return nextRewardPer;
+    }
+
+    public void setNextRewardPer(BigInteger nextRewardPer) {
+        this.nextRewardPer = nextRewardPer;
+    }
+
+    public void setShares(BigInteger shares) {
+        this.shares = shares;
+    }
+
+    public void setReleased(BigInteger released) {
+        this.released = released;
+    }
+
+    public void setReleasedHes(BigInteger releasedHes) {
+        this.releasedHes = releasedHes;
+    }
+
+    public void setRestrictingPlan(BigInteger restrictingPlan) {
+        this.restrictingPlan = restrictingPlan;
+    }
+
+    public void setRestrictingPlanHes(BigInteger restrictingPlanHes) {
+        this.restrictingPlanHes = restrictingPlanHes;
+    }
+
     public Node() {
     }
 
@@ -215,6 +257,8 @@ public class Node {
                 "nodeId='" + nodeId + '\'' +
                 ", stakingAddress='" + stakingAddress + '\'' +
                 ", benifitAddress='" + benifitAddress + '\'' +
+                ", rewardPer=" + rewardPer +
+                ", nextRewardPer=" + nextRewardPer +
                 ", stakingTxIndex=" + stakingTxIndex +
                 ", programVersion=" + programVersion +
                 ", status=" + status +
@@ -229,6 +273,7 @@ public class Node {
                 ", nodeName='" + nodeName + '\'' +
                 ", website='" + website + '\'' +
                 ", details='" + details + '\'' +
+                ", validatorTerm=" + validatorTerm +
                 '}';
     }
 }
