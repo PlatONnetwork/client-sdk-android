@@ -18,14 +18,14 @@
 <dependency>
     <groupId>com.platon.client</groupId>
     <artifactId>core</artifactId>
-    <version>0.6.0-android</version>
+    <version>0.7.6.0-android</version>
 </dependency>
 ```
 
 or
 
 ```
-compile "com.platon.client:core:0.6.0-android"
+compile "com.platon.client:core:0.7.6.0-android"
 ```
 
 * use in project
