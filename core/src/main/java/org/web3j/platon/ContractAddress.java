@@ -11,7 +11,7 @@ public class ContractAddress {
      */
     public static final String STAKING_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
     /**
-     *  委托相关接口
+     * 委托相关接口
      */
     public static final String DELEGATE_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000002";
     /**
@@ -26,5 +26,9 @@ public class ContractAddress {
      * 提案相关接口
      */
     public static final String PROPOSAL_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000005";
+    /**
+     * 奖励
+     */
+    public static final String REWARD_CONTRACT_ADDRESS = "0x1000000000000000000000000000000000000006";
 
 }
