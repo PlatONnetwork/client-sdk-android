@@ -4,6 +4,8 @@ import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.crypto.bech32.AddressCheck;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -52,6 +54,9 @@ public class UpdateStakingParam {
     }
 
     public List<Type> getSubmitInputParameters() {
+        if(!AddressCheck.checkAddressValidity(benifitAddress)){
+            benifitAddress = AddressManager.getInstance().getAddress(benifitAddress);
+        }
         return Arrays.asList(new BytesType(Numeric.hexStringToByteArray(benifitAddress)),
                 new BytesType(Numeric.hexStringToByteArray(nodeId)),
                 new Uint16(rewardPer),

@@ -11,6 +11,8 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.bech32.AddressCheck;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.ErrorCode;
@@ -54,8 +56,12 @@ public abstract class PlatOnContract extends ManagedTransaction {
 
     private PlatOnContract(String contractAddress,
                            Web3j web3j, TransactionManager transactionManager) {
-        super(web3j, transactionManager);
 
+        super(web3j, transactionManager);
+       //最终地址入参
+        if(!AddressCheck.checkAddressValidity(contractAddress)){
+            contractAddress = AddressManager.getInstance().getAddress(contractAddress);
+        }
         this.contractAddress = ensResolver.resolve(contractAddress);
     }
 
