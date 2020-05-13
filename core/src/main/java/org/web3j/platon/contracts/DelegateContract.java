@@ -504,7 +504,6 @@ public class DelegateContract extends PlatOnContract {
 
     /**
      * 查询当前账户地址所委托的节点的NodeID和质押Id
-     *
      * @param address
      * @return
      */
