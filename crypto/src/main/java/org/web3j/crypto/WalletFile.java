@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * Ethereum wallet file.
  */
 public class WalletFile {
-    private String address;
+    private Address address;
     private Crypto crypto;
     private String id;
     private int version;
@@ -24,11 +24,11 @@ public class WalletFile {
     public WalletFile() {
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
@@ -98,7 +98,36 @@ public class WalletFile {
         result = 31 * result + (getId() != null ? getId().hashCode() : 0);
         result = 31 * result + version;
         return result;
-    }  
+    }
+
+    public static class Address{
+        private String mainnet;
+        private String testnet;
+
+        public Address() {
+        }
+
+        public Address(String mainnet, String testnet) {
+            this.mainnet = mainnet;
+            this.testnet = testnet;
+        }
+
+        public String getMainnet() {
+            return mainnet;
+        }
+
+        public void setMainnet(String mainnet) {
+            this.mainnet = mainnet;
+        }
+
+        public String getTestnet() {
+            return testnet;
+        }
+
+        public void setTestnet(String testnet) {
+            this.testnet = testnet;
+        }
+    }
 
     public static class Crypto {
         private String cipher;

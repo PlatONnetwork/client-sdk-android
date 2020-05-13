@@ -1,5 +1,7 @@
 package org.web3j.crypto;
 
+import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.utils.Numeric;
 
 /**
@@ -24,7 +26,8 @@ public class Credentials {
     }
 
     public static Credentials create(ECKeyPair ecKeyPair) {
-        String address = Numeric.prependHexPrefix(Keys.getAddress(ecKeyPair));
+        //String address = Numeric.prependHexPrefix(Keys.getAddress(ecKeyPair));
+        String address = AddressManager.getInstance().getAddress(ecKeyPair);
         return new Credentials(ecKeyPair, address);
     }
 

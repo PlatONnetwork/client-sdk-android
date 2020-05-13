@@ -3,8 +3,12 @@ package org.web3j.crypto;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 
+
+import org.web3j.crypto.bech32.AddressBehavior;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.utils.Numeric;
 
 import static org.hamcrest.core.Is.is;
@@ -13,14 +17,27 @@ import static org.junit.Assert.assertThat;
 
 public class WalletTest {
 
+    @Before
+   public void init(){
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32,AddressBehavior.CHANNLE_PLATON);
+   }
+
     @Test
     public void testCreateStandard() throws Exception {
-        testCreate(Wallet.createStandard(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR));
+
+        WalletFile walletFile =  Wallet.createStandard(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR);
+        System.out.println("------ mainnet:" + walletFile.getAddress().getMainnet());
+        System.out.println("------ testnet:" + walletFile.getAddress().getTestnet());
+        //testCreate(Wallet.createStandard(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR));
     }
 
     @Test
     public void testCreateLight() throws Exception {
-        testCreate(Wallet.createLight(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR));
+
+        WalletFile walletFile =  Wallet.createLight(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR);
+        System.out.println("------ mainnet:" + walletFile.getAddress().getMainnet());
+        System.out.println("------ testnet:" + walletFile.getAddress().getTestnet());
+        //testCreate(Wallet.createLight(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR));
     }
 
     private void testCreate(WalletFile walletFile) throws Exception {

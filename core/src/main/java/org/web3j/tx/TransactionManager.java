@@ -3,6 +3,8 @@ package org.web3j.tx;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import org.web3j.crypto.bech32.AddressCheck;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -24,10 +26,14 @@ public abstract class TransactionManager {
     private final TransactionReceiptProcessor transactionReceiptProcessor;
     private final String fromAddress;
 
-    protected TransactionManager(
-            TransactionReceiptProcessor transactionReceiptProcessor, String fromAddress) {
+    protected TransactionManager(TransactionReceiptProcessor transactionReceiptProcessor, String fromAddress) {
+        //最终地址入参
+        if(!AddressCheck.checkAddressValidity(fromAddress)){
+            this.fromAddress = AddressManager.getInstance().getAddress(fromAddress);
+        }else{
+            this.fromAddress = fromAddress;
+        }
         this.transactionReceiptProcessor = transactionReceiptProcessor;
-        this.fromAddress = fromAddress;
     }
 
     protected TransactionManager(Web3j web3j, String fromAddress) {

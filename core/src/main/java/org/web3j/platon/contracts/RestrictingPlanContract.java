@@ -3,6 +3,7 @@ package org.web3j.platon.contracts;
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.bech32.Bech32;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.CustomStaticArray;
@@ -76,7 +77,7 @@ public class RestrictingPlanContract extends PlatOnContract {
     public RemoteCall<BaseResponse> createRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
-                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account)), new CustomStaticArray(restrictingPlanList)));
+                Arrays.<Type>asList(new BytesType(Bech32.addressDecode(account)), new CustomStaticArray(restrictingPlanList)));
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
@@ -284,7 +285,7 @@ public class RestrictingPlanContract extends PlatOnContract {
     public RemoteCall<BaseResponse<RestrictingItem>> getRestrictingInfo(String account) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.GET_RESTRICTINGINFO_FUNC_TYPE,
-                Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(account))));
+                Arrays.<Type>asList(new BytesType(Bech32.addressDecode(account))));
         return new RemoteCall<BaseResponse<RestrictingItem>>(new Callable<BaseResponse<RestrictingItem>>() {
             @Override
             public BaseResponse<RestrictingItem> call() throws Exception {

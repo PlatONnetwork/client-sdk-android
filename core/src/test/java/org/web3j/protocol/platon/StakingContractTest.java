@@ -6,31 +6,20 @@ import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeEncoder;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.generated.Int64;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.crypto.WalletFile;
+import org.web3j.crypto.*;
+import org.web3j.crypto.bech32.AddressBehavior;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
+import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.platon.bean.StakingParam;
 import org.web3j.platon.bean.UpdateStakingParam;
 import org.web3j.platon.contracts.StakingContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.Platon;
-import org.web3j.protocol.core.methods.response.DebugEconomicConfig;
-import org.web3j.protocol.core.methods.response.PlatonBlock;
-import org.web3j.protocol.core.methods.response.PlatonGetBalance;
-import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
-import org.web3j.protocol.core.methods.response.PlatonGetTransactionReceipt;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.core.*;
+import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
@@ -49,6 +38,7 @@ import java.util.List;
 
 public class StakingContractTest {
 
+
     private String nodeId = "77fffc999d9f9403b65009f1eb27bae65774e2d8ea36f7b20a89f82642a5067557430e6edfe5320bb81c3666a19cf4a5172d6533117d7ebcd0f2c82055499050";
     long chainId = 103;
     String blsPubKey = "5ccd6b8c32f2713faa6c9a46e5fb61ad7b7400e53fabcbc56bdc0c16fbfffe09ad6256982c7059e7383a9187ad93a002a7cda7a75d569f591730481a8b91b5fad52ac26ac495522a069686df1061fc184c31771008c1fedfafd50ae794778811";
@@ -62,23 +52,27 @@ public class StakingContractTest {
 
     @Before
     public void init() throws Exception {
+
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32,AddressBehavior.CHANNLE_PLATON);
+
         superCredentials = Credentials.create("0xa689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b");
-        System.out.println("superCredentials balance="+ web3j.platonGetBalance(superCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
+        //System.out.println("superCredentials balance="+ web3j.platonGetBalance(superCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
 
         stakingCredentials = Credentials.create("0x690a32ceb7eab4131f7be318c1672d3b9b2dadeacba20b99432a7847c1e926e0");
-        System.out.println("stakingCredentials balance="+ web3j.platonGetBalance(stakingCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
+        //System.out.println("stakingCredentials address="+ stakingCredentials.getAddress());
+        //System.out.println("stakingCredentials balance="+ web3j.platonGetBalance(stakingCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
 
         benefitCredentials = Credentials.create("0x3581985348bffd03b286b37712165f7addf3a8d907b25efc44addf54117e9b91");
-        System.out.println("benefitCredentials balance="+ web3j.platonGetBalance(benefitCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
+        //System.out.println("benefitCredentials balance="+ web3j.platonGetBalance(benefitCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
 
         stakingContract = StakingContract.load(web3j,stakingCredentials, chainId);
     }
 
-    @Test
+  /*  @Test
     public void transfer() throws Exception {
         Transfer.sendFunds(web3j, superCredentials, String.valueOf(chainId), stakingCredentials.getAddress(), new BigDecimal("10000000"), Convert.Unit.LAT).send();
         System.out.println("stakingCredentials balance="+ web3j.platonGetBalance(stakingCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());
-    }
+    }*/
 
 
     @Test
@@ -92,6 +86,12 @@ public class StakingContractTest {
             String webSite = "www.baidu.com";
             String details = "chendai-node3-details";
             BigDecimal stakingAmount = Convert.toVon("5000000", Convert.Unit.LAT);
+            BigInteger rewardPer = BigInteger.valueOf(1000L);
+
+            Request<?, AdminProgramVersion> req = web3j.getProgramVersion();
+            AdminProgramVersion adminProgramVersion = req.send();
+            ProgramVersion programVersion = adminProgramVersion.getAdminProgramVersion();
+            System.out.println("---programVersion:"  + programVersion.toString());
 
             PlatonSendTransaction platonSendTransaction = stakingContract.stakingReturnTransaction(new StakingParam.Builder()
                     .setNodeId(nodeId)
@@ -103,8 +103,10 @@ public class StakingContractTest {
                     .setWebSite(webSite)
                     .setDetails(details)
                     .setBlsPubKey(blsPubKey)
-                    .setProcessVersion(web3j.getProgramVersion().send().getAdminProgramVersion())
+                   // .setProcessVersion(web3j.getProgramVersion().send().getAdminProgramVersion())
+                    .setProcessVersion(programVersion)
                     .setBlsProof(web3j.getSchnorrNIZKProve().send().getAdminSchnorrNIZKProve())
+                    .setRewardPer(rewardPer)
                     .build()).send();
             BaseResponse baseResponse = stakingContract.getStakingResult(platonSendTransaction).send();
             System.out.println(baseResponse.toString());  // 438552‬
@@ -122,14 +124,16 @@ public class StakingContractTest {
             String nodeName = "chendai-node3-u";
             String webSite = "www.baidu.com-u";
             String details = "chendai-node3-details-u";
+            BigInteger rewardPer = BigInteger.valueOf(2000L);
 
             BaseResponse baseResponse = stakingContract.updateStakingInfo(new UpdateStakingParam.Builder()
                     .setNodeId(nodeId)
                     .setBenifitAddress(benifitAddress)
                     .setExternalId(externalId)
                     .setNodeName(nodeName)
-                    .setWebSite("https://www.github.com/")
+                    .setWebSite(webSite)
                     .setDetails(details)
+                    .setRewardPer(rewardPer)
                     .build()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
@@ -140,7 +144,8 @@ public class StakingContractTest {
     @Test
     public void addStaking() {
         try {
-            BaseResponse baseResponse = stakingContract.addStaking(nodeId, StakingAmountType.FREE_AMOUNT_TYPE, BigInteger.valueOf(10000)).send();
+            BigDecimal addStakingAmount = Convert.toVon("4000000", Convert.Unit.LAT).add(new BigDecimal("999999999999999998"));
+            BaseResponse baseResponse = stakingContract.addStaking(nodeId, StakingAmountType.FREE_AMOUNT_TYPE,addStakingAmount.toBigInteger()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,8 +166,7 @@ public class StakingContractTest {
     public void getStakingInfo() {
         try {
             BaseResponse<Node> baseResponse = stakingContract.getStakingInfo(nodeId).send();
-            Node node = baseResponse.data;
-            System.out.println(node.toString());
+            System.out.println(baseResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }

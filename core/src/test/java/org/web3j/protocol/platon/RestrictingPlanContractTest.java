@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.WalletApplication;
+import org.web3j.crypto.bech32.AddressBehavior;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.bean.RestrictingItem;
 import org.web3j.platon.bean.RestrictingPlan;
@@ -30,21 +33,20 @@ import java.util.List;
 public class RestrictingPlanContractTest {
 
 
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.9.190:1000/rpc"));
-
-    private String address = "0x493301712671Ada506ba6Ca7891F436D29185821";
-    private String benifitAddress = "0xc54298e791fccc70985084d017d8491311fc4d57";
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.142:6789"));
+    long chainId = 103;
 
     private RestrictingPlanContract restrictingPlanContract;
 
     private Credentials credentials;
+    private Credentials deleteCredentials;
 
     @Before
     public void init() {
-
-        credentials = Credentials.create("0x961bda67790709a870dc2cf03bcf7448b6803dff152443a62ad5065473432034");
-
-        restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, 101);
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32,AddressBehavior.CHANNLE_PLATON);
+        credentials = Credentials.create("0xa689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b");
+        deleteCredentials = Credentials.create("0x6fe419582271a4dcf01c51b89195b77b228377fde4bde6e04ef126a0b4373f79");
+        restrictingPlanContract = RestrictingPlanContract.load(web3j, credentials, chainId);
     }
 
     @Test
@@ -53,7 +55,7 @@ public class RestrictingPlanContractTest {
         List<RestrictingPlan> restrictingPlans = new ArrayList<>();
         restrictingPlans.add(new RestrictingPlan(BigInteger.valueOf(100), new BigInteger("1000000000000000000000")));
         try {
-            BaseResponse baseResponse = restrictingPlanContract.createRestrictingPlan(benifitAddress, restrictingPlans).send();
+            BaseResponse baseResponse = restrictingPlanContract.createRestrictingPlan(deleteCredentials.getAddress(), restrictingPlans).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +65,7 @@ public class RestrictingPlanContractTest {
     @Test
     public void getRestrictingPlanInfo() {
         try {
-            BaseResponse<RestrictingItem> baseResponse = restrictingPlanContract.getRestrictingInfo(benifitAddress).send();
+            BaseResponse<RestrictingItem> baseResponse = restrictingPlanContract.getRestrictingInfo(deleteCredentials.getAddress()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,12 +7,7 @@ import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.exceptions.MessageDecodingException;
-import org.web3j.platon.BaseResponse;
-import org.web3j.platon.ContractAddress;
-import org.web3j.platon.FunctionType;
-import org.web3j.platon.PlatOnFunction;
-import org.web3j.platon.StakingAmountType;
-import org.web3j.platon.TransactionCallback;
+import org.web3j.platon.*;
 import org.web3j.platon.bean.Node;
 import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.platon.bean.StakingParam;
@@ -815,7 +810,11 @@ public class StakingContract extends PlatOnContract {
             @Override
             public BaseResponse<Node> call() throws Exception {
                 BaseResponse response = executePatonCall(function);
-                response.data = JSONUtil.parseObject(JSONUtil.toJSONString(response.data), Node.class);
+                if(response.code == ErrorCode.SUCCESS){
+                    String strJson = JSONUtil.toJSONString(response.data);
+                    response.data = JSONUtil.parseObject(strJson, Node.class);
+                    response.errMsg = ErrorCode.getErrorMsg(response.code);
+                }
                 return response;
             }
         });

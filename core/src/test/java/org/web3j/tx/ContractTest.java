@@ -23,7 +23,6 @@ import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.SampleKeys;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
@@ -37,6 +36,7 @@ import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.protocol.platon.SampleKeys;
 import org.web3j.utils.Async;
 import org.web3j.utils.Numeric;
 

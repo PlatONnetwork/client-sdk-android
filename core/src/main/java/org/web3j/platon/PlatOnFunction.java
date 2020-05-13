@@ -26,7 +26,7 @@ public class PlatOnFunction {
     /**
      * 默认gasLimit固定值
      */
-    private static final BigInteger BASE_DEFAULT_GAS_LIMIT = BigInteger.valueOf(21000);
+    private static final BigInteger BASE_DEFAULT_GAS_LIMIT = BigInteger.valueOf(2100000);
     /**
      * 非0值gasLimit基数
      */

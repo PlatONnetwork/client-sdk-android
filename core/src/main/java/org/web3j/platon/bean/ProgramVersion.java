@@ -1,22 +1,21 @@
 package org.web3j.platon.bean;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import java.math.BigInteger;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.math.BigInteger;
 
 public class ProgramVersion {
 
     /**
      * 代码版本
      */
-    @JSONField(name = "Version")
+    @JsonProperty("Version")
     private BigInteger version;
     /**
      * 代码版本签名
      */
-    @JSONField(name = "Sign")
+    @JsonProperty("Sign")
     private String sign;
 
     public ProgramVersion() {
@@ -44,7 +43,6 @@ public class ProgramVersion {
     public String getProgramVersionSign() {
         return sign;
     }
-
     @JsonIgnore
     public void setSign(String sign) {
         this.sign = sign;
@@ -79,5 +77,10 @@ public class ProgramVersion {
         } else if (!version.equals(other.version))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ProgramVersion [version=" + version + ", sign=" + sign + "]";
     }
 }

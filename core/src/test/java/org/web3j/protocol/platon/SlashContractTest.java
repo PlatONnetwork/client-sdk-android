@@ -3,6 +3,9 @@ package org.web3j.protocol.platon;
 import org.junit.Before;
 import org.junit.Test;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletApplication;
+import org.web3j.crypto.bech32.AddressBehavior;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.DuplicateSignType;
 import org.web3j.platon.contracts.SlashContract;
@@ -13,7 +16,10 @@ import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.http.HttpService;
 
 public class SlashContractTest {
-    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.76:6794"));
+    private Web3j web3j = Web3jFactory.build(new HttpService("http://192.168.120.142:6789"));
+    private String nodeId = "e0b6af6cc2e10b2b74540b87098083d48343805a3ff09c655eab0b20dba2b2851aea79ee75b6e150bde58ead0be03ee4a8619ea1dfaf529cbb8ff55ca23531ed";
+
+    long chainId = 103;
 
     private String address = "0x493301712671Ada506ba6Ca7891F436D29185821";
     private String benifitAddress = "0x12c171900f010b17e969702efa044d077e868082";
@@ -46,10 +52,10 @@ public class SlashContractTest {
 
     @Before
     public void init() {
-        credentials = Credentials.create("0xa56f68ca7aa51c24916b9fff027708f856650f9ff36cc3c8da308040ebcc7867");
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32,AddressBehavior.CHANNLE_PLATON);
 
-        slashContract = SlashContract.load(web3j,
-                credentials, 100);
+        credentials = Credentials.create("0xa56f68ca7aa51c24916b9fff027708f856650f9ff36cc3c8da308040ebcc7867");
+        slashContract = SlashContract.load(web3j, credentials, chainId);
     }
 
     @Test
@@ -68,7 +74,7 @@ public class SlashContractTest {
 
         try {
             PlatonBlock platonBlock = web3j.platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
-            BaseResponse baseResponse = slashContract.checkDoubleSign(DuplicateSignType.PREPARE_BLOCK, "0x4F8eb0B21eb8F16C80A9B7D728EA473b8676Cbb3", platonBlock.getBlock().getNumber()).send();
+            BaseResponse baseResponse = slashContract.checkDoubleSign(DuplicateSignType.PREPARE_BLOCK, nodeId, platonBlock.getBlock().getNumber()).send();
             System.out.println(baseResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
