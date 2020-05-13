@@ -1,7 +1,6 @@
 package org.web3j.platon.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
-
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -67,6 +66,62 @@ public class Node {
 
     @JSONField(name = "ValidatorTerm")
     private BigInteger validatorTerm;
+
+    @JSONField(name = "DelegateEpoch")
+    private BigInteger delegateEpoch;
+
+    @JSONField(name = "DelegateTotal")
+    private BigInteger delegateTotal;
+
+    @JSONField(name = "DelegateTotalHes")
+    private BigInteger delegateTotalHes;
+
+    @JSONField(name = "DelegateRewardTotal")
+    private BigInteger delegateRewardTotal;
+
+    public BigInteger getDelegateEpoch() {
+        return delegateEpoch;
+    }
+
+    public void setDelegateEpoch(BigInteger delegateEpoch) {
+        this.delegateEpoch = delegateEpoch;
+    }
+
+    public BigInteger getDelegateTotal() {
+        return delegateTotal;
+    }
+
+    public void setDelegateTotal(String delegateTotal) {
+        if (delegateTotal != null && delegateTotal.length() > 0) {
+            this.delegateTotal = Numeric.decodeQuantity(delegateTotal);
+        } else {
+            this.delegateTotal = BigInteger.ZERO;
+        }
+    }
+
+    public BigInteger getDelegateTotalHes() {
+        return delegateTotalHes;
+    }
+
+    public void setDelegateTotalHes(String delegateTotalHes) {
+        if (delegateTotalHes != null && delegateTotalHes.length() > 0) {
+            this.delegateTotalHes = Numeric.decodeQuantity(delegateTotalHes);
+        } else {
+            this.delegateTotalHes = BigInteger.ZERO;
+        }
+    }
+
+    public BigInteger getDelegateRewardTotal() {
+        return delegateRewardTotal;
+    }
+
+    public void setDelegateRewardTotal(String delegateRewardTotal) {
+        if (delegateRewardTotal != null && delegateRewardTotal.length() > 0) {
+            this.delegateRewardTotal = Numeric.decodeQuantity(delegateRewardTotal);
+        } else {
+            this.delegateRewardTotal = BigInteger.ZERO;
+        }
+    }
 
     public String getNodeId() {
         return nodeId;
@@ -137,7 +192,11 @@ public class Node {
     }
 
     public void setShares(String shares) {
-        this.shares = Numeric.decodeQuantity(shares);
+        if (shares != null && shares.length() > 0) {
+            this.shares = Numeric.decodeQuantity(shares);
+        } else {
+            this.shares = BigInteger.ZERO;
+        }
     }
 
     public BigInteger getReleased() {
@@ -145,7 +204,11 @@ public class Node {
     }
 
     public void setReleased(String released) {
-        this.released = Numeric.decodeQuantity(released);
+        if (released != null && released.length() > 0) {
+            this.released = Numeric.decodeQuantity(released);
+        } else {
+            this.released = BigInteger.ZERO;
+        }
     }
 
     public BigInteger getReleasedHes() {
@@ -153,7 +216,11 @@ public class Node {
     }
 
     public void setReleasedHes(String releasedHes) {
-        this.releasedHes = Numeric.decodeQuantity(releasedHes);
+        if (releasedHes != null && releasedHes.length() > 0) {
+            this.releasedHes = Numeric.decodeQuantity(releasedHes);
+        } else {
+            this.releasedHes = BigInteger.ZERO;
+        }
     }
 
     public BigInteger getRestrictingPlan() {
@@ -161,7 +228,11 @@ public class Node {
     }
 
     public void setRestrictingPlan(String restrictingPlan) {
-        this.restrictingPlan = Numeric.decodeQuantity(restrictingPlan);
+        if (restrictingPlan != null && restrictingPlan.length() > 0) {
+            this.restrictingPlan = Numeric.decodeQuantity(restrictingPlan);
+        } else {
+            this.restrictingPlan = BigInteger.ZERO;
+        }
     }
 
     public BigInteger getRestrictingPlanHes() {
@@ -169,7 +240,11 @@ public class Node {
     }
 
     public void setRestrictingPlanHes(String restrictingPlanHes) {
-        this.restrictingPlanHes = Numeric.decodeQuantity(restrictingPlanHes);
+        if (restrictingPlanHes != null && restrictingPlanHes.length() > 0) {
+            this.restrictingPlanHes = Numeric.decodeQuantity(restrictingPlanHes);
+        } else {
+            this.restrictingPlanHes = BigInteger.ZERO;
+        }
     }
 
     public String getExternalId() {
@@ -212,14 +287,6 @@ public class Node {
         this.validatorTerm = validatorTerm;
     }
 
-    public BigInteger getRewardPer() {
-        return rewardPer;
-    }
-
-    public void setRewardPer(BigInteger rewardPer) {
-        this.rewardPer = rewardPer;
-    }
-
     public BigInteger getNextRewardPer() {
         return nextRewardPer;
     }
@@ -228,24 +295,12 @@ public class Node {
         this.nextRewardPer = nextRewardPer;
     }
 
-    public void setShares(BigInteger shares) {
-        this.shares = shares;
+    public BigInteger getRewardPer() {
+        return rewardPer;
     }
 
-    public void setReleased(BigInteger released) {
-        this.released = released;
-    }
-
-    public void setReleasedHes(BigInteger releasedHes) {
-        this.releasedHes = releasedHes;
-    }
-
-    public void setRestrictingPlan(BigInteger restrictingPlan) {
-        this.restrictingPlan = restrictingPlan;
-    }
-
-    public void setRestrictingPlanHes(BigInteger restrictingPlanHes) {
-        this.restrictingPlanHes = restrictingPlanHes;
+    public void setRewardPer(BigInteger rewardPer) {
+        this.rewardPer = rewardPer;
     }
 
     public Node() {
@@ -274,6 +329,10 @@ public class Node {
                 ", website='" + website + '\'' +
                 ", details='" + details + '\'' +
                 ", validatorTerm=" + validatorTerm +
+                ", delegateEpoch=" + delegateEpoch +
+                ", delegateTotal=" + delegateTotal +
+                ", delegateTotalHes=" + delegateTotalHes +
+                ", delegateRewardTotal=" + delegateRewardTotal +
                 '}';
     }
 }

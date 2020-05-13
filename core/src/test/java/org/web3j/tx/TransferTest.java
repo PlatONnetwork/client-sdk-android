@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.web3j.crypto.SampleKeys;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.PlatonGasPrice;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;

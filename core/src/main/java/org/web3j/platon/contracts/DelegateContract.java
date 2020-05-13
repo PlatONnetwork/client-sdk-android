@@ -5,6 +5,7 @@ import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.bech32.Bech32;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
@@ -67,7 +68,7 @@ public class DelegateContract extends PlatOnContract {
      *
      * @param nodeId            被质押的节点的NodeId
      * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
+     * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)1 lat =100000000000000000von
      * @return
      */
     public RemoteCall<BaseResponse> delegate(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
@@ -481,14 +482,21 @@ public class DelegateContract extends PlatOnContract {
 
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_DELEGATEINFO_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
-                        , new BytesType(Numeric.hexStringToByteArray(delAddr))
+                        //, new BytesType(Numeric.hexStringToByteArray(delAddr))
+                        , new BytesType(Bech32.addressDecode(delAddr))
                         , new BytesType(Numeric.hexStringToByteArray(nodeId))));
 
         return new RemoteCall<BaseResponse<Delegation>>(new Callable<BaseResponse<Delegation>>() {
             @Override
             public BaseResponse<Delegation> call() throws Exception {
                 BaseResponse response = executePatonCall(function);
-                response.data = JSONUtil.parseObject(JSONUtil.toJSONString(response.data), Delegation.class);
+                if(response.isStatusOk()){
+                    response.data = JSONUtil.parseObject(JSONUtil.toJSONString(response.data), Delegation.class);
+                }else{
+                   System.out.println("response.errMsg:" + response.errMsg);
+                }
+
+
                 return response;
             }
         });
@@ -502,7 +510,7 @@ public class DelegateContract extends PlatOnContract {
      */
     public RemoteCall<BaseResponse<List<DelegationIdInfo>>> getRelatedListByDelAddr(String address) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_DELEGATELIST_BYADDR_FUNC_TYPE,
-                Arrays.asList(new BytesType(Numeric.hexStringToByteArray(address))));
+                Arrays.asList(new BytesType(Bech32.addressDecode(address))));
         return new RemoteCall<BaseResponse<List<DelegationIdInfo>>>(new Callable<BaseResponse<List<DelegationIdInfo>>>() {
             @Override
             public BaseResponse<List<DelegationIdInfo>> call() throws Exception {

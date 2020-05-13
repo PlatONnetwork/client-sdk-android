@@ -62,7 +62,8 @@ public abstract class PlatOnContract extends ManagedTransaction {
         if(!AddressCheck.checkAddressValidity(contractAddress)){
             contractAddress = AddressManager.getInstance().getAddress(contractAddress);
         }
-        this.contractAddress = ensResolver.resolve(contractAddress);
+        //this.contractAddress = ensResolver.resolve(contractAddress);
+        this.contractAddress = contractAddress;
     }
 
     /**
@@ -206,7 +207,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
             throws TransactionException, IOException {
 
         GasProvider gasProvider = function.getGasProvider();
-
+        //BigInteger gasLimit = new BigInteger("210000");
         TransactionReceipt receipt = send(contractAddress, function.getEncodeData(), weiValue,
                 gasProvider.getGasPrice(),
                 gasProvider.getGasLimit());

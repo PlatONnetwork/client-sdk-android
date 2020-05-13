@@ -1,25 +1,26 @@
 package org.web3j.crypto.bech32;
 
+import org.web3j.crypto.WalletApplication;
 import org.web3j.utils.Numeric;
 
 public class AddressBehaviorBech32 implements AddressBehavior {
 
     @Override
     public String channleType() {
-        return AddressBehavior.CHANNLE_PLATON;
+        return WalletApplication.channleType;
     }
 
     @Override
     public AddressBech32 encodeAddress(String address) {
         AddressBech32 addressBech32 = new AddressBech32();
         if(channleType() == AddressBehavior.CHANNLE_PLATON){
-            String latAddress = Bech32.encode(Bech32.HRP_LAT, Bech32.convertBits(Numeric.hexStringToByteArray(address),8,5,true));
-            String laxAddress = Bech32.encode(Bech32.HRP_LAX, Bech32.convertBits(Numeric.hexStringToByteArray(address),8,5,true));
+            String latAddress = Bech32.addressEncode(Bech32.HRP_LAT,address);
+            String laxAddress = Bech32.addressEncode(Bech32.HRP_LAX, address);
             addressBech32.setMainnet(latAddress);
             addressBech32.setTestnet(laxAddress);
         }else{
-            String plaAddress = Bech32.encode(Bech32.HRP_PLA, Bech32.convertBits(Numeric.hexStringToByteArray(address),8,5,true));
-            String pltAddress = Bech32.encode(Bech32.HRP_PLT, Bech32.convertBits(Numeric.hexStringToByteArray(address),8,5,true));
+            String plaAddress = Bech32.addressEncode(Bech32.HRP_PLA, address);
+            String pltAddress = Bech32.addressEncode(Bech32.HRP_PLT, address);
             addressBech32.setMainnet(plaAddress);
             addressBech32.setTestnet(pltAddress);
         }

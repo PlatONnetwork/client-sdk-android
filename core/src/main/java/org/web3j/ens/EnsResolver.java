@@ -118,6 +118,7 @@ public class EnsResolver {
 
     PublicResolver lookupResolver(String ensName) throws Exception {
         NetVersion netVersion = web3j.netVersion().send();
+        //??
         String registryContract = Contracts.resolveRegistryContract(netVersion.getNetVersion());
 
         ENS ensRegistry = ENS.load(

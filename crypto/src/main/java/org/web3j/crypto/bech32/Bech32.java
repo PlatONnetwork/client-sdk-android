@@ -16,6 +16,8 @@
 
 package org.web3j.crypto.bech32;
 
+import org.web3j.utils.Numeric;
+
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Locale;
@@ -27,6 +29,9 @@ public class Bech32 {
     public static final String HRP_PLA = "pla";
     public static final String HRP_PLT = "plt";
 
+
+    private static final int ADDRESS_SIZE = 160;
+    private static final int ADDRESS_LENGTH_IN_HEX = ADDRESS_SIZE >> 2;
 
     /** The Bech32 character set for encoding. */
     private static final String CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
@@ -43,7 +48,7 @@ public class Bech32 {
              1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1
     };
 
-    public static class Bech32Data {
+    private static class Bech32Data {
         public final String hrp;
         public final byte[] data;
 
@@ -104,15 +109,15 @@ public class Bech32 {
         return ret;
     }
 
-    /** Encode a Bech32 string. */
-    public static String encode(final Bech32Data bech32) {
-        return encode(bech32.hrp, bech32.data);
+    /** Encode a hex string. */
+    public static String addressEncode(String hrp, String address) {
+        return encode(hrp, convertBits(Numeric.hexStringToByteArray(address),8,5,true));
     }
 
     /** Encode a Bech32 string. */
-    public static String encode(String hrp, final byte[] values) {
-//        checkArgument(hrp.length() >= 1, "Human-readable part is too short");
-//        checkArgument(hrp.length() <= 83, "Human-readable part is too long");
+    private static String encode(String hrp, final byte[] values) {
+        checkArgument(hrp.length() >= 1, "Human-readable part is too short");
+        checkArgument(hrp.length() <= 83, "Human-readable part is too long");
         hrp = hrp.toLowerCase(Locale.ROOT);
         byte[] checksum = createChecksum(hrp, values);
         byte[] combined = new byte[values.length + checksum.length];
@@ -128,7 +133,7 @@ public class Bech32 {
     }
 
     /** Decode a Bech32 string. */
-    public static Bech32Data decode(final String str) throws RuntimeException {
+    private static Bech32Data decode(final String str) throws RuntimeException {
         boolean lower = false, upper = false;
 
         final int pos = str.lastIndexOf('1');
@@ -143,11 +148,35 @@ public class Bech32 {
         return new Bech32Data(hrp, Arrays.copyOfRange(values, 0, values.length - 6));
     }
 
+    public static byte[] addressDecode(final String str) throws RuntimeException {
+        Bech32.Bech32Data bech32Data  = decode(str);
+        return convertBits(bech32Data.data, 5, 8, false);
+    }
+
+    public static String addressDecodeHex(final String str) throws RuntimeException {
+        byte[] bytes = addressDecode(str);
+        return Numeric.toHexStringWithPrefixZeroPadded( Numeric.toBigInt(bytes),ADDRESS_LENGTH_IN_HEX);
+    }
+
+
+    /**
+     * Ensures the truth of an expression involving one or more parameters to the calling method.
+     *
+     * @param expression a boolean expression
+     * @param errorMessage the exception message to use if the check fails; will be converted to a
+     *     string using {@link String#valueOf(Object)}
+     * @throws IllegalArgumentException if {@code expression} is false
+     */
+    private static void checkArgument(boolean expression, Object errorMessage) {
+        if (!expression) {
+            throw new IllegalArgumentException(String.valueOf(errorMessage));
+        }
+    }
 
     /**
      * Helper for re-arranging bits into groups.
      */
-    public static byte[] convertBits(final byte[] in, final int fromBits,
+    private static byte[] convertBits(final byte[] in, final int fromBits,
                                       final int toBits, final boolean pad)  {
         int acc = 0;
         int bits = 0;
@@ -175,4 +204,5 @@ public class Bech32 {
         }
         return out.toByteArray();
     }
+
 }

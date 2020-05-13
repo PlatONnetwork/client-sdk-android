@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.junit.Before;
 
-import org.web3j.crypto.SampleKeys;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.Request;
@@ -12,6 +11,7 @@ import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
 import org.web3j.protocol.core.methods.response.PlatonGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.platon.SampleKeys;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
