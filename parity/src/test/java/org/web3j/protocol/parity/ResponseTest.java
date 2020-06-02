@@ -1,3 +1,4 @@
+/*
 package org.web3j.protocol.parity;
 
 import java.math.BigInteger;
@@ -32,9 +33,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+*/
 /**
  * Parity Protocol Response tests.
- */
+ *//*
+
 public class ResponseTest extends ResponseTester {
 
     @Test
@@ -559,3 +562,4 @@ public class ResponseTest extends ResponseTester {
     }
 
 }
+*/

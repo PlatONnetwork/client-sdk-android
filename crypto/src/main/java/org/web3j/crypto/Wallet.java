@@ -107,7 +107,7 @@ public class Wallet {
         address.setMainnet(addressBech32.getMainnet());
         address.setTestnet(addressBech32.getTestnet());
         walletFile.setAddress(address);
-        walletFile.setOriginalAddress(Keys.getAddress(ecKeyPair));
+        //walletFile.setOriginalAddress(Keys.getAddress(ecKeyPair));
 
         WalletFile.Crypto crypto = new WalletFile.Crypto();
         crypto.setCipher(CIPHER);
