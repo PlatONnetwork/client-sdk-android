@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class WalletFile {
     private Address address;
-    private String originalAddress;
     private Crypto crypto;
     private String id;
     private int version;
@@ -31,14 +30,6 @@ public class WalletFile {
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getOriginalAddress() {
-        return originalAddress;
-    }
-
-    public void setOriginalAddress(String originalAddress) {
-        this.originalAddress = originalAddress;
     }
 
     public Crypto getCrypto() {

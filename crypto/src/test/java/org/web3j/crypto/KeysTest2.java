@@ -81,12 +81,11 @@ public class KeysTest2 {
         System.out.println(Bech32.addressEncode("lat", address));
 
 
-        String v = "";
         try{
-            //String v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
-             v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uw1";
-            // System.out.println(Bech32.addressDecodeHex(v));
-            Bech32.addressDecode(v);
+            String v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
+            // v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uw1";
+             System.out.println(Bech32.addressDecodeHex(v));
+           // Bech32.addressDecode(v);
         }catch (Exception e){
               System.out.println("捕获" + e.getMessage());
              e.printStackTrace();
