@@ -2,6 +2,7 @@ package org.web3j.crypto;
 
 import java.math.BigInteger;
 
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.rlp.RlpDecoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -17,6 +18,7 @@ public class TransactionDecoder {
         BigInteger gasPrice = ((RlpString) values.getValues().get(1)).asPositiveBigInteger();
         BigInteger gasLimit = ((RlpString) values.getValues().get(2)).asPositiveBigInteger();
         String to = ((RlpString) values.getValues().get(3)).asString();
+        String toAddressBetch32 = AddressManager.getInstance().getAddress(to);
         BigInteger value = ((RlpString) values.getValues().get(4)).asPositiveBigInteger();
         String data = ((RlpString) values.getValues().get(5)).asString();
         if (values.getValues().size() == 6
@@ -26,7 +28,7 @@ public class TransactionDecoder {
                         && ((RlpString) values.getValues().get(8)).getBytes().length == 10)) {
             // the 8th or 9nth element is the hex
             // representation of "restricted" for private transactions
-            return RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
+            return RawTransaction.createTransaction(nonce, gasPrice, gasLimit, toAddressBetch32, value, data);
         } else {
             final byte[] v = ((RlpString) values.getValues().get(6)).getBytes();
             final byte[] r =
@@ -39,7 +41,7 @@ public class TransactionDecoder {
                             32);
             final Sign.SignatureData signatureData = new Sign.SignatureData(v, r, s);
             return new SignedRawTransaction(
-                    nonce, gasPrice, gasLimit, to, value, data, signatureData);
+                    nonce, gasPrice, gasLimit, toAddressBetch32, value, data, signatureData);
         }
     }
     

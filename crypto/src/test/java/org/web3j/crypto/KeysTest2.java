@@ -2,6 +2,7 @@ package org.web3j.crypto;
 
 import org.junit.Test;
 import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressBehavior;
 import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.crypto.bech32.Bech32;
 import org.web3j.utils.Numeric;
@@ -83,8 +84,8 @@ public class KeysTest2 {
 
         try{
             String v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
-            // v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uw1";
-             System.out.println(Bech32.addressDecodeHex(v));
+            String v1 = "lax1pwmll3q6q8a6s93nsw8x35ks3nyyan7kjf7hkk";
+             System.out.println(Bech32.addressDecodeHex(v1));
            // Bech32.addressDecode(v);
         }catch (Exception e){
               System.out.println("捕获" + e.getMessage());
@@ -95,9 +96,20 @@ public class KeysTest2 {
 
     @Test
     public void test2() {
+        //初始化
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+
+
         Credentials credentials = Credentials.create("deb2bd10eedef6d89cd8fac224dc8f1bdd26ed1c4b5c513995efb1b33404db17");
         String addressStr = credentials.getAddress();
         System.out.println("addressStr:" + addressStr);
+
+
+        String originalAddress = "0x91b28f1ea153399da3f8f60942ec48051f7ca228";
+        AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
+        System.out.println("addressBech32:" + addressBech32.getTestnet());
+        System.out.println("addressBech32:" + addressBech32.getMainnet());
+
 
         String str = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
         AddressBech32 decodeAddress = AddressManager.getInstance().executeDecodeAddress(str);
