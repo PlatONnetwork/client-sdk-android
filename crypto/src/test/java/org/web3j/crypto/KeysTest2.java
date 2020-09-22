@@ -84,7 +84,7 @@ public class KeysTest2 {
 
         try{
             String v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
-            String v1 = "lax1pwmll3q6q8a6s93nsw8x35ks3nyyan7kjf7hkk";
+            String v1 = "lax1dkyctq9yk6k2jdez3w0wrwncnsn5uaqs2p02jq";
              System.out.println(Bech32.addressDecodeHex(v1));
            // Bech32.addressDecode(v);
         }catch (Exception e){
@@ -105,7 +105,7 @@ public class KeysTest2 {
         System.out.println("addressStr:" + addressStr);
 
 
-        String originalAddress = "0x91b28f1ea153399da3f8f60942ec48051f7ca228";
+        String originalAddress = "0xb89964e28b8f1b7b21d3c794fccc3a01807d442a";
         AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
         System.out.println("addressBech32:" + addressBech32.getTestnet());
         System.out.println("addressBech32:" + addressBech32.getMainnet());
