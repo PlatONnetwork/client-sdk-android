@@ -1585,7 +1585,7 @@ PlatonFilter属性中的BigInteger即为对应存储数据
 
 ```android
 Web3j platonWeb3j = Web3jFactory.build(new HttpService("http://127.0.0.1:6789"));
-org.web3j.protocol.core.methods.request.PlatonFilter filter = new org.web3j.protocol.core.methods.request.PlatonFilter();
+PlatonFilter filter = new PlatonFilter();
 filter.addSingleTopic("");
 Request <?, PlatonFilter> request = currentValidWeb3j.platonNewFilter(filter);
 BigInteger req = request.send().getFilterId();
@@ -1759,7 +1759,7 @@ PlatonLog属性中的BigInteger即为对应存储数据
 
 ```android
 Web3j platonWeb3j = Web3jFactory.build(new HttpService("http://127.0.0.1:6789"));
-org.web3j.protocol.core.methods.request.PlatonFilter filter = new org.web3j.protocol.core.methods.request.PlatonFilter();
+PlatonFilter filter = new PlatonFilter();
 filter.addSingleTopic("");
 Request <?, PlatonLog> request = currentValidWeb3j.platonGetLogs(filter);
 List<LogResult> = request.send().getLogs();

@@ -184,13 +184,13 @@ with the `Transaction <https://github.com/web3j/web3j/blob/master/core/src/main/
                 "0x...<smart contract code to execute>"
         );
 
-        org.web3j.protocol.core.methods.response.PlatonSendTransaction
+        PlatonSendTransaction
                 transactionResponse = parity.ethSendTransaction(ethSendTransaction)
                 .send();
 
         String transactionHash = transactionResponse.getTransactionHash();
 
-        // poll for transaction response via org.web3j.protocol.Web3j.ethGetTransactionReceipt(<txHash>)
+        // poll for transaction response via Web3j.ethGetTransactionReceipt(<txHash>)
 
 Where the *<nonce>* value is obtained as per :ref:`below <nonce>`.
 
@@ -289,7 +289,7 @@ The transaction is then sent using `eth_sendRawTransaction <https://github.com/e
 
    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
    String transactionHash = ethSendTransaction.getTransactionHash();
-   // poll for transaction response via org.web3j.protocol.Web3j.ethGetTransactionReceipt(<txHash>)
+   // poll for transaction response via Web3j.ethGetTransactionReceipt(<txHash>)
 
 
 Please refer to the integration test
@@ -471,7 +471,7 @@ to the :doc:`abi` section.
    Transaction transaction = Transaction.createFunctionCallTransaction(
                 <from>, <gasPrice>, <gasLimit>, contractAddress, <funds>, encodedFunction);
 
-   org.web3j.protocol.core.methods.response.PlatonSendTransaction transactionResponse =
+   PlatonSendTransaction transactionResponse =
                 web3j.ethSendTransaction(transaction).sendAsync().get();
 
    String transactionHash = transactionResponse.getTransactionHash();
@@ -501,7 +501,7 @@ contract method's called, it simply returns the value from them::
                 Arrays.asList(new TypeReference<Type>() {}, ...));
 
    String encodedFunction = FunctionEncoder.encode(function)
-   org.web3j.protocol.core.methods.response.PlatonCall response = web3j.ethCall(
+   PlatonCall response = web3j.ethCall(
                 Transaction.createEthCallTransaction(<from>, contractAddress, encodedFunction),
                 DefaultBlockParameterName.LATEST)
                 .sendAsync().get();

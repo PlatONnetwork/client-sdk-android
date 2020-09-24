@@ -1,0 +1,15 @@
+
+description 'web3j Ethereum crypto library'
+
+//            "org.slf4j.slf4j-simple:1.7.25"
+dependencies {
+
+
+    compile project(':alaya-rlp'),
+            project(':alaya-utils'),
+            "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+            "org.slf4j:slf4j-api:$slf4jVersion",
+            "com.lambdaworks:scrypt:$scryptVersion"
+
+
+}
