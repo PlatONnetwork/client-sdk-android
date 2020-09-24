@@ -1,8 +1,0 @@
-
-description 'Parity JSON-RPC API'
-
-dependencies {
-    compile project(':alaya-core')
-    testCompile project(path: ':alaya-core', configuration: 'archives'),
-            "nl.jqno.equalsverifier:equalsverifier:$equalsverifierVersion"
-}
