@@ -1,0 +1,7 @@
+
+description 'Geth JSON-RPC API'
+
+dependencies {
+    compile project(':alaya-core')
+    testCompile project(path: ':alaya-core', configuration: 'archives')
+}
