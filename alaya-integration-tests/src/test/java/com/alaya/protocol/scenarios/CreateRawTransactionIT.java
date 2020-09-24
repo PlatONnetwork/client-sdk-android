@@ -1,7 +1,5 @@
 package com.alaya.protocol.scenarios;
 
-import java.math.BigInteger;
-
 import com.alaya.crypto.RawTransaction;
 import com.alaya.crypto.TransactionEncoder;
 import com.alaya.protocol.core.DefaultBlockParameterName;
@@ -11,6 +9,8 @@ import com.alaya.protocol.core.methods.response.TransactionReceipt;
 import com.alaya.utils.Convert;
 import com.alaya.utils.Numeric;
 import org.junit.Test;
+
+import java.math.BigInteger;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
@@ -66,7 +66,7 @@ public class CreateRawTransactionIT extends Scenario {
     }
 
     private static RawTransaction createEtherTransaction(BigInteger nonce, String toAddress) {
-        BigInteger value = Convert.toVon("0.5", Convert.Unit.LAT).toBigInteger();
+        BigInteger value = Convert.toVon("0.5", Convert.Unit.ATP).toBigInteger();
 
         return RawTransaction.createEtherTransaction(
                 nonce, GAS_PRICE, GAS_LIMIT, toAddress, value);

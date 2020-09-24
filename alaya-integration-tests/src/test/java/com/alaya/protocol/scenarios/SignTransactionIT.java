@@ -1,7 +1,5 @@
 package com.alaya.protocol.scenarios;
 
-import java.math.BigInteger;
-
 import com.alaya.crypto.Hash;
 import com.alaya.crypto.RawTransaction;
 import com.alaya.crypto.TransactionEncoder;
@@ -10,9 +8,9 @@ import com.alaya.utils.Convert;
 import com.alaya.utils.Numeric;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.math.BigInteger;
+
+import static org.junit.Assert.*;
 
 /**
  * Sign transaction using Ethereum node.
@@ -38,7 +36,7 @@ public class SignTransactionIT extends Scenario {
     }
 
     private static RawTransaction createTransaction() {
-        BigInteger value = Convert.toVon("1", Convert.Unit.LAT).toBigInteger();
+        BigInteger value = Convert.toVon("1", Convert.Unit.ATP).toBigInteger();
 
         return RawTransaction.createEtherTransaction(
                 BigInteger.valueOf(1048587), BigInteger.valueOf(500000), BigInteger.valueOf(500000),
