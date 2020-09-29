@@ -8,14 +8,10 @@ import org.web3j.utils.Numeric;
 
 public class Delegation {
 
-    /**
-     * 委托人的账户地址
-     */
+
     @JSONField(name = "Addr")
     private String delegateAddress;
-    /**
-     * 验证人的节点Id
-     */
+
     @JSONField(name = "NodeId")
     private String nodeId;
     /**
@@ -23,14 +19,10 @@ public class Delegation {
      */
     @JSONField(name = "StakingBlockNum")
     private BigInteger stakingBlockNum;
-    /**
-     * 最近一次对该候选人发起的委托时的结算周期
-     */
+
     @JSONField(name = "DelegateEpoch")
     private BigInteger delegateEpoch;
-    /**
-     * 发起委托账户的自由金额的锁定期委托的von
-     */
+
     @JSONField(name = "Released")
     private BigInteger delegateReleased;
     /**

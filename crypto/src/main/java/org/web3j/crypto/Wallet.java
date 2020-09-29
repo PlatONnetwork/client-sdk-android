@@ -17,8 +17,8 @@ import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.generators.SCrypt;
 import org.spongycastle.crypto.params.KeyParameter;
-import org.web3j.crypto.bech32.AddressBech32;
-import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.addressconvert.AddressManager;
+import org.web3j.crypto.addressconvert.bech32.AddressBech32;
 import org.web3j.utils.Numeric;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

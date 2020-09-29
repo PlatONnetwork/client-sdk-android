@@ -3,8 +3,9 @@ package org.web3j.tx;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import org.web3j.crypto.bech32.AddressCheck;
-import org.web3j.crypto.bech32.AddressManager;
+
+import org.web3j.crypto.addressconvert.AddressCheck;
+import org.web3j.crypto.addressconvert.AddressManager;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;

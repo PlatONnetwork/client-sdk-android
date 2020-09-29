@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.web3j.crypto.bech32.Bech32;
+import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -90,7 +90,7 @@ public class TransactionEncoder {
             // addresses that start with zeros should be encoded with the zeros included, not
             // as numeric values
             //result.add(RlpString.create(Numeric.hexStringToByteArray(to)));
-            result.add(RlpString.create(Bech32.addressDecode(to)));
+            result.add(RlpString.create(Bech32Util.addressDecode(to)));
 
         } else {
             result.add(RlpString.create(""));

@@ -2,7 +2,7 @@ package org.web3j.crypto;
 
 import java.math.BigInteger;
 
-import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.addressconvert.AddressManager;
 import org.web3j.rlp.RlpDecoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;

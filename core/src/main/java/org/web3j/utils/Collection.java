@@ -20,7 +20,7 @@ public class Collection {
         }
     }
 
-    @SafeVarargs
+    @SuppressWarnings("unchecked")
     public static <T> T[] create(T... args) {
         return args;
     }

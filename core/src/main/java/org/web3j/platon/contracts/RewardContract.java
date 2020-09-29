@@ -34,24 +34,12 @@ import java.util.concurrent.Callable;
 
 public class RewardContract extends PlatOnContract {
 
-    /**
-     * 查询操作
-     *
-     * @param web3j
-     * @return
-     */
+   //查询操作
     public static RewardContract load(Web3j web3j) {
         return new RewardContract(ContractAddress.REWARD_CONTRACT_ADDRESS, web3j);
     }
 
-    /**
-     * sendRawTransaction 使用默认的gasProvider
-     *
-     * @param web3j
-     * @param credentials
-     * @param chainId
-     * @return
-     */
+   //sendRawTransaction 使用默认的gasProvider
     public static RewardContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new RewardContract(ContractAddress.REWARD_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
@@ -64,23 +52,15 @@ public class RewardContract extends PlatOnContract {
         super(contractAddress, web3j);
     }
 
-    /**
-     * 提取账户当前所有的可提取的委托奖励
-     *
-     * @param gasProvider 用户指定的gasProvider
-     * @return
-     */
+    //提取账户当前所有的可提取的委托奖励
+    //gasProvider 用户指定的gasProvider
     public RemoteCall<PlatonSendTransaction> withdrawDelegateRewardReturnTransaction(GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE, gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 查询账户在各节点未提取委托奖励
-     *
-     * @param nodeIDs
-     * @return
-     */
+   //查询账户在各节点未提取委托奖励
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<Reward>>> getDelegateReward(String address, List<String> nodeIDs) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_DELEGATE_REWARD_FUNC_TYPE,
                 Arrays.asList(new BytesType(Numeric.hexStringToByteArray(address)), new CustomStaticArray(nodeIDs)));

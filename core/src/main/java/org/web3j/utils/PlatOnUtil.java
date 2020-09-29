@@ -105,12 +105,8 @@ public class PlatOnUtil {
 
     private static final String DEFAULT_ADDR = "0x0000000000000000000000000000000000000000";
 
-    /**
-     * 解析call方法返回
-     *
-     * @param result
-     * @return
-     */
+    //解析call方法返回
+    @SuppressWarnings("unchecked")
     public static BaseResponse invokeDecode(String result) {
 
         if (result == null) {
@@ -232,10 +228,7 @@ public class PlatOnUtil {
         return ethEstimateGasLimit;
     }
 
-    /**
-     * @param msgData
-     * @return
-     */
+
     public static RLPList invokeDecode(byte[] msgData) {
         RLPList rlpList = new RLPList();
         fullTraverse(msgData, 0, 0, msgData.length, rlpList, Integer.MAX_VALUE);

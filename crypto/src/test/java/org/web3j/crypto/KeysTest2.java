@@ -1,10 +1,11 @@
 package org.web3j.crypto;
 
 import org.junit.Test;
-import org.web3j.crypto.bech32.AddressBech32;
-import org.web3j.crypto.bech32.AddressBehavior;
-import org.web3j.crypto.bech32.AddressManager;
-import org.web3j.crypto.bech32.Bech32;
+import org.web3j.crypto.addressconvert.AddressManager;
+
+import org.web3j.crypto.addressconvert.bech32.AddressBech32;
+import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
+import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.utils.Numeric;
 import org.web3j.utils.Strings;
 
@@ -79,13 +80,13 @@ public class KeysTest2 {
         System.out.println("addressStr:" + addressStr);*/
 
         String address = "fc21fcfe23faea9e3776882f372ed65a7f8e1b64";
-        System.out.println(Bech32.addressEncode("lat", address));
+        System.out.println(Bech32Util.addressEncode("lat", address));
 
 
         try{
             String v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
             String v1 = "lax1dkyctq9yk6k2jdez3w0wrwncnsn5uaqs2p02jq";
-             System.out.println(Bech32.addressDecodeHex(v1));
+             System.out.println(Bech32Util.addressDecodeHex(v1));
            // Bech32.addressDecode(v);
         }catch (Exception e){
               System.out.println("捕获" + e.getMessage());

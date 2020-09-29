@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class LinuxSecureRandom extends SecureRandomSpi {
     private static final FileInputStream urandom;
 
+    @Deprecated
     private static class LinuxSecureRandomProvider extends Provider {
         public LinuxSecureRandomProvider() {
             super("LinuxSecureRandom", 1.0,

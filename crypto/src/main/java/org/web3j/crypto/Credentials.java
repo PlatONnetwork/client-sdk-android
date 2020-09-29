@@ -1,7 +1,7 @@
 package org.web3j.crypto;
 
-import org.web3j.crypto.bech32.AddressBech32;
-import org.web3j.crypto.bech32.AddressManager;
+
+import org.web3j.crypto.addressconvert.AddressManager;
 import org.web3j.utils.Numeric;
 
 /**

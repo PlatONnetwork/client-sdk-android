@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-import org.web3j.crypto.bech32.AddressBehavior;
-import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.addressconvert.AddressManager;
+import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.utils.Numeric;
 
 import static org.hamcrest.core.Is.is;
@@ -19,7 +19,7 @@ public class WalletTest {
 
     @Before
    public void init(){
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32,AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_ALAYA);
    }
 
     @Test

@@ -4,19 +4,13 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 public class ParamValue {
 
-    /**
-     * 旧参数值
-     */
+
     @JSONField(name = "StaleValue")
     private String staleValue;
-    /**
-     * 参数值
-     */
+
     @JSONField(name = "Value")
     private String value;
-    /**
-     * 块高。(>=ActiveBLock，将取Value;否则取StaleValue)
-     */
+
     @JSONField(name = "ActiveBlock")
     private String activeBlock;
 

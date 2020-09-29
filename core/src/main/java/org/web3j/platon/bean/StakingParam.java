@@ -11,9 +11,9 @@ import org.web3j.abi.datatypes.generated.Int256;
 import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.generated.Uint8;
-import org.web3j.crypto.bech32.AddressCheck;
-import org.web3j.crypto.bech32.AddressManager;
-import org.web3j.crypto.bech32.Bech32;
+import org.web3j.crypto.addressconvert.AddressCheck;
+import org.web3j.crypto.addressconvert.AddressManager;
+import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.ProgramVersion;
 import org.web3j.utils.Numeric;
@@ -190,7 +190,7 @@ public class StakingParam implements Cloneable {
         //地址转换回来的目的????
         return Arrays.<Type>asList(new Uint16(stakingAmountType.getValue())
                // , new BytesType(Numeric.hexStringToByteArray(benifitAddress))
-                , new BytesType(Bech32.addressDecode(benifitAddress))
+                , new BytesType(Bech32Util.addressDecode(benifitAddress))
                 , new BytesType(Numeric.hexStringToByteArray(nodeId))
                 , new Utf8String(externalId)
                 , new Utf8String(nodeName)

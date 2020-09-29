@@ -55,6 +55,7 @@ public class Event {
         return nonIndexedParameters;
     }
 
+    @SuppressWarnings("unchecked")
     private List<TypeReference<Type>> convert(List<TypeReference<?>> parameters) {
         List<TypeReference<Type>> typeReferenceList = new ArrayList<TypeReference<Type>>();
         for (TypeReference<?> typeReference : parameters) {

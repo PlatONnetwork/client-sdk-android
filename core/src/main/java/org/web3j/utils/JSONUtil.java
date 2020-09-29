@@ -46,14 +46,7 @@ public class JSONUtil {
         throw new UnsupportedOperationException("cannot be instantiated");
     }
 
-    /**
-     * 将json字符串反序列化成javabean
-     *
-     * @param text
-     * @param clazz
-     * @param <T>
-     * @return
-     */
+    //将json字符串反序列化成javabean
     public static <T> T parseObject(String text, Class<T> clazz) {
         T t = null;
         try {
@@ -64,14 +57,7 @@ public class JSONUtil {
         return t;
     }
 
-    /**
-     * 将map字符串反序列化成javabean
-     *
-     * @param map
-     * @param clazz
-     * @param <T>
-     * @return
-     */
+  //将map字符串反序列化成javabean
     public static <T> T parseObject(Map<String, String> map, Class<T> clazz) {
         T t = null;
         try {
@@ -82,14 +68,7 @@ public class JSONUtil {
         return t;
     }
 
-    /**
-     * 把JSON文本parse成JavaBean集合
-     *
-     * @param text
-     * @param clazz
-     * @param <T>
-     * @return
-     */
+   //把JSON文本parse成JavaBean集合
     public static <T> List<T> parseArray(String text, Class<T> clazz) {
         List<T> list = new ArrayList<>();
         try {
@@ -100,12 +79,7 @@ public class JSONUtil {
         return list;
     }
 
-    /**
-     * 将对象序列化程json字符串
-     *
-     * @param object
-     * @return
-     */
+    //将对象序列化程json字符串
     public static String toJSONString(Object object) {
         String json = "";
         try {
@@ -116,12 +90,7 @@ public class JSONUtil {
         return json;
     }
 
-    /**
-     * map转json字符串
-     *
-     * @param params
-     * @return
-     */
+   //map转json字符串
     public static String toJSONString(Map<String, String> params) {
 
         JSONObject jsonObject = new JSONObject();
@@ -141,12 +110,8 @@ public class JSONUtil {
         return jsonObject.toString();
     }
 
-    /**
-     * json string 转换为 map 对象
-     *
-     * @param json
-     * @return
-     */
+   //json string 转换为 map 对象
+    @SuppressWarnings("unchecked")
     public static Map<String, Object> jsonToMap(String json) {
         Map<String, Object> result = new HashMap<>();
         try {
@@ -157,13 +122,7 @@ public class JSONUtil {
         return result;
     }
 
-    /**
-     * 对象转map形式
-     *
-     * @param t
-     * @param <T>
-     * @return
-     */
+   //对象转map形式
     public static <T> Map<String, Object> beanToMap(T t) {
         return jsonToMap(toJSONString(t));
     }
