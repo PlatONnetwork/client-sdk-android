@@ -25,7 +25,6 @@ public class AddressManager {
         return InstanceHolder.INSTANCE;
     }
 
-
     //根据初始化init()网络环境、地址格式
     //address 原始钱包地址
     //处理后Wallet地址
