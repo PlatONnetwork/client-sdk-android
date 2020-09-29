@@ -31,10 +31,16 @@ public final class Convert {
         GVON("gvon", 9),
         SZABO("szabo", 12),
         FINNEY("finney", 15),
+
         LAT("lat", 18),
         KLAT("klat", 21),
         MLAT("mlat", 24),
-        GLAT("glat", 27);
+        GLAT("glat", 27),
+
+        ATP("atp", 18),
+        KATP("katp", 21),
+        MATP("matp", 24),
+        GATP("gatp", 27);
 
         private String name;
         private BigDecimal vonFactor;

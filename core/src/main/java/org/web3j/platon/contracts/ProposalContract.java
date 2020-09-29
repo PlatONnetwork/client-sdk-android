@@ -38,24 +38,12 @@ import rx.functions.Func1;
 
 public class ProposalContract extends PlatOnContract {
 
-    /**
-     * 查询操作
-     *
-     * @param web3j
-     * @return
-     */
+   //查询操作
     public static ProposalContract load(Web3j web3j) {
         return new ProposalContract(ContractAddress.PROPOSAL_CONTRACT_ADDRESS, web3j);
     }
 
-    /**
-     * sendRawTransaction 使用用户自定义的gasProvider，必须传chainId
-     *
-     * @param web3j
-     * @param credentials
-     * @param chainId
-     * @return
-     */
+   //sendRawTransaction 使用用户自定义的gasProvider，必须传chainId
     public static ProposalContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new ProposalContract(ContractAddress.PROPOSAL_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
@@ -68,12 +56,8 @@ public class ProposalContract extends PlatOnContract {
         super(contractAddress, chainId, web3j, credentials);
     }
 
-    /**
-     * 查询提案
-     *
-     * @param proposalId
-     * @return
-     */
+   //查询提案
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<Proposal>> getProposal(String proposalId) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PROPOSAL_FUNC_TYPE,
                 Arrays.asList(new BytesType(Numeric.hexStringToByteArray(proposalId))));
@@ -87,12 +71,8 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 查询提案结果
-     *
-     * @param proposalId
-     * @return
-     */
+   //查询提案结果
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<TallyResult>> getTallyResult(String proposalId) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_TALLY_RESULT_FUNC_TYPE,
                 Arrays.asList(new BytesType(Numeric.hexStringToByteArray(proposalId))));
@@ -106,11 +86,8 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 获取提案列表
-     *
-     * @return
-     */
+    //获取提案列表
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<Proposal>>> getProposalList() {
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PROPOSAL_LIST_FUNC_TYPE,
                 Arrays.<Type>asList());
@@ -124,15 +101,11 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 给提案投票
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption     投票选项
-     * @param proposalID     提案ID
-     * @param verifier       投票验证人
-     * @return
-     */
+    //给提案投票
+    //programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+    //voteOption     投票选项
+    //proposalID     提案ID
+    //verifier       投票验证人
     public RemoteCall<BaseResponse> vote(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -142,16 +115,16 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 给提案投票
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption     投票选项
-     * @param gasProvider
-     * @param proposalID     提案ID
-     * @param verifier       投票验证人
-     * @return
-     */
+//    /**
+//     * 给提案投票
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption     投票选项
+//     *hem@param gasProvider
+//     * @param proposalID     提案ID
+//     * @param verifier       投票验证人
+//     * @return
+//     */
     public RemoteCall<BaseResponse> vote(ProgramVersion programVersion, VoteOption voteOption, GasProvider gasProvider, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -161,15 +134,15 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 给提案投票
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption     投票选项
-     * @param proposalID     提案ID
-     * @param verifier       投票验证人
-     * @return
-     */
+//    /**
+//     * 给提案投票
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption     投票选项
+//     * @param proposalID     提案ID
+//     * @param verifier       投票验证人
+//     * @return
+//     */
     public GasProvider getVoteProposalGasProvider(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier) {
         return new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -179,16 +152,16 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * 获取提交投票提案的手续费
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption     投票选项
-     * @param gasPrice
-     * @param proposalID
-     * @param verifier
-     * @return
-     */
+//    /**
+//     * 获取提交投票提案的手续费
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption     投票选项
+//     * @param gasPrice
+//     * @param proposalID
+//     * @param verifier
+//     * @return
+//     */
     public BigInteger getVoteProposalFeeAmount(ProgramVersion programVersion, VoteOption voteOption, BigInteger gasPrice, String proposalID, String verifier) {
 
         PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
@@ -199,13 +172,13 @@ public class ProposalContract extends PlatOnContract {
         return platOnFunction.getGasLimit().multiply(gasPrice == null || gasPrice.compareTo(BigInteger.ZERO) != 1 ? platOnFunction.getGasPrice() : gasPrice);
     }
 
-    /**
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption     投票选项
-     * @param proposalID     提案ID
-     * @param verifier       投票验证人
-     * @return
-     */
+//    /**
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption     投票选项
+//     * @param proposalID     提案ID
+//     * @param verifier       投票验证人
+//     * @return
+//     */
     public RemoteCall<PlatonSendTransaction> voteReturnTransaction(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -214,13 +187,13 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption     投票选项
-     * @param proposalID     提案ID
-     * @param verifier       投票验证人
-     * @return
-     */
+//    /**
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption     投票选项
+//     * @param proposalID     提案ID
+//     * @param verifier       投票验证人
+//     * @return
+//     */
     public RemoteCall<PlatonSendTransaction> voteReturnTransaction(ProgramVersion programVersion, VoteOption voteOption, GasProvider gasProvider, String proposalID, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.VOTE_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -229,24 +202,20 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 获取投票结果
-     *
-     * @param ethSendTransaction
-     * @return
-     */
+   //获取投票结果
     public RemoteCall<BaseResponse> getVoteResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.VOTE_FUNC_TYPE);
     }
 
 
-    /**
-     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption          投票选项
-     * @param proposalID          提案ID
-     * @param verifier            投票验证人
-     * @param transactionCallback
-     */
+//    /**
+//     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption          投票选项
+//     * @param proposalID          提案ID
+//     * @param verifier            投票验证人
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncVote(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
@@ -281,14 +250,15 @@ public class ProposalContract extends PlatOnContract {
         }
     }
 
-    /**
-     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param voteOption          投票选项
-     * @param gasProvider
-     * @param proposalID          提案ID
-     * @param verifier            投票验证人
-     * @param transactionCallback
-     */
+//    /**
+//     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param voteOption          投票选项
+//     * @param gasProvider
+//     * @param proposalID          提案ID
+//     * @param verifier            投票验证人
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncVote(ProgramVersion programVersion, VoteOption voteOption, String proposalID, String verifier, GasProvider gasProvider, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
@@ -323,13 +293,13 @@ public class ProposalContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 版本声明
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param verifier       声明的节点，只能是验证人/候选人
-     * @return
-     */
+//    /**
+//     * 版本声明
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param verifier       声明的节点，只能是验证人/候选人
+//     * @return
+//     */
     public RemoteCall<BaseResponse> declareVersion(ProgramVersion programVersion, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -338,14 +308,14 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 版本声明
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param verifier       声明的节点，只能是验证人/候选人
-     * @param gasProvider
-     * @return
-     */
+//    /**
+//     * 版本声明
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param verifier       声明的节点，只能是验证人/候选人
+//     * @param gasProvider
+//     * @return
+//     */
     public RemoteCall<BaseResponse> declareVersion(ProgramVersion programVersion, GasProvider gasProvider, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -354,13 +324,13 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 获取版本声明的gasProvider
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param verifier
-     * @return
-     */
+//    /**
+//     * 获取版本声明的gasProvider
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param verifier
+//     * @return
+//     */
     public GasProvider getDeclareVersionGasProvider(ProgramVersion programVersion, String verifier) {
         return new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -369,14 +339,14 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * 获取版本声明的手续费
-     *
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param gasPrice
-     * @param verifier
-     * @return
-     */
+//    /**
+//     * 获取版本声明的手续费
+//     *
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param gasPrice
+//     * @param verifier
+//     * @return
+//     */
     public BigInteger getDeclareVersionFeeAmount(ProgramVersion programVersion, BigInteger gasPrice, String verifier) {
 
         PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
@@ -387,11 +357,11 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param verifier       声明的节点，只能是验证人/候选人
-     * @return
-     */
+//    /**
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param verifier       声明的节点，只能是验证人/候选人
+//     * @return
+//     */
     public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(ProgramVersion programVersion, String verifier) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -401,12 +371,12 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param verifier       声明的节点，只能是验证人/候选人
-     * @param gasProvider
-     * @return
-     */
+//    /**
+//     * @param programVersion 程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param verifier       声明的节点，只能是验证人/候选人
+//     * @param gasProvider
+//     * @return
+//     */
     public RemoteCall<PlatonSendTransaction> declareVersionReturnTransaction(ProgramVersion programVersion, String verifier, GasProvider gasProvider) throws Exception {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DECLARE_VERSION_FUNC_TYPE,
                 Arrays.<Type>asList(new BytesType(Numeric.hexStringToByteArray(verifier)),
@@ -415,24 +385,25 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 获取版本声明的结果
-     *
-     * @param ethSendTransaction
-     * @return
-     */
+//    /**
+//     * 获取版本声明的结果
+//     *
+//     * @param ethSendTransaction
+//     * @return
+//     */
     public RemoteCall<BaseResponse> getDeclareVersionResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.DELEGATE_FUNC_TYPE);
     }
 
-    /**
-     * 异步声明版本
-     *
-     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param activeNode
-     * @param version
-     * @param transactionCallback
-     */
+//    /**
+//     * 异步声明版本
+//     *
+//     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param activeNode
+//     * @param version
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncDeclareVersion(ProgramVersion programVersion, String activeNode, BigInteger version, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
@@ -468,15 +439,16 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * 异步声明版本
-     *
-     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
-     * @param activeNode
-     * @param version
-     * @param gasProvider
-     * @param transactionCallback
-     */
+//    /**
+//     * 异步声明版本
+//     *
+//     * @param programVersion      程序的真实版本，治理rpc接口admin_getProgramVersion获取
+//     * @param activeNode
+//     * @param version
+//     * @param gasProvider
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncDeclareVersion(ProgramVersion programVersion, String activeNode, BigInteger version, GasProvider gasProvider, TransactionCallback transactionCallback) throws Exception {
 
         if (transactionCallback != null) {
@@ -511,12 +483,12 @@ public class ProposalContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 提交提案
-     *
-     * @param proposal 包括文本提案和版本提案
-     * @return
-     */
+//    /**
+//     * 提交提案
+//     *
+//     * @param proposal 包括文本提案和版本提案
+//     * @return
+//     */
     public RemoteCall<BaseResponse> submitProposal(Proposal proposal) {
         if (proposal == null) {
             throw new NullPointerException("proposal must not be null");
@@ -526,13 +498,13 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 提交提案
-     *
-     * @param proposal    包括文本提案、升级提案、取消提案
-     * @param gasProvider
-     * @return
-     */
+//    /**
+//     * 提交提案
+//     *
+//     * @param proposal    包括文本提案、升级提案、取消提案
+//     * @param gasProvider
+//     * @return
+//     */
     public RemoteCall<BaseResponse> submitProposal(Proposal proposal, GasProvider gasProvider) {
         if (proposal == null) {
             throw new NullPointerException("proposal must not be null");
@@ -542,12 +514,12 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 获取提交提案gasProvider
-     *
-     * @param proposal
-     * @return
-     */
+//    /**
+//     * 获取提交提案gasProvider
+//     *
+//     * @param proposal
+//     * @return
+//     */
     public Observable<GasProvider> getSubmitProposalGasProvider(Proposal proposal) {
         if (proposal == null) {
             return Observable.error(new Throwable("proposal must not be null"));
@@ -561,13 +533,13 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 获取提交提案的手续费
-     *
-     * @param gasPrice
-     * @param proposal
-     * @return
-     */
+//    /**
+//     * 获取提交提案的手续费
+//     *
+//     * @param gasPrice
+//     * @param proposal
+//     * @return
+//     */
     public Observable<BigInteger> getSubmitProposalFeeAmount(BigInteger gasPrice, Proposal proposal) {
         if (proposal == null) {
             return Observable.error(new Throwable("proposal must not be null"));
@@ -583,12 +555,12 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 提交提案
-     *
-     * @param proposal
-     * @return
-     */
+//    /**
+//     * 提交提案
+//     *
+//     * @param proposal
+//     * @return
+//     */
     public RemoteCall<PlatonSendTransaction> submitProposalReturnTransaction(Proposal proposal) {
         if (proposal == null) {
             throw new NullPointerException("proposal must not be null");
@@ -598,13 +570,13 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 提交提案
-     *
-     * @param proposal
-     * @param gasProvider
-     * @return
-     */
+//    /**
+//     * 提交提案
+//     *
+//     * @param proposal
+//     * @param gasProvider
+//     * @return
+//     */
     public RemoteCall<PlatonSendTransaction> submitProposalReturnTransaction(Proposal proposal, GasProvider gasProvider) {
         if (proposal == null) {
             throw new NullPointerException("proposal must not be null");
@@ -614,22 +586,23 @@ public class ProposalContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 获取提交提案的结果
-     *
-     * @param ethSendTransaction
-     * @return
-     */
+//    /**
+//     * 获取提交提案的结果
+//     *
+//     * @param ethSendTransaction
+//     * @return
+//     */
     public RemoteCall<BaseResponse> getSubmitProposalResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.SUBMIT_TEXT_FUNC_TYPE);
     }
 
-    /**
-     * 异步获取提案结果
-     *
-     * @param proposal
-     * @param transactionCallback
-     */
+//    /**
+//     * 异步获取提案结果
+//     *
+//     * @param proposal
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncSubmitProposal(Proposal proposal, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -665,12 +638,13 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * 异步获取提案结果
-     *
-     * @param proposal
-     * @param transactionCallback
-     */
+//    /**
+//     * 异步获取提案结果
+//     *
+//     * @param proposal
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncSubmitProposal(Proposal proposal, GasProvider gasProvider, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -706,11 +680,11 @@ public class ProposalContract extends PlatOnContract {
     }
 
 
-    /**
-     * 查询已生效的版本
-     *
-     * @return
-     */
+//    /**
+//     * 查询已生效的版本
+//     *
+//     * @return
+//     */
     public RemoteCall<BaseResponse> getActiveVersion() {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_ACTIVE_VERSION);
         return new RemoteCall<BaseResponse>(new Callable<BaseResponse>() {
@@ -721,13 +695,14 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 查询当前块高的治理参数值
-     *
-     * @param module 参数模块
-     * @param name   参数名称
-     * @return
-     */
+//    /**
+//     * 查询当前块高的治理参数值
+//     *
+//     * @param module 参数模块
+//     * @param name   参数名称
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<String>> getGovernParamValue(String module, String name) {
         PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.GET_GOVERN_PARAM_VALUE, Arrays.asList(new Utf8String(module), new Utf8String(name)));
         return new RemoteCall<BaseResponse<String>>(new Callable<BaseResponse<String>>() {
@@ -737,14 +712,15 @@ public class ProposalContract extends PlatOnContract {
             }
         });
     }
-
-    /**
-     * 查询提案的累积可投票人数
-     *
-     * @param proposalId 提案ID
-     * @param blockHash  块hash
-     * @return
-     */
+//
+//    /**
+//     * 查询提案的累积可投票人数
+//     *
+//     * @param proposalId 提案ID
+//     * @param blockHash  块hash
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<BigInteger[]>> getAccuVerifiersCount(String proposalId, String blockHash) {
         PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.GET_ACCUVERIFIERS_COUNT, Arrays.asList(new BytesType(Numeric.hexStringToByteArray(proposalId)), new BytesType(Numeric.hexStringToByteArray(blockHash))));
         return new RemoteCall<BaseResponse<BigInteger[]>>(new Callable<BaseResponse<BigInteger[]>>() {
@@ -757,11 +733,12 @@ public class ProposalContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 查询可治理参数列表
-     *
-     * @return
-     */
+//    /**
+//     * 查询可治理参数列表
+//     *
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<GovernParam>>> getParamList(String module) {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_PARAM_LIST, Arrays.asList(new Utf8String(module)));
         return new RemoteCall<BaseResponse<List<GovernParam>>>(new Callable<BaseResponse<List<GovernParam>>>() {

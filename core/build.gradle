@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat
 description 'web3j is a lightweight Java library for integration with Ethereum clients'
 
 dependencies {
+    implementation 'org.jetbrains:annotations:19.0.0'
     compile project(':abi'),
             project(':crypto'),
             project(':tuples'),

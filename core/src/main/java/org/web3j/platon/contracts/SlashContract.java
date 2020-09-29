@@ -30,24 +30,12 @@ import rx.Observable;
 
 public class SlashContract extends PlatOnContract {
 
-    /**
-     * 查询操作
-     *
-     * @param web3j
-     * @return
-     */
+  //查询操作
     public static SlashContract load(Web3j web3j) {
         return new SlashContract(ContractAddress.SLASH_CONTRACT_ADDRESS, web3j);
     }
 
-    /**
-     * sendRawTransaction 使用默认的gasProvider
-     *
-     * @param web3j
-     * @param credentials
-     * @param chainId
-     * @return
-     */
+   //sendRawTransaction 使用默认的gasProvider
     public static SlashContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new SlashContract(ContractAddress.SLASH_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
@@ -60,36 +48,23 @@ public class SlashContract extends PlatOnContract {
         super(contractAddress, chainId, web3j, credentials);
     }
 
-    /**
-     * 举报双签
-     *
-     * @param data 证据的json值
-     * @return
-     */
+    //举报双签
+    //data 证据的json值
     public RemoteCall<BaseResponse> reportDoubleSign(String data) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Utf8String(data)));
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 举报双签
-     *
-     * @param data 证据的json值
-     * @param gasProvider
-     * @return
-     */
+    //举报双签
+    //data  证据的json值
     public RemoteCall<BaseResponse> reportDoubleSign(String data,GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Utf8String(data)),gasProvider);
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 获取举报双签的gasProvider
-     * @param data
-     * @return
-     */
+    //获取举报双签的gasProvider
     public Observable<GasProvider> getReportDoubleSignGasProvider(String data) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
@@ -100,12 +75,7 @@ public class SlashContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 获取手续费
-     * @param gasPrice
-     * @param data
-     * @return
-     */
+   //获取手续费
     public Observable<BigInteger> getFeeAmount(BigInteger gasPrice, String data) {
         return Observable.fromCallable(new Callable<BigInteger>() {
             @Override
@@ -117,45 +87,27 @@ public class SlashContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 举报双签
-     *
-     * @param data 证据的json值
-     * @return
-     */
+   //举报双签
     public RemoteCall<PlatonSendTransaction> reportDoubleSignReturnTransaction(String data) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Utf8String(data)));
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 举报双签
-     *
-     * @param data 证据的json值
-     * @param gasProvider
-     * @return
-     */
+    //举报双签
     public RemoteCall<PlatonSendTransaction> reportDoubleSignReturnTransaction(String data,GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Utf8String(data)),gasProvider);
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * @param ethSendTransaction
-     * @return
-     */
+
     public RemoteCall<BaseResponse> getReportDoubleSignResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.REPORT_DOUBLESIGN_FUNC_TYPE);
     }
 
-    /**
-     * 异步举报双签
-     *
-     * @param data                证据的json值
-     * @param transactionCallback
-     */
+  //异步举报双签
+    @SuppressWarnings("unchecked")
     public void asyncReportDoubleSignResult(String data, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -190,13 +142,8 @@ public class SlashContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 异步举报双签
-     *
-     * @param data                证据的json值
-     * @param gasProvider
-     * @param transactionCallback
-     */
+   //异步举报双签
+    @SuppressWarnings("unchecked")
     public void asyncReportDoubleSignResult(String data, GasProvider gasProvider,TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -231,14 +178,11 @@ public class SlashContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 查询节点是否已被举报过多签
-     *
-     * @param doubleSignType 代表双签类型，1：prepare，2：viewChange
-     * @param nodeId        举报的节点id
-     * @param blockNumber    多签的块高
-     * @return
-     */
+    //查询节点是否已被举报过多签
+    //doubleSignType 代表双签类型，1：prepare，2：viewChange
+    //nodeId        举报的节点id
+    //blockNumber    多签的块高
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<String>> checkDoubleSign(DuplicateSignType doubleSignType, String nodeId, BigInteger blockNumber) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.CHECK_DOUBLESIGN_FUNC_TYPE,
                 Arrays.asList(new Uint32(doubleSignType.getValue())

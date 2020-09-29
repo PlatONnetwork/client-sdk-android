@@ -34,23 +34,14 @@ public class ByteUtil {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     public static final byte[] ZERO_BYTE_ARRAY = new byte[]{0};
 
-    /**
-     * Creates a copy of bytes and appends b to the end of it
-     */
+   //Creates a copy of bytes and appends b to the end of it
     public static byte[] appendByte(byte[] bytes, byte b) {
         byte[] result = Arrays.copyOf(bytes, bytes.length + 1);
         result[result.length - 1] = b;
         return result;
     }
 
-    /**
-     * The regular {@link BigInteger#toByteArray()} method isn't quite what we often need:
-     * it appends a leading zero to indicate that the number is positive and may need padding.
-     *
-     * @param b        the integer to format into a byte array
-     * @param numBytes the desired size of the resulting byte array
-     * @return numBytes byte long array.
-     */
+
     public static byte[] bigIntegerToBytes(BigInteger b, int numBytes) {
         if (b == null)
             return null;
@@ -74,16 +65,7 @@ public class ByteUtil {
         return bytes;
     }
 
-    /**
-     * Omitting sign indication byte.
-     * <br><br>
-     * Instead of {@link org.spongycastle.util.BigIntegers#asUnsignedByteArray(BigInteger)}
-     * <br>we use this custom method to avoid an empty array in case of BigInteger.ZERO
-     *
-     * @param value - any big integer number. A <code>null</code>-value will return <code>null</code>
-     * @return A byte array without a leading zero byte if present in the signed encoding.
-     * BigInteger.ZERO will return an array with length 1 and byte-value 0.
-     */
+
     public static byte[] bigIntegerToBytes(BigInteger value) {
         if (value == null)
             return null;
@@ -98,25 +80,12 @@ public class ByteUtil {
         return data;
     }
 
-    /**
-     * Cast hex encoded value from byte[] to BigInteger
-     * null is parsed like byte[0]
-     *
-     * @param bb byte array contains the values
-     * @return unsigned positive BigInteger value.
-     */
+
     public static BigInteger bytesToBigInteger(byte[] bb) {
         return (bb == null || bb.length == 0) ? BigInteger.ZERO : new BigInteger(1, bb);
     }
 
-    /**
-     * Returns the amount of nibbles that match each other from 0 ...
-     * amount will never be larger than smallest input
-     *
-     * @param a - first input
-     * @param b - second input
-     * @return Number of bytes that match
-     */
+
     public static int matchingNibbleLength(byte[] a, byte[] b) {
         int i = 0;
         int length = a.length < b.length ? a.length : b.length;
@@ -128,22 +97,12 @@ public class ByteUtil {
         return i;
     }
 
-    /**
-     * Converts a long value into a byte array.
-     *
-     * @param val - long value to convert
-     * @return <code>byte[]</code> of length 8, representing the long value
-     */
+
     public static byte[] longToBytes(long val) {
         return ByteBuffer.allocate(Long.BYTES).putLong(val).array();
     }
 
-    /**
-     * Converts a long value into a byte array.
-     *
-     * @param val - long value to convert
-     * @return decimal value with leading byte that are zeroes striped
-     */
+
     public static byte[] longToBytesNoLeadZeroes(long val) {
 
         // todo: improve performance by while strip numbers until (long >> 8 == 0)
@@ -154,22 +113,12 @@ public class ByteUtil {
         return stripLeadingZeroes(data);
     }
 
-    /**
-     * Converts int value into a byte array.
-     *
-     * @param val - int value to convert
-     * @return <code>byte[]</code> of length 4, representing the int value
-     */
+
     public static byte[] intToBytes(int val) {
         return ByteBuffer.allocate(Integer.BYTES).putInt(val).array();
     }
 
-    /**
-     * Converts a int value into a byte array.
-     *
-     * @param val - int value to convert
-     * @return value with leading byte that are zeroes striped
-     */
+
     public static byte[] intToBytesNoLeadZeroes(int val) {
 
         if (val == 0) return EMPTY_BYTE_ARRAY;
@@ -196,26 +145,12 @@ public class ByteUtil {
     }
 
 
-    /**
-     * Convert a byte-array into a hex String.<br>
-     * Works similar to {@link Hex#toHexString}
-     * but allows for <code>null</code>
-     *
-     * @param data - byte-array to convert to a hex-string
-     * @return hex representation of the data.<br>
-     * Returns an empty String if the input is <code>null</code>
-     * @see Hex#toHexString
-     */
+
     public static String toHexString(byte[] data) {
         return data == null ? "" : Hex.toHexString(data);
     }
 
-    /**
-     * Calculate packet length
-     *
-     * @param msg byte[]
-     * @return byte-array with 4 elements
-     */
+
     public static byte[] calcPacketLength(byte[] msg) {
         int msgLen = msg.length;
         return new byte[]{
@@ -225,43 +160,21 @@ public class ByteUtil {
                 (byte) ((msgLen) & 0xFF)};
     }
 
-    /**
-     * Cast hex encoded value from byte[] to int
-     * null is parsed like byte[0]
-     * <p>
-     * Limited to Integer.MAX_VALUE: 2^32-1 (4 bytes)
-     *
-     * @param b array contains the values
-     * @return unsigned positive int value.
-     */
+
     public static int byteArrayToInt(byte[] b) {
         if (b == null || b.length == 0)
             return 0;
         return new BigInteger(1, b).intValue();
     }
 
-    /**
-     * Cast hex encoded value from byte[] to int
-     * null is parsed like byte[0]
-     *
-     * @param b
-     * @return
-     */
+    //Cast hex encoded value from byte[] to int null is parsed like byte[0]
     public static BigInteger byteArrayToBigInteger(byte[] b) {
         if (b == null || b.length == 0)
             return BigInteger.ZERO;
         return new BigInteger(1, b);
     }
 
-    /**
-     * Cast hex encoded value from byte[] to long
-     * null is parsed like byte[0]
-     * <p>
-     * Limited to Long.MAX_VALUE: 2<sup>63</sup>-1 (8 bytes)
-     *
-     * @param b array contains the values
-     * @return unsigned positive long value.
-     */
+
     public static long byteArrayToLong(byte[] b) {
         if (b == null || b.length == 0)
             return 0;
@@ -269,15 +182,7 @@ public class ByteUtil {
     }
 
 
-    /**
-     * Turn nibbles to a pretty looking output string
-     * <p>
-     * Example. [ 1, 2, 3, 4, 5 ] becomes '\x11\x23\x45'
-     *
-     * @param nibbles - getting byte of data [ 04 ] and turning
-     *                it to a '\x04' representation
-     * @return pretty string of nibbles
-     */
+
     public static String nibblesToPrettyString(byte[] nibbles) {
         StringBuilder builder = new StringBuilder();
         for (byte nibble : nibbles) {
@@ -293,13 +198,7 @@ public class ByteUtil {
         return retVal;
     }
 
-    /**
-     * Calculate the number of bytes need
-     * to encode the number
-     *
-     * @param val - number
-     * @return number of min bytes used to encode the number
-     */
+
     public static int numBytes(String val) {
 
         BigInteger bInt = new BigInteger(val);
@@ -313,10 +212,7 @@ public class ByteUtil {
         return bytes;
     }
 
-    /**
-     * @param arg - not more that 32 bits
-     * @return - bytes of the value pad with complete to 32 zeroes
-     */
+
     public static byte[] encodeValFor32Bits(Object arg) {
 
         byte[] data;
@@ -344,12 +240,7 @@ public class ByteUtil {
         return val;
     }
 
-    /**
-     * encode the values and concatenate together
-     *
-     * @param args Object
-     * @return byte[]
-     */
+
     public static byte[] encodeDataList(Object... args) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         for (Object arg : args) {
@@ -393,12 +284,7 @@ public class ByteUtil {
         }
     }
 
-    /**
-     * increment byte array as a number until max is reached
-     *
-     * @param bytes byte[]
-     * @return boolean
-     */
+
     public static boolean increment(byte[] bytes) {
         final int startIndex = 0;
         int i;
@@ -411,14 +297,7 @@ public class ByteUtil {
         return (i >= startIndex || bytes[startIndex] != 0);
     }
 
-    /**
-     * Utility function to copy a byte array into a new byte array with given size.
-     * If the src length is smaller than the given size, the result will be left-padded
-     * with zeros.
-     *
-     * @param value - a BigInteger with a maximum value of 2^256-1
-     * @return Byte array of given size with a copy of the <code>src</code>
-     */
+
     public static byte[] copyToArray(BigInteger value) {
         byte[] src = ByteUtil.bigIntegerToBytes(value);
         byte[] dest = ByteBuffer.allocate(32).array();
@@ -488,9 +367,7 @@ public class ByteUtil {
         return ret;
     }
 
-    /**
-     * XORs byte arrays of different lengths by aligning length of the shortest via adding zeros at beginning
-     */
+  //XORs byte arrays of different lengths by aligning length of the shortest via adding zeros at beginning
     public static byte[] xorAlignRight(byte[] b1, byte[] b2) {
         if (b1.length > b2.length) {
             byte[] b2_ = new byte[b1.length];
@@ -505,10 +382,7 @@ public class ByteUtil {
         return xor(b1, b2);
     }
 
-    /**
-     * @param arrays - arrays to merge
-     * @return - merged array
-     */
+
     public static byte[] merge(byte[]... arrays) {
         int count = 0;
         for (byte[] array : arrays) {
@@ -632,15 +506,7 @@ public class ByteUtil {
         return ByteBuffer.allocate(2).putShort(n).array();
     }
 
-    /**
-     * Converts string hex representation to data bytes
-     * Accepts following hex:
-     * - with or without 0x prefix
-     * - with no leading 0, like 0xabc -- 0x0abc
-     *
-     * @param data String like '0xa5e..' or just 'a5e..'
-     * @return decoded bytes array
-     */
+
     public static byte[] hexStringToBytes(String data) {
         if (data == null) return EMPTY_BYTE_ARRAY;
         if (data.startsWith("0x")) data = data.substring(2);
@@ -648,9 +514,7 @@ public class ByteUtil {
         return Hex.decode(data);
     }
 
-    /**
-     * Converts string representation of host/ip to 4-bytes byte[] IPv4
-     */
+    //Converts string representation of host/ip to 4-bytes byte[] IPv4
     public static byte[] hostToBytes(String ip) {
         byte[] bytesIp;
         try {
@@ -662,9 +526,7 @@ public class ByteUtil {
         return bytesIp;
     }
 
-    /**
-     * Converts 4 bytes IPv4 IP to String representation
-     */
+    //Converts 4 bytes IPv4 IP to String representation
     public static String bytesToIp(byte[] bytesIp) {
 
         StringBuilder sb = new StringBuilder();
@@ -680,10 +542,7 @@ public class ByteUtil {
         return ip;
     }
 
-    /**
-     * Returns a number of zero bits preceding the highest-order ("leftmost") one-bit
-     * interpreting input array as a big-endian integer value
-     */
+
     public static int numberOfLeadingZeros(byte[] bytes) {
 
         int i = firstNonZeroByte(bytes);
@@ -696,11 +555,7 @@ public class ByteUtil {
         }
     }
 
-    /**
-     * Parses fixed number of bytes starting from {@code offset} in {@code input} array.
-     * If {@code input} has not enough bytes return array will be right padded with zero bytes.
-     * I.e. if {@code offset} is higher than {@code input.length} then zero byte array of length {@code len} will be returned
-     */
+
     public static byte[] parseBytes(byte[] input, int offset, int len) {
 
         if (offset >= input.length || len == 0)
@@ -711,25 +566,12 @@ public class ByteUtil {
         return bytes;
     }
 
-    /**
-     * Parses 32-bytes word from given input.
-     * Uses {@link #parseBytes(byte[], int, int)} method,
-     * thus, result will be right-padded with zero bytes if there is not enough bytes in {@code input}
-     *
-     * @param idx an index of the word starting from {@code 0}
-     */
+
     public static byte[] parseWord(byte[] input, int idx) {
         return parseBytes(input, 32 * idx, 32);
     }
 
-    /**
-     * Parses 32-bytes word from given input.
-     * Uses {@link #parseBytes(byte[], int, int)} method,
-     * thus, result will be right-padded with zero bytes if there is not enough bytes in {@code input}
-     *
-     * @param idx    an index of the word starting from {@code 0}
-     * @param offset an offset in {@code input} array to start parsing from
-     */
+
     public static byte[] parseWord(byte[] input, int offset, int idx) {
         return parseBytes(input, offset + 32 * idx, 32);
     }

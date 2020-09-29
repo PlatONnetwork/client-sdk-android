@@ -33,11 +33,8 @@ public class NodeContract extends PlatOnContract {
     }
 
 
-    /**
-     * 查询当前结算周期的验证人队列
-     *
-     * @return
-     */
+    //查询当前结算周期的验证人队列
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<Node>>> getVerifierList() {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_VERIFIERLIST_FUNC_TYPE);
         return new RemoteCall<BaseResponse<List<Node>>>(new Callable<BaseResponse<List<Node>>>() {
@@ -50,11 +47,8 @@ public class NodeContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 查询当前共识周期的验证人列表
-     *
-     * @return
-     */
+   //查询当前共识周期的验证人列表
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<Node>>> getValidatorList() {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_VALIDATORLIST_FUNC_TYPE);
         return new RemoteCall<BaseResponse<List<Node>>>(new Callable<BaseResponse<List<Node>>>() {
@@ -67,11 +61,8 @@ public class NodeContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 查询所有实时的候选人列表
-     *
-     * @return
-     */
+  //查询所有实时的候选人列表
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<Node>>> getCandidateList() {
         final PlatOnFunction function = new PlatOnFunction(FunctionType.GET_CANDIDATELIST_FUNC_TYPE);
         return new RemoteCall<BaseResponse<List<Node>>>(new Callable<BaseResponse<List<Node>>>() {

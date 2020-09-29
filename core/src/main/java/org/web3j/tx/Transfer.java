@@ -78,6 +78,7 @@ public class Transfer extends ManagedTransaction {
         return send(resolvedAddress, data, weiValue.toBigIntegerExact(), gasPrice, gasLimit);
     }
 
+    @Deprecated
     public static RemoteCall<TransactionReceipt> sendFunds(
             Web3j web3j, Credentials credentials, String chainId,
             String toAddress, BigDecimal value, Convert.Unit unit) throws InterruptedException,

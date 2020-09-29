@@ -5,7 +5,7 @@ import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.bech32.Bech32;
+import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
@@ -32,24 +32,12 @@ import rx.Observable;
 
 public class DelegateContract extends PlatOnContract {
 
-    /**
-     * 查询操作
-     *
-     * @param web3j
-     * @return
-     */
+    //查询操作
     public static DelegateContract load(Web3j web3j) {
         return new DelegateContract(ContractAddress.DELEGATE_CONTRACT_ADDRESS, web3j);
     }
 
-    /**
-     * sendRawTransaction 使用默认gasProvider
-     *
-     * @param web3j
-     * @param credentials
-     * @param chainId
-     * @return
-     */
+    //sendRawTransaction 使用默认gasProvider
     public static DelegateContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new DelegateContract(ContractAddress.DELEGATE_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
@@ -63,14 +51,10 @@ public class DelegateContract extends PlatOnContract {
     }
 
 
-    /**
-     * 发起委托
-     *
-     * @param nodeId            被质押的节点的NodeId
-     * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)1 lat =100000000000000000von
-     * @return
-     */
+    //发起委托
+    //nodeId            被质押的节点的NodeId
+    //stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
+    //amount            委托的金额(按照最小单位算，1LAT = 10**18 von)1 lat =100000000000000000von
     public RemoteCall<BaseResponse> delegate(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint16(stakingAmountType.getValue())
@@ -79,15 +63,11 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 发起委托
-     *
-     * @param nodeId            被质押的节点的NodeId
-     * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @param gasProvider
-     * @return
-     */
+    //发起委托
+    //nodeId            被质押的节点的NodeId
+    //stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
+    //amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
+    //gasProvider
     public RemoteCall<BaseResponse> delegate(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint16(stakingAmountType.getValue())
@@ -96,14 +76,7 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 获取发起委托的gasProvider
-     *
-     * @param nodeId
-     * @param stakingAmountType
-     * @param amount
-     * @return
-     */
+     //获取发起委托的gasProvider
     public Observable<GasProvider> getDelegateGasProvider(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
@@ -116,15 +89,7 @@ public class DelegateContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 获取委托手续费
-     *
-     * @param gasPrice
-     * @param nodeId
-     * @param stakingAmountType
-     * @param amount
-     * @return
-     */
+    //获取委托手续费
     public Observable<BigInteger> getDelegateFeeAmount(BigInteger gasPrice, String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
         return Observable.fromCallable(new Callable<BigInteger>() {
             @Override
@@ -138,14 +103,11 @@ public class DelegateContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 发起委托
-     *
-     * @param nodeId            被质押的节点的NodeId
-     * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @return
-     */
+
+    //发起委托
+    //nodeId            被质押的节点的NodeId
+    //stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
+    //amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
     public RemoteCall<PlatonSendTransaction> delegateReturnTransaction(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint16(stakingAmountType.getValue())
@@ -154,15 +116,13 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 发起委托
-     *
-     * @param nodeId            被质押的节点的NodeId
-     * @param stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @param gasProvider
-     * @return
-     */
+
+
+    //发起委托
+    //nodeId            被质押的节点的NodeId
+    //stakingAmountType 表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
+    //amount            委托的金额(按照最小单位算，1LAT = 10**18 von)
+    //gasProvider
     public RemoteCall<PlatonSendTransaction> delegateReturnTransaction(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint16(stakingAmountType.getValue())
@@ -171,24 +131,18 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 获取委托结果
-     *
-     * @param ethSendTransaction
-     * @return
-     */
+   //获取委托结果
     public RemoteCall<BaseResponse> getDelegateResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.DELEGATE_FUNC_TYPE);
     }
 
-    /**
-     * 发起委托
-     *
-     * @param nodeId              被质押的节点的NodeId
-     * @param stakingAmountType   表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount              委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @param transactionCallback
-     */
+
+    //发起委托
+    //nodeId              被质押的节点的NodeId
+    //stakingAmountType   表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
+    //amount              委托的金额(按照最小单位算，1LAT = 10**18 von)
+    //transactionCallback
+    @SuppressWarnings("unchecked")
     public void asyncDelegate(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -223,14 +177,13 @@ public class DelegateContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 发起委托
-     *
-     * @param nodeId              被质押的节点的NodeId
-     * @param stakingAmountType   表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
-     * @param amount              委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @param transactionCallback
-     */
+
+    //发起委托
+    //nodeId              被质押的节点的NodeId
+    //stakingAmountType   表示使用账户自由金额还是账户的锁仓金额做委托，0: 自由金额； 1: 锁仓金额
+    //amount              委托的金额(按照最小单位算，1LAT = 10**18 von)
+    //transactionCallback
+    @SuppressWarnings("unchecked")
     public void asyncDelegate(String nodeId, StakingAmountType stakingAmountType, BigInteger amount, GasProvider gasProvider, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -265,14 +218,11 @@ public class DelegateContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 减持/撤销委托(全部减持就是撤销)
-     *
-     * @param nodeId          被质押的节点的NodeId
-     * @param stakingBlockNum 代表着某个node的某次质押的唯一标示
-     * @param amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @return
-     */
+
+    //减持/撤销委托(全部减持就是撤销)
+    //nodeId          被质押的节点的NodeId
+    //stakingBlockNum 代表着某个node的某次质押的唯一标示
+    //amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
     public RemoteCall<BaseResponse> unDelegate(String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
@@ -281,15 +231,12 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 减持/撤销委托(全部减持就是撤销)
-     *
-     * @param nodeId          被质押的节点的NodeId
-     * @param stakingBlockNum 代表着某个node的某次质押的唯一标示
-     * @param amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @param gasProvider
-     * @return
-     */
+
+    //减持/撤销委托(全部减持就是撤销)
+    //nodeId          被质押的节点的NodeId
+    //stakingBlockNum 代表着某个node的某次质押的唯一标示
+    //amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
+    //gasProvider
     public RemoteCall<BaseResponse> unDelegate(String nodeId, BigInteger stakingBlockNum, BigInteger amount, GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
@@ -298,14 +245,7 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 获取减持/撤销委托(全部减持就是撤销)gasProvider
-     *
-     * @param nodeId
-     * @param stakingBlockNum
-     * @param amount
-     * @return
-     */
+    //获取减持/撤销委托(全部减持就是撤销)gasProvider
     public Observable<GasProvider> getUnDelegateGasProvider(String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
@@ -318,15 +258,7 @@ public class DelegateContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 获取减持/撤销委托手续费
-     *
-     * @param gasPrice
-     * @param nodeId
-     * @param stakingBlockNum
-     * @param amount
-     * @return
-     */
+    //获取减持/撤销委托手续费
     public Observable<BigInteger> getUnDelegateFeeAmount(BigInteger gasPrice, String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
         return Observable.fromCallable(new Callable<BigInteger>() {
             @Override
@@ -340,14 +272,10 @@ public class DelegateContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 减持/撤销委托(全部减持就是撤销)
-     *
-     * @param nodeId          被质押的节点的NodeId
-     * @param stakingBlockNum 代表着某个node的某次质押的唯一标示
-     * @param amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @return
-     */
+    //减持/撤销委托(全部减持就是撤销)
+    //nodeId          被质押的节点的NodeId
+    //stakingBlockNum 代表着某个node的某次质押的唯一标示
+    //amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
     public RemoteCall<PlatonSendTransaction> unDelegateReturnTransaction(String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
@@ -356,15 +284,12 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 减持/撤销委托(全部减持就是撤销)
-     *
-     * @param nodeId          被质押的节点的NodeId
-     * @param stakingBlockNum 代表着某个node的某次质押的唯一标示
-     * @param amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
-     * @param gasProvider
-     * @return
-     */
+
+    //减持/撤销委托(全部减持就是撤销)
+    //nodeId          被质押的节点的NodeId
+    //stakingBlockNum 代表着某个node的某次质押的唯一标示
+    //amount          减持委托的金额(按照最小单位算，1LAT = 10**18 von)
+    //gasProvider
     public RemoteCall<PlatonSendTransaction> unDelegateReturnTransaction(String nodeId, BigInteger stakingBlockNum, BigInteger amount, GasProvider gasProvider) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
@@ -373,25 +298,15 @@ public class DelegateContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * 获取减持/撤销委托(全部减持就是撤销)的结果
-     *
-     * @param ethSendTransaction
-     * @return
-     */
+
+    //获取减持/撤销委托(全部减持就是撤销)的结果
     public RemoteCall<BaseResponse> getUnDelegateResult(PlatonSendTransaction ethSendTransaction) {
 
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.WITHDREW_DELEGATE_FUNC_TYPE);
     }
 
-    /**
-     * 异步获取撤销委托的结果
-     *
-     * @param nodeId
-     * @param stakingBlockNum
-     * @param amount
-     * @param transactionCallback
-     */
+   //异步获取撤销委托的结果
+    @SuppressWarnings("unchecked")
     public void asyncUnDelegate(String nodeId, BigInteger stakingBlockNum, BigInteger amount, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -427,15 +342,8 @@ public class DelegateContract extends PlatOnContract {
     }
 
 
-    /**
-     * 异步获取撤销委托的结果
-     *
-     * @param nodeId
-     * @param stakingBlockNum
-     * @param amount
-     * @param gasProvider
-     * @param transactionCallback
-     */
+    //异步获取撤销委托的结果
+    @SuppressWarnings("unchecked")
     public void asyncUnDelegate(String nodeId, BigInteger stakingBlockNum, BigInteger amount, GasProvider gasProvider, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -470,20 +378,18 @@ public class DelegateContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 查询当前单个委托信息
-     *
-     * @param nodeId          验证人的节点Id
-     * @param delAddr         委托人账户地址
-     * @param stakingBlockNum 验证人的节点Id
-     * @return
-     */
+
+    //查询当前单个委托信息
+    //nodeId          验证人的节点Id
+    //delAddr         委托人账户地址
+    //stakingBlockNum 验证人的节点Id
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<Delegation>> getDelegateInfo(String nodeId, String delAddr, BigInteger stakingBlockNum) {
 
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_DELEGATEINFO_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)
                         //, new BytesType(Numeric.hexStringToByteArray(delAddr))
-                        , new BytesType(Bech32.addressDecode(delAddr))
+                        , new BytesType(Bech32Util.addressDecode(delAddr))
                         , new BytesType(Numeric.hexStringToByteArray(nodeId))));
 
         return new RemoteCall<BaseResponse<Delegation>>(new Callable<BaseResponse<Delegation>>() {
@@ -502,14 +408,11 @@ public class DelegateContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 查询当前账户地址所委托的节点的NodeID和质押Id
-     * @param address
-     * @return
-     */
+    //查询当前账户地址所委托的节点的NodeID和质押Id
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<List<DelegationIdInfo>>> getRelatedListByDelAddr(String address) {
         PlatOnFunction function = new PlatOnFunction(FunctionType.GET_DELEGATELIST_BYADDR_FUNC_TYPE,
-                Arrays.asList(new BytesType(Bech32.addressDecode(address))));
+                Arrays.asList(new BytesType(Bech32Util.addressDecode(address))));
         return new RemoteCall<BaseResponse<List<DelegationIdInfo>>>(new Callable<BaseResponse<List<DelegationIdInfo>>>() {
             @Override
             public BaseResponse<List<DelegationIdInfo>> call() throws Exception {

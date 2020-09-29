@@ -11,8 +11,9 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.bech32.AddressCheck;
-import org.web3j.crypto.bech32.AddressManager;
+
+import org.web3j.crypto.addressconvert.AddressCheck;
+import org.web3j.crypto.addressconvert.AddressManager;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.ErrorCode;
@@ -66,26 +67,14 @@ public abstract class PlatOnContract extends ManagedTransaction {
         this.contractAddress = contractAddress;
     }
 
-    /**
-     * sendRawTransaction 使用默认的gasProvider，必须传chainId
-     *
-     * @param contractAddress
-     * @param chainId
-     * @param web3j
-     * @param credentials
-     */
+    // sendRawTransaction 使用默认的gasProvider，必须传chainId
     protected PlatOnContract(String contractAddress, long chainId,
                              Web3j web3j, Credentials credentials) {
 
         this(contractAddress, web3j, new RawTransactionManager(web3j, credentials, chainId));
     }
 
-    /**
-     * 查询操作，查询不需要chainId和gasProvier
-     *
-     * @param contractAddress
-     * @param web3j
-     */
+    //查询操作，查询不需要chainId和gasProvier
     protected PlatOnContract(String contractAddress,
                              Web3j web3j) {
 
@@ -281,6 +270,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
         return code;
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> RemoteCall<BaseResponse<T>> executePlatonRemoteCallSingleValueReturn(PlatOnFunction function) {
         return new RemoteCall<BaseResponse<T>>(new Callable<BaseResponse<T>>() {
             @Override
@@ -338,11 +328,7 @@ public abstract class PlatOnContract extends ManagedTransaction {
         });
     }
 
-    /**
-     * 查询节点代码版本
-     *
-     * @return
-     */
+   //查询节点代码版本
     public ProgramVersion getProgramVersion() throws Exception {
         return new RemoteCall<BaseResponse<ProgramVersion>>(new Callable<BaseResponse<ProgramVersion>>() {
             @Override

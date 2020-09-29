@@ -7,8 +7,9 @@ import org.web3j.abi.PlatOnTypeEncoder;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.crypto.*;
-import org.web3j.crypto.bech32.AddressBehavior;
-import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.addressconvert.AddressManager;
+
+import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
@@ -53,7 +54,7 @@ public class StakingContractTest {
     @Before
     public void init() throws Exception {
 
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32,AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
 
         superCredentials = Credentials.create("0xa689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b");
         //System.out.println("superCredentials balance="+ web3j.platonGetBalance(superCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());

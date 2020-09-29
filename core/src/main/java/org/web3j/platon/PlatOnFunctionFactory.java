@@ -15,22 +15,12 @@ public class PlatOnFunctionFactory {
 
     }
 
-    /**
-     * 创建
-     * @return
-     */
+   //创建
     public static PlatOnFunction createTransferFunction() {
         return new PlatOnFunction(FunctionType.TRANSFER);
     }
 
-    /**
-     * 创建委托实例
-     *
-     * @param nodeId
-     * @param stakingAmountType
-     * @param amount
-     * @return
-     */
+    //创建委托实例
     public static PlatOnFunction createDelegateFunction(String nodeId, StakingAmountType stakingAmountType, BigInteger amount) {
         return new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint16(stakingAmountType.getValue())
@@ -38,14 +28,7 @@ public class PlatOnFunctionFactory {
                         , new Uint256(amount)));
     }
 
-    /**
-     * 创建解除委托实例
-     *
-     * @param nodeId
-     * @param stakingBlockNum
-     * @param amount
-     * @return
-     */
+   //创建解除委托实例
     public static PlatOnFunction createUnDelegateFunction(String nodeId, BigInteger stakingBlockNum, BigInteger amount) {
         return new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
                 Arrays.asList(new Uint64(stakingBlockNum)

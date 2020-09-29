@@ -4,9 +4,9 @@ import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint16;
-import org.web3j.crypto.bech32.AddressCheck;
-import org.web3j.crypto.bech32.AddressManager;
-import org.web3j.crypto.bech32.Bech32;
+import org.web3j.crypto.addressconvert.AddressCheck;
+import org.web3j.crypto.addressconvert.AddressManager;
+import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
@@ -58,7 +58,7 @@ public class UpdateStakingParam {
         if(!AddressCheck.checkAddressValidity(benifitAddress)){
             benifitAddress = AddressManager.getInstance().getAddress(benifitAddress);
         }
-        return Arrays.asList(new BytesType(Bech32.addressDecode(benifitAddress)),
+        return Arrays.asList(new BytesType(Bech32Util.addressDecode(benifitAddress)),
                 new BytesType(Numeric.hexStringToByteArray(nodeId)),
                 new Uint16(rewardPer),
                 new Utf8String(externalId),

@@ -3,7 +3,7 @@ package org.web3j.platon.contracts;
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.bech32.Bech32;
+import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.CustomStaticArray;
@@ -35,24 +35,12 @@ import rx.functions.Func1;
 
 public class RestrictingPlanContract extends PlatOnContract {
 
-    /**
-     * 查询操作
-     *
-     * @param web3j
-     * @return
-     */
+   //查询操作
     public static RestrictingPlanContract load(Web3j web3j) {
         return new RestrictingPlanContract(ContractAddress.RESTRICTING_PLAN_CONTRACT_ADDRESS, web3j);
     }
 
-    /**
-     * sendRawTransaction 使用用户自定义的gasProvider，必须传chainId
-     *
-     * @param web3j
-     * @param credentials
-     * @param chainId
-     * @return
-     */
+   //sendRawTransaction 使用用户自定义的gasProvider，必须传chainId
     public static RestrictingPlanContract load(Web3j web3j, Credentials credentials, long chainId) {
         return new RestrictingPlanContract(ContractAddress.RESTRICTING_PLAN_CONTRACT_ADDRESS, chainId, web3j, credentials);
     }
@@ -65,32 +53,31 @@ public class RestrictingPlanContract extends PlatOnContract {
         super(contractAddress, chainId, web3j, credentials);
     }
 
-    /**
-     * 创建锁仓计划
-     *
-     * @param account             锁仓释放到账账户
-     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
-     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
-     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
-     * @return
-     */
+//    /**
+//     * 创建锁仓计划
+//     *
+//     * @param account             锁仓释放到账账户
+//     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
+//     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
+//     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse> createRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
-                Arrays.<Type>asList(new BytesType(Bech32.addressDecode(account)), new CustomStaticArray(restrictingPlanList)));
+                Arrays.<Type>asList(new BytesType(Bech32Util.addressDecode(account)), new CustomStaticArray(restrictingPlanList)));
         return executeRemoteCallTransactionWithFunctionType(function);
     }
 
-    /**
-     * 创建锁仓计划
-     *
-     * @param account             锁仓释放到账账户
-     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
-     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
-     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
-     * @param gasProvider
-     * @return
-     */
+    //创建锁仓计划
+    //account             锁仓释放到账账户
+    //restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
+    //   如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
+    //   另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
+    //
+
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse> createRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList, GasProvider gasProvider) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
@@ -99,13 +86,14 @@ public class RestrictingPlanContract extends PlatOnContract {
     }
 
 
-    /**
-     * 获取创建锁仓计划的gasProvider
-     *
-     * @param account
-     * @param restrictingPlanList
-     * @return
-     */
+//    /**
+//     * 获取创建锁仓计划的gasProvider
+//     *
+//     * @param account
+//     * @param restrictingPlanList
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public Observable<GasProvider> getCreateRestrictingPlanGasProvider(String account, List<RestrictingPlan> restrictingPlanList) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
@@ -118,13 +106,14 @@ public class RestrictingPlanContract extends PlatOnContract {
     }
 
 
-    /**
-     * 获取创建锁仓计划的gasProvider
-     *
-     * @param account
-     * @param restrictingPlanList
-     * @return
-     */
+//    /**
+//     * 获取创建锁仓计划的gasProvider
+//     *
+//     * @param account
+//     * @param restrictingPlanList
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public Observable<BigInteger> getFeeAmount(BigInteger gasPrice, String account, List<RestrictingPlan> restrictingPlanList) {
         return Observable.fromCallable(new Callable<BigInteger>() {
             @Override
@@ -137,13 +126,14 @@ public class RestrictingPlanContract extends PlatOnContract {
         });
     }
 
-    /**
-     * 获取创建锁仓计划的gasProvider
-     *
-     * @param account
-     * @param restrictingPlanList
-     * @return
-     */
+//    /**
+//     * 获取创建锁仓计划的gasProvider
+//     *
+//     * @param account
+//     * @param restrictingPlanList
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public Observable<GasProvider> getCreateRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList) {
         return Observable.fromCallable(new Callable<GasProvider>() {
             @Override
@@ -155,13 +145,14 @@ public class RestrictingPlanContract extends PlatOnContract {
         });
     }
 
-    /**
-     * @param account             锁仓释放到账账户
-     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
-     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
-     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
-     * @return
-     */
+//    /**
+//     * @param account             锁仓释放到账账户
+//     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
+//     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
+//     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<PlatonSendTransaction> createRestrictingPlanReturnTransaction(String account, List<RestrictingPlan> restrictingPlanList) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
@@ -170,14 +161,15 @@ public class RestrictingPlanContract extends PlatOnContract {
     }
 
 
-    /**
-     * @param account             锁仓释放到账账户
-     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
-     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
-     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
-     * @param gasProvider
-     * @return
-     */
+//    /**
+//     * @param account             锁仓释放到账账户
+//     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
+//     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
+//     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
+//     * @param gasProvider
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<PlatonSendTransaction> createRestrictingPlanReturnTransaction(String account, List<RestrictingPlan> restrictingPlanList, GasProvider gasProvider) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE,
@@ -185,21 +177,22 @@ public class RestrictingPlanContract extends PlatOnContract {
         return executeRemoteCallPlatonTransaction(function);
     }
 
-    /**
-     * @param ethSendTransaction
-     * @return
-     */
+//    /**
+//     * @param ethSendTransaction
+//     * @return
+//     */
     public RemoteCall<BaseResponse> getCreateRestrictingPlanResult(PlatonSendTransaction ethSendTransaction) {
         return executeRemoteCallTransactionWithFunctionType(ethSendTransaction, FunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE);
     }
 
-    /**
-     * @param account             锁仓释放到账账户
-     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
-     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
-     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
-     * @param transactionCallback
-     */
+//    /**
+//     * @param account             锁仓释放到账账户
+//     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
+//     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
+//     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncCreateRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -234,14 +227,15 @@ public class RestrictingPlanContract extends PlatOnContract {
         }
     }
 
-    /**
-     * @param account             锁仓释放到账账户
-     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
-     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
-     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
-     * @param gasProvider
-     * @param transactionCallback
-     */
+//    /**
+//     * @param account             锁仓释放到账账户
+//     * @param restrictingPlanList 其中，Epoch：表示结算周期的倍数。与每个结算周期出块数的乘积表示在目标区块高度上释放锁定的资金。
+//     *                            如果 account 是激励池地址，那么 period 值是 120（即，30*4） 的倍数。
+//     *                            另外，period * 每周期的区块数至少要大于最高不可逆区块高度。Amount：表示目标区块上待释放的金额。
+//     * @param gasProvider
+//     * @param transactionCallback
+//     */
+    @SuppressWarnings("unchecked")
     public void asyncCreateRestrictingPlan(String account, List<RestrictingPlan> restrictingPlanList,GasProvider gasProvider, TransactionCallback transactionCallback) {
 
         if (transactionCallback != null) {
@@ -276,16 +270,17 @@ public class RestrictingPlanContract extends PlatOnContract {
         }
     }
 
-    /**
-     * 获取锁仓信息
-     *
-     * @param account 锁仓释放到账账户
-     * @return
-     */
+//    /**
+//     * 获取锁仓信息
+//     *
+//     * @param account 锁仓释放到账账户
+//     * @return
+//     */
+    @SuppressWarnings("unchecked")
     public RemoteCall<BaseResponse<RestrictingItem>> getRestrictingInfo(String account) {
         final PlatOnFunction function = new PlatOnFunction(
                 FunctionType.GET_RESTRICTINGINFO_FUNC_TYPE,
-                Arrays.<Type>asList(new BytesType(Bech32.addressDecode(account))));
+                Arrays.<Type>asList(new BytesType(Bech32Util.addressDecode(account))));
         return new RemoteCall<BaseResponse<RestrictingItem>>(new Callable<BaseResponse<RestrictingItem>>() {
             @Override
             public BaseResponse<RestrictingItem> call() throws Exception {
