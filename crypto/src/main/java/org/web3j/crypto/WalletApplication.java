@@ -15,17 +15,15 @@ public class WalletApplication {
      * addressFormatType ：ADDRESS_TYPE_BECH32（bech32）、ADDRESS_TYPE_XX（拓展预留）
      */
     public static int addressFormatType = 0;
-
     /**
-     *  地址处理格式渠道：PLATON、LATTICEX
+     * 地址前缀Hrp
      */
-    public static String channleType = "";
+    public static String addressHrp;
 
 
-    public static void init(String network, int addressFormat,String channle){
-        networkType = network;
+    public static void init(int addressFormat,String hrp){
         addressFormatType = addressFormat;
-        channleType = channle;
+        addressHrp = hrp;
     }
 
 }

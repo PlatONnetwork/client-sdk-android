@@ -7,7 +7,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletApplication;
 
 import org.web3j.crypto.addressconvert.AddressManager;
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Delegation;
@@ -20,7 +19,6 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.rlp.RlpDecoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
-import org.web3j.tx.gas.DefaultWasmGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.io.UnsupportedEncodingException;
@@ -40,7 +38,7 @@ public class DelegateContractTest {
 
     @Before
     public void init() {
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
        //credentials = Credentials.create("0x9614c2b32f2d5d3421591ab3ffc03ac66c831fb6807b532f6e3a8e7aac31f1d9");
         credentials = Credentials.create("0x6fe419582271a4dcf01c51b89195b77b228377fde4bde6e04ef126a0b4373f79");
         delegateAddress = credentials.getAddress();

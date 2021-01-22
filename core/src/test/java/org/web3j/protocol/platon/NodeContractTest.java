@@ -5,14 +5,12 @@ import org.junit.Test;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletApplication;
 import org.web3j.crypto.addressconvert.AddressManager;
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.bean.Node;
 import org.web3j.platon.contracts.NodeContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.gas.DefaultWasmGasProvider;
 
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class NodeContractTest {
 
     @Before
     public void init() {
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
         credentials = Credentials.create("0x690a32ceb7eab4131f7be318c1672d3b9b2dadeacba20b99432a7847c1e926e0");
         nodeContract = NodeContract.load(web3j,credentials, chainId);
     }

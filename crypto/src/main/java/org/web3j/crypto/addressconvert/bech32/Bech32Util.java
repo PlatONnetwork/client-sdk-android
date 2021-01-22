@@ -34,6 +34,10 @@ public class Bech32Util {
     //latticex链，主网地址pla，测试网地址plt
     public static final String HRP_PLA = "pla";
     public static final String HRP_PLT = "plt";
+    //地址长度
+    public static final int ADDRESS_LENGTH = 42;
+
+
 
 
     private static final int ADDRESS_SIZE = 160;

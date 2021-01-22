@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.web3j.crypto.addressconvert.AddressManager;
 
 import org.web3j.crypto.addressconvert.bech32.AddressBech32;
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.crypto.addressconvert.bech32.Bech32Util;
 import org.web3j.utils.Numeric;
 import org.web3j.utils.Strings;
@@ -86,7 +85,14 @@ public class KeysTest2 {
         try{
             String v = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
             String v1 = "lax1dkyctq9yk6k2jdez3w0wrwncnsn5uaqs2p02jq";
-             System.out.println(Bech32Util.addressDecodeHex(v1));
+            System.out.println(Bech32Util.addressDecodeHex(v1));
+
+            String mainnet = "atp1ttx0um8capdsrkfy45yka9f8d39sfqqrklwg98";
+            System.out.println("-------mainnet original:" + Bech32Util.addressDecodeHex(mainnet));
+
+            String testnet = "atx1ttx0um8capdsrkfy45yka9f8d39sfqqruejzkd";
+            System.out.println("-------testnet original:" + Bech32Util.addressDecodeHex(testnet));
+
            // Bech32.addressDecode(v);
         }catch (Exception e){
               System.out.println("捕获" + e.getMessage());
@@ -98,8 +104,7 @@ public class KeysTest2 {
     @Test
     public void test2() {
         //初始化
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
-
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
 
         Credentials credentials = Credentials.create("deb2bd10eedef6d89cd8fac224dc8f1bdd26ed1c4b5c513995efb1b33404db17");
         String addressStr = credentials.getAddress();
@@ -107,15 +112,13 @@ public class KeysTest2 {
 
 
         String originalAddress = "0xb89964e28b8f1b7b21d3c794fccc3a01807d442a";
-        AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
-        System.out.println("addressBech32:" + addressBech32.getTestnet());
-        System.out.println("addressBech32:" + addressBech32.getMainnet());
+        String addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
+        System.out.println("addressBech32:" + addressBech32);
 
 
         String str = "lat18suc3vdkz62znc5h6rhq3gfk6cx96a0q484uwy";
-        AddressBech32 decodeAddress = AddressManager.getInstance().executeDecodeAddress(str);
+        String decodeAddress = AddressManager.getInstance().executeDecodeAddress(str);
         System.out.println("decodeAddress:" + decodeAddress);
-
 
     }
 

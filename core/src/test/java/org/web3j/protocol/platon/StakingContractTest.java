@@ -2,14 +2,9 @@ package org.web3j.protocol.platon;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.spongycastle.util.encoders.Hex;
-import org.web3j.abi.PlatOnTypeEncoder;
-import org.web3j.abi.datatypes.Uint;
-import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.crypto.*;
 import org.web3j.crypto.addressconvert.AddressManager;
 
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.bean.Node;
@@ -22,20 +17,10 @@ import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.*;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.rlp.RlpEncoder;
-import org.web3j.rlp.RlpList;
-import org.web3j.rlp.RlpString;
-import org.web3j.rlp.RlpType;
-import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StakingContractTest {
 
@@ -54,7 +39,7 @@ public class StakingContractTest {
     @Before
     public void init() throws Exception {
 
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
 
         superCredentials = Credentials.create("0xa689f0879f53710e9e0c1025af410a530d6381eebb5916773195326e123b822b");
         //System.out.println("superCredentials balance="+ web3j.platonGetBalance(superCredentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance());

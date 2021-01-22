@@ -25,17 +25,12 @@ public class AddressManager {
         return InstanceHolder.INSTANCE;
     }
 
-    //根据初始化init()网络环境、地址格式
+    //根据初始化init()地址格式
     //address 原始钱包地址
     //处理后Wallet地址
     public String getAddress(String address){
         if(AddressCheck.checkInitWalletParam()){
-            AddressBech32 addressBech32 = executeEncodeAddress(address);
-            if(WalletApplication.networkType.equals(WalletApplication.MAINNET)){
-                return addressBech32.getMainnet();
-            }else{
-                return addressBech32.getTestnet();
-            }
+            return executeEncodeAddress(address);
         }
         return "";
     }
@@ -53,7 +48,7 @@ public class AddressManager {
     }
 
     //ecKeyPair转换成lat/lax等地址格式
-    public AddressBech32 executeEncodeAddress(ECKeyPair ecKeyPair){
+    public String executeEncodeAddress(ECKeyPair ecKeyPair){
         String originAddress = Keys.getAddress(ecKeyPair);
         return executeEncodeAddress(originAddress);
     }
@@ -61,7 +56,7 @@ public class AddressManager {
     //最终入口
     //原始地址转换成lat/lax等地址格式
 
-    public AddressBech32 executeEncodeAddress(String address){
+    public String executeEncodeAddress(String address){
         if(AddressCheck.checkInitWalletParam()){
             if(ADDRESS_TYPE_BECH32 == WalletApplication.addressFormatType){
                 setAddressBehavior(new AddressBehaviorBech32());
@@ -75,7 +70,7 @@ public class AddressManager {
 
 
    //lat/lax等地址格式转换成原始地址
-    public AddressBech32 executeDecodeAddress(String address){
+    public String executeDecodeAddress(String address){
 
         if(ADDRESS_TYPE_BECH32 == WalletApplication.addressFormatType){
             setAddressBehavior(new AddressBehaviorBech32());
