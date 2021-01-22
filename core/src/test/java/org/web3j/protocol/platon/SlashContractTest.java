@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletApplication;
 import org.web3j.crypto.addressconvert.AddressManager;
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.DuplicateSignType;
 import org.web3j.platon.contracts.SlashContract;
@@ -52,7 +51,7 @@ public class SlashContractTest {
 
     @Before
     public void init() {
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
 
         credentials = Credentials.create("0xa56f68ca7aa51c24916b9fff027708f856650f9ff36cc3c8da308040ebcc7867");
         slashContract = SlashContract.load(web3j, credentials, chainId);

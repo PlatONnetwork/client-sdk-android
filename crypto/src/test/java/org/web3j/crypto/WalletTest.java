@@ -1,15 +1,12 @@
 package org.web3j.crypto;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
-
-
 import org.web3j.crypto.addressconvert.AddressManager;
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 import org.web3j.utils.Numeric;
+
+import java.io.IOException;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -19,15 +16,15 @@ public class WalletTest {
 
     @Before
    public void init(){
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_ALAYA);
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
    }
 
     @Test
     public void testCreateStandard() throws Exception {
 
         WalletFile walletFile =  Wallet.createStandard(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR);
-        System.out.println("------ mainnet:" + walletFile.getAddress().getMainnet());
-        System.out.println("------ testnet:" + walletFile.getAddress().getTestnet());
+        System.out.println("------ address:" + walletFile.getAddress());
+        //System.out.println("------ testnet:" + walletFile.getAddress().getTestnet());
         //testCreate(Wallet.createStandard(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR));
     }
 
@@ -35,8 +32,10 @@ public class WalletTest {
     public void testCreateLight() throws Exception {
 
         WalletFile walletFile =  Wallet.createLight(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR);
-        System.out.println("------ mainnet:" + walletFile.getAddress().getMainnet());
-        System.out.println("------ testnet:" + walletFile.getAddress().getTestnet());
+        System.out.println("------ address:" + walletFile.getAddress());
+
+        //System.out.println("------ mainnet:" + walletFile.getAddress().getMainnet());
+        //System.out.println("------ testnet:" + walletFile.getAddress().getTestnet());
         //testCreate(Wallet.createLight(SampleKeys.PASSWORD, SampleKeys.KEY_PAIR));
     }
 
