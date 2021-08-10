@@ -102,11 +102,8 @@ public class Wallet {
 
         WalletFile walletFile = new WalletFile();
 
-        WalletFile.Address address = new WalletFile.Address();
-        AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(ecKeyPair);
-        address.setMainnet(addressBech32.getMainnet());
-        address.setTestnet(addressBech32.getTestnet());
-        walletFile.setAddress(address);
+        String addressBech32 = AddressManager.getInstance().executeEncodeAddress(ecKeyPair);
+        walletFile.setAddress(addressBech32);
         //walletFile.setOriginalAddress(Keys.getAddress(ecKeyPair));
 
         WalletFile.Crypto crypto = new WalletFile.Crypto();

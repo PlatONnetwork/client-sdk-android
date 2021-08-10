@@ -12,7 +12,7 @@ public class AddressCheck {
     public static boolean checkInitWalletParam(){
         boolean checkResult = false;
         try{
-            if(WalletApplication.networkType.equals("") || WalletApplication.addressFormatType == 0){
+            if(WalletApplication.addressFormatType == 0 || WalletApplication.addressHrp == null || WalletApplication.addressHrp.equals("")){
                 checkResult = false;
                 throw new AddressInitException("please initialize first walletApplication...");
             }else{
@@ -25,18 +25,18 @@ public class AddressCheck {
     }
 
 
-    //wallet address 有效性
+
     public static boolean checkAddressValidity(String address){
-        if(address == null || "".equals(address))
+        if(address == null || "".equals(address)){
             return true;
-
+        }
         String hrp = address.substring(0,3);
-        if(hrp.equals(Bech32Util.HRP_LAT) || hrp.equals(Bech32Util.HRP_LAX) ||
-           hrp.equals(Bech32Util.HRP_PLA) || hrp.equals(Bech32Util.HRP_PLT) ||
-           hrp.equals(Bech32Util.HRP_ATP) || hrp.equals(Bech32Util.HRP_ATX)){
-
-            if(address.length() == 42){
-               return true;
+        if(WalletApplication.addressHrp == null){
+            return false;
+        }
+        if(hrp.equals(WalletApplication.addressHrp)){
+            if(address.length() == Bech32Util.ADDRESS_LENGTH){
+                return true;
             }
         }
         return false;

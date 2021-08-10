@@ -3,7 +3,6 @@ package org.web3j.crypto;
 import org.junit.Before;
 import org.junit.Test;
 import org.web3j.crypto.addressconvert.AddressManager;
-import org.web3j.crypto.addressconvert.bech32.AddressBehavior;
 
 
 import static org.hamcrest.core.Is.is;
@@ -13,7 +12,7 @@ public class CredentialsTest {
 
     @Before
     public void init(){
-        WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        WalletApplication.init(AddressManager.ADDRESS_TYPE_BECH32, "lfp");
     }
 
     @Test

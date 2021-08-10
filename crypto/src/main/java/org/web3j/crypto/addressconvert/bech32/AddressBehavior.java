@@ -7,9 +7,9 @@ public interface AddressBehavior {
     public static final String CHANNLE_LATT = "LATTICEX";
 
 
-    String channleType();
+    String getAddressHrp();
 
-    AddressBech32 encodeAddress(String address);
+    String encodeAddress(String address);
 
-    AddressBech32 decodeAddress(String address);
+    String decodeAddress(String address);
 }
